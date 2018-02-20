@@ -24,8 +24,8 @@ uint8_t configBuff[2] = {0x47, 0xff};
 uint8_t calibBuff[2] = {0x02, 0x00};		//scale = 10A (max = 9.999A); 1mA/bit
 
 uint16_t *pArrOfLedsvalGlobal;
-uint16_t umtsArrLeds[]={700, 300, 300, 700, 300, 300, 200};
-uint16_t lteArrLeds[]={700, 300, 300, 700, 300, 300, 200};
+uint16_t umtsOneArrLeds[]={1448, 1641, 1760, 1803, 1875, 1914, 2000};			//3, 8, 13, 18, 23, 28,  40
+uint16_t lteOneArrLeds[]={1135, 1240, 1290, 1330, 1360, 1380, 1420};			//3, 8, 13, 18, 23, 28,  40
 
 
 twi_device_t PA1 = {.fanPin = FAN_PA1, .paPin = PA_ENABLE_1, .channel = 1, .name = (uint8_t*)_PA1};								//
@@ -44,7 +44,7 @@ void setIp(uint8_t* buff, uint8_t value);
 
 
 int main(void) {
-	pArrOfLedsvalGlobal = umtsArrLeds;
+	pArrOfLedsvalGlobal = umtsOneArrLeds;
 	pGate = buffer_GATE;
 	pSub = buffer_SUB;
 	pIpSource = buffer_IP_source;
@@ -114,11 +114,7 @@ void main_ledFanFunc(void){
 				latch = 1;
 				utils_sendAnswerDebug(DEBUG_CH, _OVER_TEMP, 0, 0);
 				command_exec(0x1a);
-				paOn(&PA1, false);
-				paOn(&PA2, false);
-				paOn(&PA3, false);
-				paOn(&PA4, false);
-				PA1.isValid = 0; PA2.isValid = 0; PA3.isValid = 0; PA4.isValid = 0;
+				paOffAll();
 			}
 			else if (PA1.temperBuff[0] >= TEMP_RED || PA2.temperBuff[0] >= TEMP_RED || PA3.temperBuff[0] >= TEMP_RED || PA4.temperBuff[0] >= TEMP_RED) {
 				fanLedFuncPtr = (fpFanLed)(lightPtrTable[2]);				//fan led light red
@@ -126,7 +122,7 @@ void main_ledFanFunc(void){
 			else if (!PA1.fanState && !PA2.fanState && !PA3.fanState && !PA4.fanState){
 				fanLedFuncPtr = (fpFanLed)(lightPtrTable[0]);				//fan led light green
 			}
-			else if (PA1.temperBuff[0] <= TEMP_YELLOW || PA2.temperBuff[0] <= TEMP_YELLOW || PA3.temperBuff[0] <= TEMP_YELLOW || PA4.temperBuff[0] <= TEMP_YELLOW) {
+			else if (PA1.temperBuff[0] >= TEMP_YELLOW || PA2.temperBuff[0] >= TEMP_YELLOW || PA3.temperBuff[0] >= TEMP_YELLOW || PA4.temperBuff[0] >= TEMP_YELLOW) {
 				fanLedFuncPtr = (fpFanLed)(lightPtrTable[1]);				//fan led light yellow
 			}
 		}

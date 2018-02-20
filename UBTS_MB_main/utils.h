@@ -10,8 +10,8 @@
 #include "commands.h"
 
 extern uint16_t *pArrOfLedsvalGlobal;
-extern uint16_t umtsArrLeds[];
-extern uint16_t lteArrLeds[];
+extern uint16_t umtsOneArrLeds[];
+extern uint16_t lteOneArrLeds[];
 
 
 void utils_sendAnswerDebug(uint8_t ch,const uint8_t *wordPGM,uint8_t *buff, uint8_t length);
@@ -52,7 +52,7 @@ extern fpPowerLed powerLedPtrTable[];
 
 void utils_switchFan(twi_device_t* sensor);
 void utils_controlTempPA(twi_device_t* pa);
-
+void paOffAll(void);
 
 void utils_avgValue(ANALOG_INPUT_t* filter, uint16_t newValue);
 uint8_t* utils_hex16ToDecAscii32(uint16_t hex);

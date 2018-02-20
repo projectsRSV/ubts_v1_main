@@ -62,22 +62,22 @@ void command_exec(uint8_t command){
 			nmOn(false);
 			break;
 		}
-		case 0x07:{																													//
+		case 0x07:{																													//ina data bts
 			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%07*", utils_hexArrayToAsciiArray(INA_BTS.voltageBuff, 2), 4);
 			utils_sendAnswerDebug(DEBUG_CH, _INA_VOLT, utils_hex2ArrayToDecAscii4Array(INA_BTS.voltageBuff), 4);
 			break;
 		}
-		case 0x08:{																													//ina data bts
+		case 0x08:{																													//
 			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%08*", utils_hexArrayToAsciiArray(INA_BTS.currentBuff, 2), 4);
 			utils_sendAnswerDebug(DEBUG_CH, _INA_CURRENT, utils_hex2ArrayToDecAscii4Array(INA_BTS.currentBuff), 4);
 			break;
 		}
-		case 0x09:{
+		case 0x09:{																													//
 			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%09*", utils_hexArrayToAsciiArray(INA_BTS.powerBuff, 2), 4);
 			utils_sendAnswerDebug(DEBUG_CH, _INA_POWER, utils_hex2ArrayToDecAscii4Array(INA_BTS.powerBuff), 4);
 			break;
 		}
-		case 0x0a:{																													//
+		case 0x0a:{																													//ina data periphery
 			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%0a*", utils_hexArrayToAsciiArray(INA_PERIPHERY.voltageBuff, 2), 4);
 			utils_sendAnswerDebug(DEBUG_CH, _INA_VOLT, utils_hex2ArrayToDecAscii4Array(INA_PERIPHERY.voltageBuff), 4);
 			break;
@@ -111,22 +111,22 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case 0x10:{																													//pa1 out power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_1, utils_hex16ToAscii32(ADC_PA_OUT_1.value), 4);
+			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_1, utils_hex16ToDecAscii32(ADC_PA_OUT_1.value), 4);
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%10*", utils_hex16ToAscii32(ADC_PA_OUT_1.value), 4);
 			break;
 		}
 		case 0x11:{																													//pa2 out power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_2, utils_hex16ToAscii32(ADC_PA_OUT_2.value), 4);
+			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_2, utils_hex16ToDecAscii32(ADC_PA_OUT_2.value), 4);
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%11*", utils_hex16ToAscii32(ADC_PA_OUT_2.value), 4);
 			break;
 		}
 		case 0x12:{																													//pa3 out power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_3, utils_hex16ToAscii32(ADC_PA_OUT_3.value), 4);
+			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_3, utils_hex16ToDecAscii32(ADC_PA_OUT_3.value), 4);
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%12*", utils_hex16ToAscii32(ADC_PA_OUT_3.value), 4);
 			break;
 		}
 		case 0x13:{																													//pa4 out power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_4, utils_hex16ToAscii32(ADC_PA_OUT_4.value), 4);
+			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_4, utils_hex16ToDecAscii32(ADC_PA_OUT_4.value), 4);
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%13*", utils_hex16ToAscii32(ADC_PA_OUT_4.value), 4);
 			break;
 		}
@@ -162,7 +162,7 @@ void command_exec(uint8_t command){
 			utils_sendAnswerDebug(DEBUG_CH, _Tpa3, utils_hex8ToDecAscii16(PA4.temperBuff[0]), 2);
 			break;
 		}
-		case 0x1a:{																													//
+		case 0x1a:{																													//temp all
 			command_exec(0x04);
 			command_exec(0x16);
 			command_exec(0x17);
@@ -171,22 +171,22 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case 0x1b:{																													//pa1 bw power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_BW_PA_1, utils_hex16ToAscii32(ADC_PA_BW_1.value), 4);
+			utils_sendAnswerDebug(DEBUG_CH, _ADC_BW_PA_1, utils_hex16ToDecAscii32(ADC_PA_BW_1.value), 4);
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%1b*", utils_hex16ToAscii32(ADC_PA_BW_1.value), 4);
 			break;
 		}
 		case 0x1c:{																													//pa2 bw power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_BW_PA_2, utils_hex16ToAscii32(ADC_PA_BW_2.value), 4);
+			utils_sendAnswerDebug(DEBUG_CH, _ADC_BW_PA_2, utils_hex16ToDecAscii32(ADC_PA_BW_2.value), 4);
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%1c*", utils_hex16ToAscii32(ADC_PA_BW_2.value), 4);
 			break;
 		}
 		case 0x1d:{																													//pa3 bw power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_BW_PA_3, utils_hex16ToAscii32(ADC_PA_BW_3.value), 4);
+			utils_sendAnswerDebug(DEBUG_CH, _ADC_BW_PA_3, utils_hex16ToDecAscii32(ADC_PA_BW_3.value), 4);
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%1d*", utils_hex16ToAscii32(ADC_PA_BW_3.value), 4);
 			break;
 		}
 		case 0x1e:{																													//pa4 bw power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_BW_PA_4, utils_hex16ToAscii32(ADC_PA_BW_4.value), 4);
+			utils_sendAnswerDebug(DEBUG_CH, _ADC_BW_PA_4, utils_hex16ToDecAscii32(ADC_PA_BW_4.value), 4);
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%1e*", utils_hex16ToAscii32(ADC_PA_BW_4.value), 4);
 			break;
 		}
@@ -231,7 +231,7 @@ void command_exec(uint8_t command){
 			FIFO_nmChRx.data[FIFO_nmChRx.head++] = 0x0a;
 			break;
 		}
-		//***************************************tune att****************************************
+		//***************************************tuning att****************************************
 		case 0x60:{																											//set ch1 att
 			uint8_t temp;
 			utils_sendAnswer(DEBUG_CH, 0x00, COMMAND.buffer, COMMAND.length);
@@ -337,8 +337,8 @@ void command_exec(uint8_t command){
 			uint8_t isPaOn = COMMAND.buffer[7] & 0x0f;
 			uint8_t combination;
 			
-			if (standart == 'L') pArrOfLedsvalGlobal = lteArrLeds;
-			else if (standart == 'U') pArrOfLedsvalGlobal = umtsArrLeds;
+			if (standart == 'L') pArrOfLedsvalGlobal = lteOneArrLeds;
+			else if (standart == 'U') pArrOfLedsvalGlobal = umtsOneArrLeds;
 			
 			setChannReg(inChannel, getPaNum(band), standart, isPaOn);
 			combination = searchCombination();
@@ -400,7 +400,7 @@ void setChannReg(uint8_t inChannel, uint8_t paNum, uint8_t standart, uint8_t isP
 	if (paNum == 5 && inChannel == 3) paNum = 0x04;
 	else if (paNum == 5 && inChannel == 4) paNum = 0x04;
 	else if (paNum == 5 && inChannel == 1) paNum = 0x01;
-	else if (paNum == 5 && inChannel == 2) paNum = 0x04;
+	else if (paNum == 5 && inChannel == 2) paNum = 0x01;
 	
 	if (isPaOn){
 		if (inChannel == 1) {

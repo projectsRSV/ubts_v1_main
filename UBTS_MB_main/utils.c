@@ -71,7 +71,7 @@ uint8_t* utils_hex16ToDecAscii32(uint16_t hex){
 	pdec[1]=c+0x30;
 	while (hex>=10) {hex -= 10;d++;}
 	pdec[2]=d+0x30;
-	while (hex>=1) {hex -= 1;c++;}
+	while (hex>=1) {hex -= 1;e++;}
 	pdec[3]=e+0x30;
 	return pdec;
 }
@@ -170,41 +170,51 @@ void utils_slowBlink(){
 	}
 }
 void utils_powerLedNormal(POWER_LEDS_t* ledStruct){
-	//uint16_t arrayOn[]={0x0268, 0x0268, 0x0268, 0x0268, 0x0268, 0x0268, 0x07f0};
-	//uint16_t arrayOn[]={700, 300, 300, 700, 300, 300, 200};
-	
-	uint16_t arrayOff[]={5, 10, 10, 10, 10, 10};
-	
-	if (ledStruct->i++ == 0x0fff) {
-		if ((ledStruct->value + pArrOfLedsvalGlobal[ledStruct->arrayIndex]) <= *ledStruct->adcValue){
+	if (ledStruct->i++ == 0x1fff) {
+		if (pArrOfLedsvalGlobal[ledStruct->arrayIndex] < *ledStruct->adcValue){
 			if (ledStruct->arrayIndex < 6){
-				ledStruct->value += pArrOfLedsvalGlobal[ledStruct->arrayIndex++];
+				ledStruct->arrayIndex++;
 				ledStruct->ledValueRender |= (ledStruct->ledValueRender << 1);
 				spi_setReg(&SPID, &PORTH, ledStruct->ledValueRender >> 1, ledStruct->pin);
 			}
 			else {
-				//if (ledStruct == &POWER_LEDS1) powerLedFuncPtr1 = powerLedPtrTable[2];
 				ledStruct->fp = (fpGeneric)powerLedPtrTable[2];
 			}
 		}
-		else if ((ledStruct->value - arrayOff[ledStruct->arrayIndex-1]) >= *ledStruct->adcValue){
-			if (ledStruct->arrayIndex > 0) {
-				ledStruct->value -= pArrOfLedsvalGlobal[--ledStruct->arrayIndex];
+		else if ((pArrOfLedsvalGlobal[ledStruct->arrayIndex - 1] - 5) >= *ledStruct->adcValue){
+			if (ledStruct->arrayIndex > 0){
+				ledStruct->arrayIndex--;
 				ledStruct->ledValueRender = (ledStruct->ledValueRender >> 1);
 				spi_setReg(&SPID, &PORTH, ledStruct->ledValueRender >> 1, ledStruct->pin);
-				if (ledStruct->arrayIndex == 0) ledStruct->value = 0;
 			}
 		}
 		ledStruct->i=0;
 	}
 }
+void paOffAll(){
+	paOn(&PA1, false);
+	paOn(&PA2, false);
+	paOn(&PA3, false);
+	paOn(&PA4, false);
+	PA1.isValid = 0; PA2.isValid = 0; PA3.isValid = 0; PA4.isValid = 0;
+}
 void utils_powerLedEmergencyBW(POWER_LEDS_t* ledStruct){
+	static uint8_t latch;
+	if (!latch){
+		latch = 1;
+		paOffAll();
+	}
 	if (ledStruct->i++ == 0x09ff){
 		spi_setReg(&SPID,&PORTH, ledStruct->ledValueRender ^= 0xff, ledStruct->pin);
 		ledStruct->i=0;
 	}
 }
 void utils_powerLedEmergencyOverPower(POWER_LEDS_t* ledStruct){
+	static uint8_t latch;
+	if (!latch){
+		latch = 1;
+		paOffAll();
+	}
 	if (ledStruct->i++ == 0x09ff){
 		spi_setReg(&SPID,&PORTH, ledStruct->ledValueRender ^= 0x20, ledStruct->pin);
 		ledStruct->i = 0;

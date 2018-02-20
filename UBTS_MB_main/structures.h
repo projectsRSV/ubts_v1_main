@@ -75,7 +75,7 @@ typedef void (*fpGeneric)(void);
 typedef struct{
 	uint8_t arrayIndex;
 	uint8_t ledValueRender;
-	uint16_t value;
+	//uint16_t value;
 	uint16_t i;
 	uint16_t *adcValue;
 	uint8_t pin;

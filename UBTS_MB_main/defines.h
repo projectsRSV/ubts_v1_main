@@ -43,7 +43,7 @@
 
 #define BUFFER_SIZE				256		//only 256, if not add	 fifo.tail &= BUFFER_SIZE-1
 #define BUFF_SIZE_COMM_DATA		145
-#define FILTER_SAMPLES			8
+#define FILTER_SAMPLES			32
 
 #define BAUD_RATE_OUT			115200
 #define BAUD_RATE_GPS			9600
