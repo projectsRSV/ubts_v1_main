@@ -36,7 +36,7 @@ void _4_3(void);
 void _4_2100(void);
 void _4_off(void);
 
-void commutator_decoder(uint8_t address);
+bool commutator_decoder(uint8_t address);
 void setAttCommutator(uint16_t value4, uint16_t value5);
 uint8_t searchCombination(void);
 uint8_t checkInChannelState(void);

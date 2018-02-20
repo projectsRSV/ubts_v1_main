@@ -3,7 +3,8 @@
 
 
 
-void commutator_decoder(uint8_t address){
+bool commutator_decoder(uint8_t address){
+	bool validCommand = true;
 	switch(address){
 		case 0x00:{
 			_1_off();
@@ -11,6 +12,7 @@ void commutator_decoder(uint8_t address){
 			_3_off();
 			_4_off();
 			setAttCommutator(0, 0);
+			setPaState(0);
 			break;
 		}
 		case 0x01:{
@@ -19,6 +21,7 @@ void commutator_decoder(uint8_t address){
 			_4_off();
 			_1_1();
 			setAttCommutator(0, 0);
+			setPaState(PA1.channel);
 			break;
 		}
 		case 0x02:{
@@ -27,6 +30,7 @@ void commutator_decoder(uint8_t address){
 			_4_off();
 			_1_2();
 			setAttCommutator(0, 0);
+			setPaState(PA2.channel);
 			break;
 		}
 		case 0x03:{
@@ -35,6 +39,7 @@ void commutator_decoder(uint8_t address){
 			_4_off();
 			_1_3();
 			setAttCommutator(0, 0);
+			setPaState(PA3.channel);
 			break;
 		}
 		case 0x04:{
@@ -43,6 +48,7 @@ void commutator_decoder(uint8_t address){
 			_4_off();
 			_2_1();
 			setAttCommutator(0, 0);
+			setPaState(PA1.channel);
 			break;
 		}
 		case 0x05:{
@@ -51,6 +57,7 @@ void commutator_decoder(uint8_t address){
 			_4_off();
 			_2_2();
 			setAttCommutator(0, 0);
+			setPaState(PA2.channel);
 			break;
 		}
 		case 0x06:{
@@ -59,6 +66,7 @@ void commutator_decoder(uint8_t address){
 			_4_off();
 			_2_3();
 			setAttCommutator(0, 0);
+			setPaState(PA3.channel);
 			break;
 		}
 		case 0x07:{
@@ -67,6 +75,7 @@ void commutator_decoder(uint8_t address){
 			_4_off();
 			_3_3();
 			setAttCommutator(0, 0);
+			setPaState(PA3.channel);
 			break;
 		}
 		case 0x08:{
@@ -75,6 +84,7 @@ void commutator_decoder(uint8_t address){
 			_3_off();
 			_4_3();
 			setAttCommutator(0, 0);
+			setPaState(PA3.channel);
 			break;
 		}
 		case 0x09:{
@@ -83,6 +93,7 @@ void commutator_decoder(uint8_t address){
 			_2_1();
 			_3_3();
 			setAttCommutator(0x0018, 0x0018);
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x0a:{
@@ -92,10 +103,12 @@ void commutator_decoder(uint8_t address){
 			if (PA1.band == PA3.band && PA3.isValid && PA1.isValid){
 				_2_3();
 				setAttCommutator(0x0000, 0x0000);
+				setPaState(PA1.channel | PA3.channel);
 			}
 			else{
 				_2_1();
 				setAttCommutator(0x0018, 0x0018);
+				setPaState(PA1.channel);
 			}
 			break;
 		}
@@ -105,6 +118,7 @@ void commutator_decoder(uint8_t address){
 			_1_1();
 			_3_3();
 			setAttCommutator(0, 0);
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x0c:{
@@ -113,6 +127,7 @@ void commutator_decoder(uint8_t address){
 			_1_1();
 			_4_3();
 			setAttCommutator(0, 0);
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x0d:{
@@ -121,6 +136,7 @@ void commutator_decoder(uint8_t address){
 			_1_1();
 			_2_2();
 			setAttCommutator(0, 0);
+			setPaState(PA1.channel | PA2.channel);
 			break;
 		}
 		case 0x0e:{
@@ -129,6 +145,7 @@ void commutator_decoder(uint8_t address){
 			_1_2();
 			_2_1();
 			setAttCommutator(0, 0);
+			setPaState(PA1.channel | PA2.channel);
 			break;
 		}
 		case 0x0f:{
@@ -137,6 +154,7 @@ void commutator_decoder(uint8_t address){
 			_1_2();
 			_2_3();
 			setAttCommutator(0, 0);
+			setPaState(PA2.channel | PA3.channel);
 			break;
 		}
 		case 0x10:{
@@ -145,6 +163,7 @@ void commutator_decoder(uint8_t address){
 			_1_2();
 			_3_3();
 			setAttCommutator(0, 0);
+			setPaState(PA2.channel | PA3.channel);
 			break;
 		}
 		case 0x11:{
@@ -153,6 +172,7 @@ void commutator_decoder(uint8_t address){
 			_1_2();
 			_4_3();
 			setAttCommutator(0, 0);
+			setPaState(PA2.channel | PA3.channel);
 			break;
 		}
 		case 0x12:{
@@ -162,6 +182,7 @@ void commutator_decoder(uint8_t address){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0018, 0x1818);
+				setPaState(PA3.channel);
 			}
 			else commutator_decoder(0xff);
 			break;
@@ -172,6 +193,7 @@ void commutator_decoder(uint8_t address){
 			_1_2();
 			_2_2();
 			setAttCommutator(0x0018, 0x0018);
+			setPaState(PA2.channel);
 			break;
 		}
 		case 0x14:{
@@ -180,6 +202,7 @@ void commutator_decoder(uint8_t address){
 			_2_1();
 			_3_3();
 			setAttCommutator(0, 0);
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x15:{
@@ -188,6 +211,7 @@ void commutator_decoder(uint8_t address){
 			_2_1();
 			_4_3();
 			setAttCommutator(0, 0);
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x16:{
@@ -196,6 +220,7 @@ void commutator_decoder(uint8_t address){
 			_2_2();
 			_3_3();
 			setAttCommutator(0, 0);
+			setPaState(PA2.channel | PA3.channel);
 			break;
 		}
 		case 0x17:{
@@ -204,6 +229,7 @@ void commutator_decoder(uint8_t address){
 			_2_2();
 			_4_3();
 			setAttCommutator(0, 0);
+			setPaState(PA2.channel | PA3.channel);
 			break;
 		}
 		case 0x18:{
@@ -219,6 +245,7 @@ void commutator_decoder(uint8_t address){
 				_4_3();
 				setAttCommutator(0x1800, 0x1800);
 			}
+			setPaState(PA2.channel | PA3.channel);
 			break;
 		}
 		case 0x19:{
@@ -234,6 +261,7 @@ void commutator_decoder(uint8_t address){
 				_4_3();
 				setAttCommutator(0x1800, 0x1800);
 			}
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x1a:{
@@ -249,6 +277,7 @@ void commutator_decoder(uint8_t address){
 				_4_3();
 				setAttCommutator(0x1800, 0x1800);
 			}
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x1b:{
@@ -264,6 +293,7 @@ void commutator_decoder(uint8_t address){
 				_4_3();
 				setAttCommutator(0x1800, 0x1800);
 			}
+			setPaState(PA2.channel | PA3.channel);
 			break;
 		}
 		case 0x1c:{
@@ -279,6 +309,7 @@ void commutator_decoder(uint8_t address){
 				_4_3();
 				setAttCommutator(0x1800, 0x1800);
 			}
+			setPaState(PA3.channel);
 			break;
 		}
 		case 0x1d:{
@@ -287,6 +318,7 @@ void commutator_decoder(uint8_t address){
 			_1_3();
 			_2_1();
 			setAttCommutator(0, 0);
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x1e:{
@@ -295,6 +327,7 @@ void commutator_decoder(uint8_t address){
 			_1_3();
 			_2_2();
 			setAttCommutator(0, 0);
+			setPaState(PA2.channel | PA3.channel);
 			break;
 		}
 		case 0x1f:{
@@ -303,6 +336,7 @@ void commutator_decoder(uint8_t address){
 			_1_3();
 			_2_3();
 			setAttCommutator(0x0018, 0x0018);
+			setPaState(PA3.channel);
 			break;
 		}
 		case 0x20:{
@@ -311,6 +345,7 @@ void commutator_decoder(uint8_t address){
 			_1_3();
 			_4_3();
 			setAttCommutator(0x0018, 0x1800);
+			setPaState(PA3.channel);
 			break;
 		}
 		case 0x21:{
@@ -320,11 +355,13 @@ void commutator_decoder(uint8_t address){
 				_2_1();
 				_3_3();
 				setAttCommutator(0x0000, 0x0000);
+				setPaState(PA1.channel | PA3.channel);
 			}
 			else{
 				_2_3();
 				_3_3();
 				setAttCommutator(0x0000, 0x1818);
+				setPaState(PA3.channel);
 			}
 			break;
 		}
@@ -341,6 +378,7 @@ void commutator_decoder(uint8_t address){
 				_4_3();
 				setAttCommutator(0x1818, 0x1818);
 			}
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x23:{
@@ -356,6 +394,7 @@ void commutator_decoder(uint8_t address){
 				_4_3();
 				setAttCommutator(0x1818, 0x1818);
 			}
+			setPaState(PA2.channel | PA3.channel);
 			break;
 		}
 		case 0x24:{
@@ -371,6 +410,7 @@ void commutator_decoder(uint8_t address){
 				_4_3();
 				setAttCommutator(0x1800, 0x1800);
 			}
+			setPaState(PA1.channel | PA2.channel | PA3.channel);
 			break;
 		}
 		case 0x25:{
@@ -386,6 +426,7 @@ void commutator_decoder(uint8_t address){
 				_4_3();
 				setAttCommutator(0x1800, 0x1800);
 			}
+			setPaState(PA1.channel | PA2.channel | PA3.channel);
 			break;
 		}
 		case 0x26:{
@@ -394,6 +435,7 @@ void commutator_decoder(uint8_t address){
 			_1_1();
 			_3_3();
 			setAttCommutator(0x0000, 0x0000);
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x27:{
@@ -404,7 +446,8 @@ void commutator_decoder(uint8_t address){
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
 			}
-			else utils_sendAnswerDebug(DEBUG_CH, _COMM_ERR, 0, 0);
+			else commutator_decoder(0xff);
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x28:{
@@ -415,7 +458,8 @@ void commutator_decoder(uint8_t address){
 				_4_3();
 				setAttCommutator(0x0000, 0x0000);
 			}
-			else utils_sendAnswerDebug(DEBUG_CH, _COMM_ERR, 0, 0);
+			else commutator_decoder(0xff);
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x29:{
@@ -432,6 +476,7 @@ void commutator_decoder(uint8_t address){
 				_3_3();
 				setAttCommutator(0x1800, 0x0018);
 			}
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x2a:{
@@ -440,6 +485,7 @@ void commutator_decoder(uint8_t address){
 			_1_1();
 			_2_3();
 			setAttCommutator(0x0000, 0x0000);
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x2b:{
@@ -456,15 +502,22 @@ void commutator_decoder(uint8_t address){
 				_3_3();
 				setAttCommutator(0x1800, 0x0018);
 			}
+			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		
 		
 		case 0xff:{
 			utils_sendAnswerDebug(DEBUG_CH, _COMM_ERR, 0, 0);
+			validCommand = false;
 			break;
 		}
+		
+		default:{
+			validCommand = false;
+		}
 	}
+	return validCommand;
 }
 
 uint8_t table_1[] = {0x00, 0x01, 0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,/*09*/ 0x01, 0x01, 0x01, 0x01, 0x01,/*0e*/ 0x02, 0x02, 0x02, 0x02, 0x04,/*13*/ 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,/*1a*/ 0x01, 0x02, 0x00, 0x04, 0x04, 0x04,/*20*/ 0x04, 0x00, 0x01, 0x02, 0x01, 0x02,/*26*/ 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};

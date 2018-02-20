@@ -344,7 +344,7 @@ void command_exec(uint8_t command){
 			combination = searchCombination();
 			utils_sendAnswerDebug(DEBUG_CH, _COMBINATION, utils_hex8ToAscii16(combination), 2);
 			commutator_decoder(combination);
-			setPaState();
+			//setPaState();
 			
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%aa*", COMMAND.buffer, COMMAND.length);
 			break;
@@ -389,18 +389,20 @@ void command_exec(uint8_t command){
 		}
 	}
 }
-void setPaState(){
-	uint8_t temp = checkInChannelState();
+void setPaState(uint8_t temp){
+	//uint8_t temp = checkInChannelState();
 	paOn(&PA1, temp & 0x01);
 	paOn(&PA2, temp & 0x02);
 	paOn(&PA3, temp & 0x04);
 	paOn(&PA4, temp & 0x08);
 }
 void setChannReg(uint8_t inChannel, uint8_t paNum, uint8_t standart, uint8_t isPaOn){
-	if (paNum == 5 && inChannel == 3) paNum = 0x04;
-	else if (paNum == 5 && inChannel == 4) paNum = 0x04;
-	else if (paNum == 5 && inChannel == 1) paNum = 0x01;
-	else if (paNum == 5 && inChannel == 2) paNum = 0x01;
+	if (paNum == 5 && inChannel == 3) paNum = PA3.channel;
+	else if (paNum == 5 && inChannel == 4) paNum = PA3.channel;
+	else if (paNum == 5 && inChannel == 1) paNum = PA1.channel;
+	else if (paNum == 5 && inChannel == 2 && COMMUTATOR.ch_1 && !(COMMUTATOR.ch_3 || COMMUTATOR.ch_4)) paNum = PA3.channel;
+	else if (paNum == 5 && inChannel == 2 && !COMMUTATOR.ch_1 && !(COMMUTATOR.ch_3 || COMMUTATOR.ch_4)) paNum = PA1.channel;
+	else if (paNum == 5 && inChannel == 2 && COMMUTATOR.ch_1 && !(COMMUTATOR.ch_3 && COMMUTATOR.ch_4)) paNum = PA1.channel;
 	
 	if (isPaOn){
 		if (inChannel == 1) {
