@@ -127,7 +127,7 @@ void command_exec(uint8_t command){
 		}
 		case 0x13:{																													//pa4 out power adc
 			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_4, utils_hex16ToDecAscii32(ADC_PA_OUT_4.value), 4);
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%13*", utils_hex16ToAscii32(ADC_PA_OUT_4.value), 4);
+			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%13*", utils_hex16ToAscii32(ADC_PA_OUT_4.value), 4);
 			break;
 		}
 		case 0x14:{																													//all pa out power adc
@@ -138,8 +138,8 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case 0x15:{																													//read serial number of the device
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%15*", utils_hexArrayToAsciiArray(buffer_serialNum,4), 8);
-			utils_sendAnswer(DEBUG_CH,(uint8_t*)"\n%15*", utils_hexArrayToAsciiArray(buffer_serialNum,4), 8);
+			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%15*", utils_hexArrayToAsciiArray(buffer_serialNum,4), 8);
+			utils_sendAnswer(DEBUG_CH, (uint8_t*)"\n====", utils_hexArrayToAsciiArray(buffer_serialNum,4), 8);
 			break;
 		}
 		case 0x16:{																													//temp pa0

@@ -105,14 +105,6 @@ typedef struct{
 	uint8_t standart_ch_4;
 }commut_regs_t;
 
-/*
-typedef struct{
-uint8_t address;
-uint8_t ch_1;
-uint8_t ch_2;
-uint8_t ch_3;
-uint8_t ch_4;
-} chann_state_t;*/
 
 //ANALOG_INPUT_t ADC_DET_0, ADC_DET_1, ADC_DET_2, ADC_DET_3, ADC_DET_4, ADC_DET_5, ADC_DET_6, ADC_DET_7;
 ANALOG_INPUT_t ADC_PA_BW_1, ADC_PA_BW_2, ADC_PA_BW_3, ADC_PA_BW_4, ADC_PA_OUT_1, ADC_PA_OUT_2, ADC_PA_OUT_3, ADC_PA_OUT_4;
@@ -121,11 +113,12 @@ BUFF_t COMMAND, COMMAND_3d, COMMAND_21, COMMAND_e8;
 fifo_t FIFO_gpsCh, FIFO_recUART, FIFO_nmChRx, FIFO_nmChTx, FIFO_mainChTx, FIFO_mainChRx;
 transfer_t TRANSFER;
 commut_regs_t COMMUTATOR;
-//chann_state_t _STATE;
 
 typedef void (*fpProgMode)(void);
 fpProgMode fpProgModeVar;
 void mainMode();
 void sendMode();
 void offMode();
+
+
 #endif /* STRUCTURES_H_ */
