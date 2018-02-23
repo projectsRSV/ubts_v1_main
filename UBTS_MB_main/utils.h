@@ -46,7 +46,6 @@ typedef void (*fpPowerLed)(POWER_LEDS_t*);
 void utils_powerLedNormal(POWER_LEDS_t*);
 void utils_powerLedEmergencyBW(POWER_LEDS_t*);
 void utils_powerLedEmergencyOverPower(POWER_LEDS_t*);
-//extern const fpPowerLed powerLedPtrTable[] PROGMEM;
 extern fpPowerLed powerLedPtrTable[];
 
 

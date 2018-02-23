@@ -2,10 +2,10 @@
 
 const uint8_t _VERSION[] PROGMEM="\n%UBTSV_3U_H00S00*";
 const uint8_t _Tboard[] PROGMEM="\nTboard=";
-const uint8_t _Tpa0[] PROGMEM="\nTpa0=";
-const uint8_t _Tpa1[] PROGMEM="\nTpa1=";
-const uint8_t _Tpa2[] PROGMEM="\nTpa2=";
-const uint8_t _Tpa3[] PROGMEM="\nTpa3=";
+const uint8_t _Tpa1[] PROGMEM="\nTpa0=";
+const uint8_t _Tpa2[] PROGMEM="\nTpa1=";
+const uint8_t _Tpa3[] PROGMEM="\nTpa2=";
+const uint8_t _Tpa4[] PROGMEM="\nTpa3=";
 
 const uint8_t _1_1P[] PROGMEM="\n1_1";
 const uint8_t _1_2P[] PROGMEM="\n1_2";
@@ -27,22 +27,22 @@ const uint8_t _COMM_ERR[] PROGMEM="\nchannel error";
 const uint8_t _3_2100P[] PROGMEM="\n3_2100";
 const uint8_t _4_2100P[] PROGMEM="\n4_2100";
 
-const uint8_t _PA0_ADDR[] PROGMEM="\nPA0_address=";
-const uint8_t _PA1_ADDR[] PROGMEM="\nPA1_address=";
-const uint8_t _PA2_ADDR[] PROGMEM="\nPA2_address=";
-const uint8_t _PA3_ADDR[] PROGMEM="\nPA3_address=";
-const uint8_t _PA0_BAND[] PROGMEM="\nPA0_band=";
-const uint8_t _PA1_BAND[] PROGMEM="\nPA1_band=";
-const uint8_t _PA2_BAND[] PROGMEM="\nPA2_band=";
-const uint8_t _PA3_BAND[] PROGMEM="\nPA3_band=";
-const uint8_t _PA0_FANPIN[] PROGMEM="\nPA0_fanpin=";
-const uint8_t _PA1_FANPIN[] PROGMEM="\nPA1_fanpin=";
-const uint8_t _PA2_FANPIN[] PROGMEM="\nPA2_fanpin=";
-const uint8_t _PA3_FANPIN[] PROGMEM="\nPA3_fanpin=";
-const uint8_t _PA0_ISACTIVE[] PROGMEM="\nPA0_isactive=";
-const uint8_t _PA1_ISACTIVE[] PROGMEM="\nPA1_isactive=";
-const uint8_t _PA2_ISACTIVE[] PROGMEM="\nPA2_isactive=";
-const uint8_t _PA3_ISACTIVE[] PROGMEM="\nPA3_isactive=";
+const uint8_t _PA1_ADDR[] PROGMEM="\nPA0_address=";
+const uint8_t _PA2_ADDR[] PROGMEM="\nPA1_address=";
+const uint8_t _PA3_ADDR[] PROGMEM="\nPA2_address=";
+const uint8_t _PA4_ADDR[] PROGMEM="\nPA3_address=";
+const uint8_t _PA1_BAND[] PROGMEM="\nPA0_band=";
+const uint8_t _PA2_BAND[] PROGMEM="\nPA1_band=";
+const uint8_t _PA3_BAND[] PROGMEM="\nPA2_band=";
+const uint8_t _PA4_BAND[] PROGMEM="\nPA3_band=";
+const uint8_t _PA1_FANPIN[] PROGMEM="\nPA0_fanpin=";
+const uint8_t _PA2_FANPIN[] PROGMEM="\nPA1_fanpin=";
+const uint8_t _PA3_FANPIN[] PROGMEM="\nPA2_fanpin=";
+const uint8_t _PA4_FANPIN[] PROGMEM="\nPA3_fanpin=";
+const uint8_t _PA1_ISACTIVE[] PROGMEM="\nPA0_isactive=";
+const uint8_t _PA2_ISACTIVE[] PROGMEM="\nPA1_isactive=";
+const uint8_t _PA3_ISACTIVE[] PROGMEM="\nPA2_isactive=";
+const uint8_t _PA4_ISACTIVE[] PROGMEM="\nPA3_isactive=";
 
 const uint8_t _INA_VOLT[] PROGMEM="\nINA_VOLT=";
 const uint8_t _INA_CALIB[] PROGMEM="\nINA_CALIB=";

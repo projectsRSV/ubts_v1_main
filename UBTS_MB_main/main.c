@@ -56,7 +56,7 @@ int main(void) {
 	read_eeprom();
 	init_all();
 	fpProgModeVar = (fpProgMode)(fpProgModeTable[0]);			//choose when power off
-	blinkFuncPtr = (fpStatusLed)(blinkPtrTable[1]);				//speed of led blinking
+	blinkFuncPtr = (fpStatusLed)(blinkPtrTable[2]);				//speed of led blinking
 	fanLedFuncPtr = (fpFanLed)(lightPtrTable[0]);				//fan led light green
 	
 	spi_startAnime();
@@ -73,6 +73,7 @@ int main(void) {
 		fpProgModeVar();
 		fanLedFuncPtr();
 		
+		read_isrW5200();
 		read_mainCommand();
 		read_commandUART();
 		read_sendNMAnswer();
@@ -134,7 +135,7 @@ void sendMode(){
 	static uint16_t i;
 	static uint8_t k;
 	if (k != 5) {
-		if (i++ == 0x3fff) {
+		if (i++ == 0x1fff) {
 			//_delay_ms(5);
 			w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_IP_source_1);				//set destination ip for udp
 			utils_sendAnswer(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack

@@ -6,7 +6,7 @@ fpProgMode fpProgModeTable[] = {mainMode, sendMode, offMode};
 
 void ISR_init(void){
 	CCP = CCP_IOREG_gc;
-	PMIC.CTRL = PMIC_LOLVLEN_bm | PMIC_MEDLVLEN_bm;
+	PMIC.CTRL = PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm;
 }
 
 /***************interrupt vectors******************/
@@ -14,7 +14,7 @@ ISR(PORTF_INT0_vect){
 	uint8_t ch, interReg, socketInt;
 	uint8_t flags = utils_irqSave();
 	
-//blinkFuncPtr = (fpStatusLed)(blinkPtrTable[0]);				//speed of led blinking
+	//blinkFuncPtr = (fpStatusLed)(blinkPtrTable[0]);				//speed of led blinking
 
 	interReg = w5200_readInterChann() & 0x1f;
 	while(interReg){
@@ -28,24 +28,19 @@ ISR(PORTF_INT0_vect){
 			}
 			break;
 			case 0x04:{														//receive
-				if(ch == MAIN_CH || ch == DEBUG_CH) w5200_recvDataFifo(ch, &FIFO_mainChRx);
-				else if(ch == NM_CH) w5200_recvDataFifo(ch, &FIFO_nmChRx);
-				if (ch == UDP_CH){
-					w5200_recvDataFifo(ch, &FIFO_mainChRx);
-				}
 				w5200_writeByte(Sn_IR(ch), 0xff);
+				if(ch == NM_CH) ISR_W5200.nm = 1;
+				if(ch == MAIN_CH) ISR_W5200.main = 1;
+				if(ch == DEBUG_CH) ISR_W5200.debug = 1;
+				if (ch == UDP_CH) ISR_W5200.udp = 1; 
 				break;
 			}
 			default:{
+				w5200_writeByte(Sn_IR(ch),0xff);
 				if (socketInt & 0x01){
 					if(ch == MAIN_CH)	utils_sendAnswerDebug(MAIN_CH, _START, 0, 0);
 					if(ch == DEBUG_CH) utils_sendAnswerDebug(DEBUG_CH, _START, 0, 0);
-					
 				}
-				/*if (ch == UDP_CH){
-					utils_sendAnswerDebug(DEBUG_CH, _ERROR, 0, 0);
-				}*/
-				w5200_writeByte(Sn_IR(ch),0xff);
 				break;
 			}
 		}
@@ -86,7 +81,9 @@ ISR(USARTD0_DRE_vect){
 	if (FIFO_nmChRx.head != FIFO_nmChRx.tail){
 		USARTD0.DATA = FIFO_nmChRx.data[FIFO_nmChRx.tail++];
 		//FIFO_nmChRx.tail &= (BUFFER_SIZE-1);
-	}else USARTD0.CTRLA &= ~USART_DREINTLVL0_bm;
+		blinkFuncPtr = (fpStatusLed)(blinkPtrTable[0]);				//speed of led blinking
+	}
+	else USARTD0.CTRLA &= ~USART_DREINTLVL0_bm;
 	utils_irqRestore(flags);
 }
 ISR(USARTD0_RXC_vect){

@@ -96,7 +96,6 @@
 #define PA_ENABLE_4		3
 
 //**********************REGISTERS*******************
-//***********************debug**********************
 
 #define TX_SREG_SPI_1		PIN4_bm
 #define TX_SREG_SPI_2		PIN5_bm
@@ -130,13 +129,16 @@
 #define LED_FAN_RED			(1 << 7)
 
 //**************************************************
+
 #define MCU_ON_DCDC_RELAYS_VDC_IN		PORTK.OUTSET=PIN4_bm
 #define MCU_OFF_DCDC_RELAYS_VDC_IN		PORTK.OUTCLR=PIN4_bm
+
 //************************temperature***************************
+
 #define TEMP_SHUTDOWN			72
 #define TEMP_RED				67
-#define TEMP_YELLOW				48
-#define TEMP_GREEN				42
+#define TEMP_YELLOW				52
+#define TEMP_GREEN				48
 
 #endif /* DEFINES_H_ */
 

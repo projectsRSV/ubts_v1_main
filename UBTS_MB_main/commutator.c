@@ -100,16 +100,9 @@ bool commutator_decoder(uint8_t address){
 			_3_off();
 			_4_off();
 			_1_1();
-			if (PA1.band == PA3.band && PA3.isValid && PA1.isValid){
-				_2_3();
-				setAttCommutator(0x0000, 0x0000);
-				setPaState(PA1.channel | PA3.channel);
-			}
-			else{
-				_2_1();
-				setAttCommutator(0x0018, 0x0018);
-				setPaState(PA1.channel);
-			}
+			_2_1();
+			setAttCommutator(0x0018, 0x0018);
+			setPaState(PA1.channel);
 			break;
 		}
 		case 0x0b:{
@@ -176,7 +169,7 @@ bool commutator_decoder(uint8_t address){
 			break;
 		}
 		case 0x12:{
-			if(PA1.band == 0x01){
+			if(PA3.band == 0x01){
 				_2_off();
 				_1_3();
 				_3_2100();
@@ -351,18 +344,10 @@ bool commutator_decoder(uint8_t address){
 		case 0x21:{
 			_1_off();
 			_4_off();
-			if (PA1.band == PA3.band && PA3.isValid && PA1.isValid){
-				_2_1();
-				_3_3();
-				setAttCommutator(0x0000, 0x0000);
-				setPaState(PA1.channel | PA3.channel);
-			}
-			else{
-				_2_3();
-				_3_3();
-				setAttCommutator(0x0000, 0x1818);
-				setPaState(PA3.channel);
-			}
+			_2_3();
+			_3_3();
+			setAttCommutator(0x1800, 0x0018);
+			setPaState(PA3.channel);
 			break;
 		}
 		case 0x22:{
@@ -431,48 +416,34 @@ bool commutator_decoder(uint8_t address){
 		}
 		case 0x26:{
 			_4_off();
-			if (PA1.band == PA3.band && COMMUTATOR.standart_ch_1 == 'L' && COMMUTATOR.standart_ch_2 == 'L' && COMMUTATOR.standart_ch_3 == 'U' && PA1.isValid && PA3.isValid){
-				_1_1();
-				_2_1();
-				_3_3();
-				setAttCommutator(0x0018, 0x0018);
-			}
-			else {
-				_1_1();
-				_2_3();
-				_3_3();
-				setAttCommutator(0x1800, 0x0018);
-			}
+			_1_1();
+			_2_3();
+			_3_3();
+			setAttCommutator(0x1800, 0x0018);
 			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x27:{
-			if (PA1.band == 0x01 && PA3.band == 0x01 && PA1.isValid && PA3.isValid){
-				_2_off();
-				_1_1();
-				_3_2100();
-				_4_2100();
-				setAttCommutator(0x0000, 0x0000);
-			}
-			else commutator_decoder(0xff);
+			_3_off();
+			_4_off();
+			_1_1();
+			_2_3();
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x28:{
-			if (PA1.band == 0x01 && PA3.band == 0x01 && PA1.isValid && PA3.isValid){
-				_2_off();
-				_3_off();
-				_1_1();
-				_4_3();
-				setAttCommutator(0x0000, 0x0000);
-			}
-			else commutator_decoder(0xff);
-			setPaState(PA1.channel | PA3.channel);
+			_2_off();
+			_3_off();
+			_4_off();
+			_1_1();
+			setAttCommutator(0x0000, 0x0000);
+			setPaState(PA1.channel);
 			break;
 		}
 		case 0x29:{
 			_4_off();
-			if (PA1.band == PA3.band && COMMUTATOR.standart_ch_1 == 'L' && COMMUTATOR.standart_ch_2 == 'L' && COMMUTATOR.standart_ch_3 == 'U' && PA1.isValid && PA3.isValid){
+			if (COMMUTATOR.standart_ch_1 == 'L' && COMMUTATOR.standart_ch_2 == 'L' && COMMUTATOR.standart_ch_3 == 'U'){
 				_1_1();
 				_2_1();
 				_3_3();
@@ -488,12 +459,151 @@ bool commutator_decoder(uint8_t address){
 			break;
 		}
 		case 0x2a:{
+			if (PA1.band == 0x01 && PA3.band == 0x01 && PA1.isValid && PA3.isValid){
+				_2_off();
+				_4_off();
+				_1_1();
+				_3_3();
+				setAttCommutator(0x0000, 0x0000);
+			}
+			else commutator_decoder(0xff);
+			setPaState(PA1.channel | PA3.channel);
+			break;
+		}
+		case 0x2b:{
 			_3_off();
 			_4_off();
 			_1_1();
 			_2_3();
 			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel | PA3.channel);
+			break;
+		}
+		case 0x2c:{
+			_1_off();
+			_3_off();
+			_4_off();
+			_2_1();
+			setAttCommutator(0x0000, 0x0000);
+			setPaState(PA1.channel);
+			break;
+		}
+		case 0x2d:{
+			_1_off();
+			_4_off();
+			_2_1();
+			_3_3();
+			setAttCommutator(0x0000, 0x0000);
+			setPaState(PA1.channel | PA3.channel);
+			break;
+		}
+		case 0x2e:{
+			_1_off();
+			_2_off();
+			_4_off();
+			_3_3();
+			setAttCommutator(0x0000, 0x0000);
+			setPaState(PA3.channel);
+			break;
+		}
+		case 0x2f:{
+			_1_off();
+			_2_off();
+			_3_off();
+			_4_3();
+			setAttCommutator(0x0000, 0x0000);
+			setPaState(PA3.channel);
+			break;
+		}
+		case 0x30:{
+			_2_off();
+			_3_off();
+			_1_1();
+			_4_3();
+			setAttCommutator(0x0000, 0x0000);
+			setPaState(PA3.channel | PA1.channel);
+			break;
+		}
+		case 0x31:{
+			_3_off();
+			_1_1();
+			_2_1();
+			_4_3();
+			setAttCommutator(0x0018, 0x0018);
+			setPaState(PA3.channel | PA1.channel);
+			break;
+		}
+		case 0x32:{
+			_2_off();
+			_1_1();
+			if (PA3.band == 0x01){
+				_3_2100();
+				_4_2100();
+				setAttCommutator(0x0000, 0x0000);
+			}
+			else{
+				_3_3();
+				_4_3();
+				setAttCommutator(0x1800, 0x1800);
+			}
+			setPaState(PA3.channel | PA1.channel);
+			break;
+		}
+		case 0x33:{
+			_1_off();
+			_2_off();
+			if (PA3.band == 0x01){
+				_3_2100();
+				_4_2100();
+				setAttCommutator(0x0000, 0x0000);
+			}
+			else{
+				_3_3();
+				_4_3();
+				setAttCommutator(0x1800, 0x1800);
+			}
+			setPaState(PA3.channel);
+			break;
+		}
+		case 0x34:{
+			_1_off();
+			_3_off();
+			_2_1();
+			_4_3();
+			setAttCommutator(0x0000, 0x0000);
+			setPaState(PA3.channel | PA1.channel);
+			break;
+		}
+		case 0x35:{
+			_1_1();
+			_2_1();
+			if (PA3.band == 0x01){
+				_3_2100();
+				_4_2100();
+				setAttCommutator(0x0018, 0x0018);
+			}
+			else{
+				_3_3();
+				_4_3();
+				setAttCommutator(0x1818, 0x1818);
+			}
+			setPaState(PA3.channel | PA1.channel);
+			break;
+		}
+		case 0x36:{
+			_1_off();
+			_2_1();
+			if (PA3.band == 0x01){
+				_3_2100();
+				_4_2100();
+				setAttCommutator(0x0000, 0x0000);
+			}
+			else{
+				_3_3();
+				_4_3();
+				setAttCommutator(0x1800, 0x1800);
+			}
+			setPaState(PA3.channel | PA1.channel);
 			break;
 		}
 		
@@ -504,24 +614,25 @@ bool commutator_decoder(uint8_t address){
 			validCommand = false;
 			break;
 		}
-		
 		default:{
+			utils_sendAnswerDebug(DEBUG_CH, 0, 0, 0);
 			validCommand = false;
+			break;
 		}
 	}
 	return validCommand;
 }
 
-uint8_t table_1[] = {0x00, 0x01, 0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,/*09*/ 0x01, 0x01, 0x01, 0x01, 0x01,/*0e*/ 0x02, 0x02, 0x02, 0x02, 0x04,/*13*/ 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,/*1a*/ 0x01, 0x02, 0x00, 0x04, 0x04, 0x04,/*20*/ 0x04, 0x00, 0x01, 0x02, 0x01, 0x02,/*26*/ 0x01, 0x01, 0x01, 0x01, 0x01};
+uint8_t table_1[] = {0x00, 0x01, 0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,/*09*/ 0x01, 0x01, 0x01, 0x01, 0x01,/*0e*/ 0x02, 0x02, 0x02, 0x02, 0x04,/*13*/ 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,/*1a*/ 0x01, 0x02, 0x00, 0x04, 0x04, 0x04,/*20*/ 0x04, 0x00, 0x01, 0x02, 0x01, 0x02,/*26*/ 0x01, 0x01, 0x05, 0x05, 0x05,/*2b*/ 0x05, 0x00, 0x00, 0x00, 0x00,/*30*/ 0x05, 0x05, 0x05, 0x00, 0x00, 0x05, 0x00};
 
 
-uint8_t table_2[] = {0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x04, 0x00, 0x00,/*09*/ 0x01, 0x01, 0x00, 0x00, 0x02,/*0e*/ 0x01, 0x04, 0x00, 0x00, 0x00,/*13*/ 0x02, 0x01, 0x01, 0x02, 0x02, 0x02, 0x01,/*1a*/ 0x00, 0x00, 0x00, 0x01, 0x02, 0x04,/*20*/ 0x00, 0x04, 0x01, 0x02, 0x02, 0x01,/*26*/ 0x04, 0x00, 0x00, 0x01, 0x04};
+uint8_t table_2[] = {0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x04, 0x00, 0x00,/*09*/ 0x01, 0x01, 0x00, 0x00, 0x02,/*0e*/ 0x01, 0x04, 0x00, 0x00, 0x00,/*13*/ 0x02, 0x01, 0x01, 0x02, 0x02, 0x02, 0x01,/*1a*/ 0x00, 0x00, 0x00, 0x01, 0x02, 0x04,/*20*/ 0x00, 0x04, 0x01, 0x02, 0x02, 0x01,/*26*/ 0x04, 0x04, 0x00, 0x05, 0x00,/*2b*/ 0x05, 0x05, 0x05, 0x00, 0x00,/*30*/ 0x00, 0x05, 0x00, 0x00, 0x05, 0x05, 0x05};
 
 
-uint8_t table_3[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00,/*09*/ 0x04, 0x00, 0x04, 0x00, 0x00,/*0e*/ 0x00, 0x00, 0x04, 0x00, 0x04,/*13*/ 0x00, 0x04, 0x00, 0x04, 0x00, 0x04, 0x04,/*1a*/ 0x04, 0x04, 0x04, 0x00, 0x00, 0x00,/*20*/ 0x00, 0x04, 0x04, 0x04, 0x04, 0x04,/*26*/ 0x04, 0x01, 0x00, 0x01, 0x00};
+uint8_t table_3[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00,/*09*/ 0x04, 0x00, 0x04, 0x00, 0x00,/*0e*/ 0x00, 0x00, 0x04, 0x00, 0x04,/*13*/ 0x00, 0x04, 0x00, 0x04, 0x00, 0x04, 0x04,/*1a*/ 0x04, 0x04, 0x04, 0x00, 0x00, 0x00,/*20*/ 0x00, 0x04, 0x04, 0x04, 0x04, 0x04,/*26*/ 0x04, 0x00, 0x00, 0x05, 0x05,/*2b*/ 0x00, 0x00, 0x05, 0x05, 0x00,/*30*/ 0x00, 0x00, 0x05, 0x05, 0x00, 0x05, 0x05};
 
 
-uint8_t table_4[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04,/*09*/ 0x00, 0x00, 0x00, 0x04, 0x00,/*0e*/ 0x00, 0x00, 0x00, 0x04, 0x04,/*13*/ 0x00, 0x00, 0x04, 0x00, 0x04, 0x04, 0x04,/*1a*/ 0x04, 0x04, 0x04, 0x00, 0x00, 0x00,/*20*/ 0x04, 0x00, 0x04, 0x04, 0x04, 0x04,/*26*/ 0x00, 0x01, 0x01, 0x00, 0x00};
+uint8_t table_4[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04,/*09*/ 0x00, 0x00, 0x00, 0x04, 0x00,/*0e*/ 0x00, 0x00, 0x00, 0x04, 0x04,/*13*/ 0x00, 0x00, 0x04, 0x00, 0x04, 0x04, 0x04,/*1a*/ 0x04, 0x04, 0x04, 0x00, 0x00, 0x00,/*20*/ 0x04, 0x00, 0x04, 0x04, 0x04, 0x04,/*26*/ 0x00, 0x00, 0x00, 0x00, 0x00,/*2b*/ 0x00, 0x00, 0x00, 0x00, 0x05,/*30*/ 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05};
 
 uint8_t searchCombination(){
 	volatile  uint8_t size = sizeof(table_1);
@@ -972,7 +1083,7 @@ void _4_off(){
 	if (!checkInChannelState()) {
 		COMMUTATOR.sreg3_state_tx &= ~0b00001111;
 	}
-	spi_setReg(&SPID, &PORTF, COMMUTATOR.sreg1_state_tx, TX_SREG_SPI_1);	
+	spi_setReg(&SPID, &PORTF, COMMUTATOR.sreg1_state_tx, TX_SREG_SPI_1);
 	spi_setReg(&SPID, &PORTF, COMMUTATOR.sreg2_state_tx, TX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTF, COMMUTATOR.sreg3_state_tx, TX_SREG_SPI_3);
 	//******************************************************************
@@ -990,6 +1101,7 @@ void _4_off(){
 	utils_sendAnswerDebug(DEBUG_CH, _4_OFF, 0, 0);
 }
 void setAttCommutator(uint16_t value4, uint16_t value5){										//value4 = 0xTTee - TT-ch3, ee-ch1; value5 = 0xYYuu   YY-ch4, uu-ch2
+	
 	spi_setRegDouble(&SPID, &PORTF, COMMUTATOR.sreg4_state_att + value4, ST_SREG_SPI_4);
 	spi_setRegDouble(&SPID, &PORTK, COMMUTATOR.sreg5_state_att + value5, ST_SREG_SPI_5);
 	utils_sendAnswer(DEBUG_CH, (uint8_t*)"\ns4= ", utils_hex16ToAscii32((COMMUTATOR.sreg4_state_att + value4) >> 1), 4);

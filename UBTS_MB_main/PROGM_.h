@@ -6,10 +6,10 @@
 
 extern const uint8_t _VERSION[] PROGMEM;
 extern const uint8_t _Tboard[] PROGMEM;
-extern const uint8_t _Tpa0[] PROGMEM;
 extern const uint8_t _Tpa1[] PROGMEM;
 extern const uint8_t _Tpa2[] PROGMEM;
 extern const uint8_t _Tpa3[] PROGMEM;
+extern const uint8_t _Tpa4[] PROGMEM;
 
 extern const uint8_t _1_1P[] PROGMEM;
 extern const uint8_t _1_2P[] PROGMEM;
@@ -31,22 +31,22 @@ extern const uint8_t _COMM_ERR[] PROGMEM;
 extern const uint8_t _3_2100P[] PROGMEM;
 extern const uint8_t _4_2100P[] PROGMEM;
 
-extern const uint8_t _PA0_ADDR[] PROGMEM;
 extern const uint8_t _PA1_ADDR[] PROGMEM;
 extern const uint8_t _PA2_ADDR[] PROGMEM;
 extern const uint8_t _PA3_ADDR[] PROGMEM;
-extern const uint8_t _PA0_BAND[] PROGMEM;
+extern const uint8_t _PA4_ADDR[] PROGMEM;
 extern const uint8_t _PA1_BAND[] PROGMEM;
 extern const uint8_t _PA2_BAND[] PROGMEM;
 extern const uint8_t _PA3_BAND[] PROGMEM;
-extern const uint8_t _PA0_FANPIN[] PROGMEM;
+extern const uint8_t _PA4_BAND[] PROGMEM;
 extern const uint8_t _PA1_FANPIN[] PROGMEM;
 extern const uint8_t _PA2_FANPIN[] PROGMEM;
 extern const uint8_t _PA3_FANPIN[] PROGMEM;
-extern const uint8_t _PA0_ISACTIVE[] PROGMEM;
+extern const uint8_t _PA4_FANPIN[] PROGMEM;
 extern const uint8_t _PA1_ISACTIVE[] PROGMEM;
 extern const uint8_t _PA2_ISACTIVE[] PROGMEM;
 extern const uint8_t _PA3_ISACTIVE[] PROGMEM;
+extern const uint8_t _PA4_ISACTIVE[] PROGMEM;
 
 extern const uint8_t _INA_VOLT[] PROGMEM;
 extern const uint8_t _INA_VOLT[] PROGMEM;

@@ -27,7 +27,7 @@ void read_eeprom();
 void read_writeEEPROMBuff(uint16_t addr, uint8_t* buff, uint8_t length);
 void read_writeEEPROMByte(uint16_t addr, uint8_t byte);
 void read_commandUART();
-
+void read_isrW5200();
 
 
 #endif /* READS_H_ */

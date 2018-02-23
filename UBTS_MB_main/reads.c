@@ -26,7 +26,24 @@ void read_adc() {
 		i=0;
 	}
 }
-
+void read_isrW5200() {
+	if (ISR_W5200.nm) {
+		w5200_recvDataFifo(NM_CH, &FIFO_nmChRx);
+		ISR_W5200.nm = 0;
+	}
+	if (ISR_W5200.main) {
+		w5200_recvDataFifo(MAIN_CH, &FIFO_mainChRx);
+		ISR_W5200.main = 0;
+	}
+	if (ISR_W5200.debug) {
+		w5200_recvDataFifo(DEBUG_CH, &FIFO_mainChRx);
+		ISR_W5200.debug = 0;
+	}
+	if (ISR_W5200.udp) {
+		w5200_recvDataFifo(UDP_CH, &FIFO_mainChRx);
+		ISR_W5200.udp = 0;
+	}
+}
 void read_gps() {
 	static uint16_t i=0;
 	if (i++ == 0x07ff) {
@@ -37,12 +54,12 @@ void read_gps() {
 	}
 }
 void read_sendNMCommand() {
-	//static uint8_t i=0;
-	//if (i++ == 0x01) {
-	if (!utils_isFifoEmpty(&FIFO_nmChRx)) {
-		USARTD0.CTRLA |= USART_DREINTLVL0_bm;
-		//}
-		//i=0;
+	static uint8_t i=0;
+	if (i++ == 0xff) {
+		if (!utils_isFifoEmpty(&FIFO_nmChRx)) {
+			USARTD0.CTRLA |= USART_DREINTLVL0_bm;
+		}
+		i=0;
 	}
 }
 void read_sendNMAnswer() {
@@ -57,7 +74,7 @@ void read_sendNMAnswer() {
 }
 void read_mainCommand() {
 	static uint8_t i=0;
-	if (i++ == 0x07) {
+	if (i++ == 0x7f) {
 		if (!utils_isFifoEmpty(&FIFO_mainChRx)) {
 			command_exec(commands_decoder(&FIFO_mainChRx));
 		}

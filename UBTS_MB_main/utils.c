@@ -11,28 +11,23 @@ void utils_sendAnswerDebug(uint8_t ch, const uint8_t *wordPGM, uint8_t *buff, ui
 	w5200_sendDataPGM(ch,wordPGM);
 	for (uint8_t i=0; i<length; i++){
 		FIFO_mainChTx.data[FIFO_mainChTx.head++] = buff[i];
-		//FIFO_mainChTx.head &= BUFFER_SIZE-1;
 	}
 	if(length) w5200_sendDataFifo(ch,&FIFO_mainChTx);
 }
 void utils_sendAnswer(uint8_t ch,uint8_t *word, uint8_t *buff, uint8_t length){
 	for (uint8_t i=0; i<4; i++){
 		FIFO_mainChTx.data[FIFO_mainChTx.head++] = word[i];
-		//FIFO_mainChTx.head &= BUFFER_SIZE-1;
 	}
 	for (uint8_t i=0; i<length; i++){
 		FIFO_mainChTx.data[FIFO_mainChTx.head++] = buff[i];
-		//FIFO_mainChTx.head &= BUFFER_SIZE-1;
 	}
 	FIFO_mainChTx.data[FIFO_mainChTx.head++] = word[4];
-	//FIFO_mainChTx.head &= BUFFER_SIZE-1;
 	w5200_sendDataFifo(ch,&FIFO_mainChTx);
 }
 uint8_t* utils_hex8ToDecAscii16(uint8_t hex){
 	uint8_t a=0,b=0,c=0;
 	static uint8_t pdec[2];
 	while (hex>=100) {hex -= 100;a++;}
-	//*pdec++=a+0x30;
 	while (hex>=10) {hex -= 10;b++;}
 	pdec[0]=b+0x30;
 	while (hex>=1) {hex -= 1;c++;}
@@ -50,7 +45,6 @@ uint8_t* utils_hex2ArrayToDecAscii4Array(uint8_t* hex){
 	while (temp >= 10000) {temp -= 10000;}
 	while (temp >= 1000) {temp -= 1000; a++;}
 	pdec[0] = a + 0x30;
-	//*pdec++=a+0x30;
 	while (temp >= 100) {temp -= 100 ; b++;}
 	pdec[1] = b + 0x30;
 	while (temp >= 10) {temp -= 10; c++;}
@@ -64,7 +58,6 @@ uint8_t* utils_hex16ToDecAscii32(uint16_t hex){
 	uint8_t a=0,b=0,c=0,d=0,e=0;
 	static uint8_t pdec[4];
 	while (hex>=10000) {hex -= 10000;a++;}
-	//*pdec++=a+0x30;
 	while (hex>=1000) {hex -= 1000;b++;}
 	pdec[0]=b+0x30;
 	while (hex>=100) {hex -= 100;c++;}
@@ -149,7 +142,6 @@ void utils_fastBlink(){
 	static uint16_t i=0;
 	if (i++ == 0x03ff){
 		TGL_RED_LED_left;
-		//TGL_RED_LED_right;
 		i=0;
 	}
 }
@@ -157,7 +149,6 @@ void utils_middleBlink(){
 	static uint16_t i=0;
 	if (i++ == 0x07ff){
 		TGL_RED_LED_left;
-		//TGL_RED_LED_right;
 		i=0;
 	}
 }
@@ -165,7 +156,6 @@ void utils_slowBlink(){
 	static uint16_t i=0;
 	if (i++ == 0x0fff){
 		TGL_RED_LED_left;
-		//TGL_RED_LED_right;
 		i=0;
 	}
 }
@@ -192,10 +182,7 @@ void utils_powerLedNormal(POWER_LEDS_t* ledStruct){
 	}
 }
 void paOffAll(){
-	paOn(&PA1, false);
-	paOn(&PA2, false);
-	paOn(&PA3, false);
-	paOn(&PA4, false);
+	setPaState(0x00);
 	PA1.isValid = 0; PA2.isValid = 0; PA3.isValid = 0; PA4.isValid = 0;
 }
 void utils_powerLedEmergencyBW(POWER_LEDS_t* ledStruct){
@@ -231,13 +218,11 @@ uint8_t utils_returnOrderedNum(uint8_t* interReg){
 	return count;
 }
 void utils_avgValue(ANALOG_INPUT_t* filter, uint16_t newValue){
-	//newValue -= 190;
 	filter->sum = filter->sum - filter->buff[filter->pos] + newValue;
 	filter->value = filter->sum / FILTER_SAMPLES;
 	filter->buff[filter->pos] = newValue;
 	filter->pos++;
 	filter->pos &= (FILTER_SAMPLES - 1);
-	//filter->value = newValue;
 }
 void utils_greenLight(){
 	spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = LED_FAN_GREEN, MCU_SREG_LED_FAN);

@@ -78,7 +78,7 @@ void startDCs(){
 	spi_setReg(&SPIC, &PORTK, REGISTERS.nmGpsWifiPpsState, MCU_SREG_NM_GPS);			//
 	spi_setReg(&SPIC, &PORTQ, REGISTERS.resetWifiGpsNmState, MCU_SREG_Reset);			//reset wifi,nm,gps
 	
-	volatile uint8_t temp = findDuplicate();
+	//volatile uint8_t temp = findDuplicate();
 	command_exec(0x70);						//holding power on
 	commutator_decoder(0x00);				//set default commutator
 }

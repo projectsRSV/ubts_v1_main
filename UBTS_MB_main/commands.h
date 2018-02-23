@@ -27,7 +27,7 @@ void wifiOn(bool isOn);
 void setRegisters(uint8_t channel);
 void setPaState(uint8_t paNumOn);
 uint8_t getPaNum(uint8_t band);
-void setChannReg(uint8_t inChannel, uint8_t paNum, uint8_t standart, uint8_t isOn);
+void setChInCommutator(uint8_t inChannel, uint8_t paNum, uint8_t standart, uint8_t isOn);
 
 
 #endif /* COMMANDS_H_ */

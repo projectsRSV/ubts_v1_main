@@ -144,22 +144,22 @@ void command_exec(uint8_t command){
 		}
 		case 0x16:{																													//temp pa0
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%16*", utils_hexArrayToAsciiArray(PA1.temperBuff, 2), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _Tpa0, utils_hex8ToDecAscii16(PA1.temperBuff[0]), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _Tpa1, utils_hex8ToDecAscii16(PA1.temperBuff[0]), 2);
 			break;
 		}
 		case 0x17:{																													//temp pa1
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%17*", utils_hexArrayToAsciiArray(PA2.temperBuff, 2), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _Tpa1, utils_hex8ToDecAscii16(PA2.temperBuff[0]), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _Tpa2, utils_hex8ToDecAscii16(PA2.temperBuff[0]), 2);
 			break;
 		}
 		case 0x18:{																													//temp pa2
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%18*", utils_hexArrayToAsciiArray(PA3.temperBuff, 2), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _Tpa2, utils_hex8ToDecAscii16(PA3.temperBuff[0]), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _Tpa3, utils_hex8ToDecAscii16(PA3.temperBuff[0]), 2);
 			break;
 		}
 		case 0x19:{																													//temp pa3
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%19*", utils_hexArrayToAsciiArray(PA4.temperBuff, 2), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _Tpa3, utils_hex8ToDecAscii16(PA4.temperBuff[0]), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _Tpa4, utils_hex8ToDecAscii16(PA4.temperBuff[0]), 2);
 			break;
 		}
 		case 0x1a:{																													//temp all
@@ -289,11 +289,11 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case 0x72:{																											//go to offMode function
-			fpProgModeVar = (fpProgMode)fpProgModeTable[2];					
+			fpProgModeVar = (fpProgMode)fpProgModeTable[2];
 			break;
 		}
 		case 0x73:{																											//go to sendMode function instead dc-dc off
-			fpProgModeVar = (fpProgMode)fpProgModeTable[1];					
+			fpProgModeVar = (fpProgMode)fpProgModeTable[1];
 			break;
 		}
 		//********************************************************************************************************
@@ -302,31 +302,31 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case 0x77:{																									//read all PA info
-			utils_sendAnswerDebug(DEBUG_CH, _PA0_ADDR, utils_hex8ToAscii16(PA1.addrTWI), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA0_BAND, utils_hex8ToAscii16(PA1.band), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA0_FANPIN, utils_hex8ToAscii16(PA1.fanPin), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA0_ISACTIVE, utils_hex8ToAscii16(PA1.isValid), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA1_ADDR, utils_hex8ToAscii16(PA1.addrTWI), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA1_BAND, utils_hex8ToAscii16(PA1.band), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA1_FANPIN, utils_hex8ToAscii16(PA1.fanPin), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA1_ISACTIVE, utils_hex8ToAscii16(PA1.isValid), 2);
 			break;
 		}
 		case 0x78:{																									//read all PA info
-			utils_sendAnswerDebug(DEBUG_CH, _PA1_ADDR, utils_hex8ToAscii16(PA2.addrTWI), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA1_BAND, utils_hex8ToAscii16(PA2.band), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA1_FANPIN, utils_hex8ToAscii16(PA2.fanPin), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA1_ISACTIVE, utils_hex8ToAscii16(PA2.isValid), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA2_ADDR, utils_hex8ToAscii16(PA2.addrTWI), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA2_BAND, utils_hex8ToAscii16(PA2.band), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA2_FANPIN, utils_hex8ToAscii16(PA2.fanPin), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA2_ISACTIVE, utils_hex8ToAscii16(PA2.isValid), 2);
 			break;
 		}
 		case 0x79:{																									//read all PA info
-			utils_sendAnswerDebug(DEBUG_CH, _PA2_ADDR, utils_hex8ToAscii16(PA3.addrTWI), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA2_BAND, utils_hex8ToAscii16(PA3.band), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA2_FANPIN, utils_hex8ToAscii16(PA3.fanPin), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA2_ISACTIVE, utils_hex8ToAscii16(PA3.isValid), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA3_ADDR, utils_hex8ToAscii16(PA3.addrTWI), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA3_BAND, utils_hex8ToAscii16(PA3.band), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA3_FANPIN, utils_hex8ToAscii16(PA3.fanPin), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA3_ISACTIVE, utils_hex8ToAscii16(PA3.isValid), 2);
 			break;
 		}
 		case 0x7a:{																									//read all PA info
-			utils_sendAnswerDebug(DEBUG_CH, _PA3_ADDR, utils_hex8ToAscii16(PA4.addrTWI), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA3_BAND, utils_hex8ToAscii16(PA4.band), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA3_FANPIN, utils_hex8ToAscii16(PA4.fanPin), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA3_ISACTIVE, utils_hex8ToAscii16(PA4.isValid), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA4_ADDR, utils_hex8ToAscii16(PA4.addrTWI), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA4_BAND, utils_hex8ToAscii16(PA4.band), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA4_FANPIN, utils_hex8ToAscii16(PA4.fanPin), 2);
+			utils_sendAnswerDebug(DEBUG_CH, _PA4_ISACTIVE, utils_hex8ToAscii16(PA4.isValid), 2);
 			break;
 		}
 		//********************************************************************************************************
@@ -340,12 +340,11 @@ void command_exec(uint8_t command){
 			if (standart == 'L') pArrOfLedsvalGlobal = lteOneArrLeds;
 			else if (standart == 'U') pArrOfLedsvalGlobal = umtsOneArrLeds;
 			
-			setChannReg(inChannel, getPaNum(band), standart, isPaOn);
+			setChInCommutator(inChannel, getPaNum(band), standart, isPaOn);
 			combination = searchCombination();
-			utils_sendAnswerDebug(DEBUG_CH, _COMBINATION, utils_hex8ToAscii16(combination), 2);
 			commutator_decoder(combination);
-			//setPaState();
 			
+			utils_sendAnswerDebug(DEBUG_CH, _COMBINATION, utils_hex8ToAscii16(combination), 2);
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%aa*", COMMAND.buffer, COMMAND.length);
 			break;
 		}
@@ -371,7 +370,6 @@ void command_exec(uint8_t command){
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%fe*", 0, 0);
 			utils_sendAnswerDebug(DEBUG_CH, _JMP_BOOTLOADER, 0, 0);
 			_delay_ms(500);
-			//cli();
 			pBootloader=(void(*)())BOOT_SECTION;
 			EIND = 1;
 			pBootloader();
@@ -381,64 +379,30 @@ void command_exec(uint8_t command){
 			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%ff*", 0, 0);
 			utils_sendAnswerDebug(DEBUG_CH, _MCU_REBOOT, 0, 0);
 			_delay_ms(500);
-			//cli();
 			pBootloader=(void(*)())RESET_SECTION;
-			//EIND = 0;
+			EIND = 0;
 			pBootloader();
 			break;
 		}
 	}
 }
-void setPaState(uint8_t temp){
-	//uint8_t temp = checkInChannelState();
-	paOn(&PA1, temp & 0x01);
-	paOn(&PA2, temp & 0x02);
-	paOn(&PA3, temp & 0x04);
-	paOn(&PA4, temp & 0x08);
-}
-void setChannReg(uint8_t inChannel, uint8_t paNum, uint8_t standart, uint8_t isPaOn){
-	if (paNum == 5 && inChannel == 3) paNum = PA3.channel;
-	else if (paNum == 5 && inChannel == 4) paNum = PA3.channel;
-	else if (paNum == 5 && inChannel == 1) paNum = PA1.channel;
-	else if (paNum == 5 && inChannel == 2 && COMMUTATOR.ch_1 && !(COMMUTATOR.ch_3 || COMMUTATOR.ch_4)) paNum = PA3.channel;
-	else if (paNum == 5 && inChannel == 2 && !COMMUTATOR.ch_1 && !(COMMUTATOR.ch_3 || COMMUTATOR.ch_4)) paNum = PA1.channel;
-	else if (paNum == 5 && inChannel == 2 && COMMUTATOR.ch_1 && !(COMMUTATOR.ch_3 && COMMUTATOR.ch_4)) paNum = PA1.channel;
-	
-	if (isPaOn){
-		if (inChannel == 1) {
-			COMMUTATOR.ch_1 = paNum;
-			COMMUTATOR.standart_ch_1 = standart;
-		}
-		else if (inChannel == 2) {
-			COMMUTATOR.ch_2 = paNum;
-			COMMUTATOR.standart_ch_2 = standart;
-		}
-		else if (inChannel == 3) {
-			COMMUTATOR.ch_3 = paNum;
-			COMMUTATOR.standart_ch_3 = standart;
-		}
-		else if (inChannel == 4) {
-			COMMUTATOR.ch_4 = paNum;
-			COMMUTATOR.standart_ch_4 = standart;
-		}
+void setChInCommutator(uint8_t inChannel, uint8_t paNum, uint8_t standart, uint8_t isPaOn){
+	uint8_t temp = (isPaOn == 1) ? paNum : 0;
+	if (inChannel == 1) {
+		COMMUTATOR.ch_1 = temp;
+		COMMUTATOR.standart_ch_1 = standart;
 	}
-	else{
-		if (inChannel == 1) {
-			COMMUTATOR.ch_1 = 0;
-			COMMUTATOR.standart_ch_1 = 0;
-		}
-		else if (inChannel == 2) {
-			COMMUTATOR.ch_2 = 0;
-			COMMUTATOR.standart_ch_2 = 0;
-		}
-		else if (inChannel == 3) {
-			COMMUTATOR.ch_3 = 0;
-			COMMUTATOR.standart_ch_3 = 0;
-		}
-		else if (inChannel == 4) {
-			COMMUTATOR.ch_4 = 0;
-			COMMUTATOR.standart_ch_4 = 0;
-		}
+	else if (inChannel == 2) {
+		COMMUTATOR.ch_2 = temp;
+		COMMUTATOR.standart_ch_2 = standart;
+	}
+	else if (inChannel == 3) {
+		COMMUTATOR.ch_3 = temp;
+		COMMUTATOR.standart_ch_3 = standart;
+	}
+	else if (inChannel == 4) {
+		COMMUTATOR.ch_4 = temp;
+		COMMUTATOR.standart_ch_4 = standart;
 	}
 }
 uint8_t getPaNum(uint8_t band){
@@ -456,6 +420,12 @@ uint8_t getPaNum(uint8_t band){
 		temp |= PA4.channel;
 	}
 	return temp;
+}
+void setPaState(uint8_t temp){
+	paOn(&PA1, temp & 0x01);
+	paOn(&PA2, temp & 0x02);
+	paOn(&PA3, temp & 0x04);
+	paOn(&PA4, temp & 0x08);
 }
 void paOn(twi_device_t* pPa, bool isOn){
 	if (isOn && pPa->isValid)	{
@@ -557,10 +527,10 @@ void tunePa(){
 				eeprI2c = I2C_PA0_EEPR;
 				eeprBand = BAND_PA0_EEPR;
 				eeprValid = VALID_PA0_EEPR;
-				pADDR = (uint8_t *)_PA0_ADDR;
-				pBAND = (uint8_t *)_PA0_BAND;
-				pFANPIN = (uint8_t *)_PA0_FANPIN;
-				pISACTIVE = (uint8_t *)_PA0_ISACTIVE;
+				pADDR = (uint8_t *)_PA1_ADDR;
+				pBAND = (uint8_t *)_PA1_BAND;
+				pFANPIN = (uint8_t *)_PA1_FANPIN;
+				pISACTIVE = (uint8_t *)_PA1_ISACTIVE;
 				break;
 			}
 			case 1:{
@@ -568,10 +538,10 @@ void tunePa(){
 				eeprI2c = I2C_PA1_EEPR;
 				eeprBand = BAND_PA1_EEPR;
 				eeprValid = VALID_PA1_EEPR;
-				pADDR = (uint8_t *)_PA1_ADDR;
-				pBAND = (uint8_t *)_PA1_BAND;
-				pFANPIN = (uint8_t *)_PA1_FANPIN;
-				pISACTIVE = (uint8_t *)_PA1_ISACTIVE;
+				pADDR = (uint8_t *)_PA2_ADDR;
+				pBAND = (uint8_t *)_PA2_BAND;
+				pFANPIN = (uint8_t *)_PA2_FANPIN;
+				pISACTIVE = (uint8_t *)_PA2_ISACTIVE;
 				break;
 			}
 			case 2:{
@@ -579,10 +549,10 @@ void tunePa(){
 				eeprI2c = I2C_PA2_EEPR;
 				eeprBand = BAND_PA2_EEPR;
 				eeprValid = VALID_PA2_EEPR;
-				pADDR = (uint8_t *)_PA2_ADDR;
-				pBAND = (uint8_t *)_PA2_BAND;
-				pFANPIN = (uint8_t *)_PA2_FANPIN;
-				pISACTIVE = (uint8_t *)_PA2_ISACTIVE;
+				pADDR = (uint8_t *)_PA3_ADDR;
+				pBAND = (uint8_t *)_PA3_BAND;
+				pFANPIN = (uint8_t *)_PA3_FANPIN;
+				pISACTIVE = (uint8_t *)_PA3_ISACTIVE;
 				break;
 			}
 			case 3:{
@@ -590,10 +560,10 @@ void tunePa(){
 				eeprI2c = I2C_PA3_EEPR;
 				eeprBand = BAND_PA3_EEPR;
 				eeprValid = VALID_PA3_EEPR;
-				pADDR = (uint8_t *)_PA3_ADDR;
-				pBAND = (uint8_t *)_PA3_BAND;
-				pFANPIN = (uint8_t *)_PA3_FANPIN;
-				pISACTIVE = (uint8_t *)_PA3_ISACTIVE;
+				pADDR = (uint8_t *)_PA4_ADDR;
+				pBAND = (uint8_t *)_PA4_BAND;
+				pFANPIN = (uint8_t *)_PA4_FANPIN;
+				pISACTIVE = (uint8_t *)_PA4_ISACTIVE;
 				break;
 			}
 			default: {
