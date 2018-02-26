@@ -19,11 +19,11 @@ void w5200_init(void){
 	uint8_t	buffer_SUB_def[] = {255,255,255,0};
 	uint8_t	buffer_IP_source_def[] = {192, 168, 6, 10};
 	
-	uint8_t buffer_SOCKET_main[] = {0x13,0x88};					//5000
-	uint8_t buffer_SOCKET_debug[] = {0x13,0x89};				//5001
-	uint8_t buffer_SOCKET_gps[] = {0x0f,0xa0};					//4000
-	uint8_t buffer_SOCKET_nm[] = {0x17,0x70};					//6000
-	uint8_t buffer_SOCKET_UDP[] = {0x1b,0x58};					//7000	-	UDP
+	uint8_t buffer_SOCKET_main[] = {MAIN_PORT >> 8, (uint8_t)MAIN_PORT};					//5000
+	uint8_t buffer_SOCKET_debug[] = {DEBUG_POR >> 8, (uint8_t)DEBUG_POR};					//5001
+	uint8_t buffer_SOCKET_gps[] = {GPS_PORT >> 8, (uint8_t)GPS_PORT};						//4000
+	uint8_t buffer_SOCKET_nm[] = {NM_PORT >> 8, (uint8_t)NM_PORT};							//6000
+	uint8_t buffer_SOCKET_UDP[] = {UDP_PORT >> 8, (uint8_t)UDP_PORT};						//7000	-	UDP
 	
 	//_delay_ms(1);
 	w5200_writeData(MR_W5200, 1, &reset);						//reset

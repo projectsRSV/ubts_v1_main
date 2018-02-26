@@ -20,6 +20,12 @@
 #define GPS_CH			2
 #define NM_CH			3
 #define UDP_CH			4
+#define MAIN_PORT		5000
+#define DEBUG_POR		5001
+#define GPS_PORT		4000
+#define NM_PORT			6000
+#define UDP_PORT		7000
+
 
 #define  _ADCB					ADCB
 #define  _ADCA					ADCA

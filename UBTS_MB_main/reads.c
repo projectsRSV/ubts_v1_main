@@ -64,7 +64,7 @@ void read_sendNMCommand() {
 }
 void read_sendNMAnswer() {
 	static uint8_t i=0;
-	if (i++ == 0x01) {
+	if (i++ == 0xff) {
 		if (!utils_isFifoEmpty(&FIFO_nmChTx)) {
 			//usart_sendDataFifo(&USARTE0, &FIFO_nmChTx);
 			w5200_sendDataFifo(NM_CH, &FIFO_nmChTx);

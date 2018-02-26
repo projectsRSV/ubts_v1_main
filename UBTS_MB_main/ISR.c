@@ -22,13 +22,13 @@ ISR(PORTF_INT0_vect){
 		socketInt = w5200_readSocketInt(ch);
 		switch (socketInt) {
 			case 0x02:{														//disconnect
-				w5200_writeByte(Sn_IR(ch),0xff);
+				w5200_writeByte(Sn_IR(ch), socketInt);
 				w5200_discSocket(ch);
 				w5200_openSocket(ch);
 			}
 			break;
 			case 0x04:{														//receive
-				w5200_writeByte(Sn_IR(ch), 0xff);
+				w5200_writeByte(Sn_IR(ch), socketInt);
 				if(ch == NM_CH) ISR_W5200.nm = 1;
 				if(ch == MAIN_CH) ISR_W5200.main = 1;
 				if(ch == DEBUG_CH) ISR_W5200.debug = 1;
@@ -36,7 +36,7 @@ ISR(PORTF_INT0_vect){
 				break;
 			}
 			default:{
-				w5200_writeByte(Sn_IR(ch),0xff);
+				w5200_writeByte(Sn_IR(ch), socketInt);
 				if (socketInt & 0x01){
 					if(ch == MAIN_CH)	utils_sendAnswerDebug(MAIN_CH, _START, 0, 0);
 					if(ch == DEBUG_CH) utils_sendAnswerDebug(DEBUG_CH, _START, 0, 0);
