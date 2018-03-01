@@ -46,6 +46,7 @@ extern uint8_t table_1[];
 extern uint8_t table_2[];
 extern uint8_t table_3[];
 extern uint8_t table_4[];
+extern power_leds_t POWER_LEDS1, POWER_LEDS2, POWER_LEDS3;
 
 
 #endif /* COMMUTATOR_H_ */

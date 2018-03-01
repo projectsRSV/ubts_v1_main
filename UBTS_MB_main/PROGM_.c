@@ -1,6 +1,6 @@
 ﻿#include "PROGM_.h"
 
-const uint8_t _VERSION[] PROGMEM="\n%UBTSV_3U_H00S00*";
+const uint8_t _VERSION[] PROGMEM="\n%UBTS_3U_H00S00*";
 const uint8_t _Tboard[] PROGMEM="\nTboard=";
 const uint8_t _Tpa1[] PROGMEM="\nTpa0=";
 const uint8_t _Tpa2[] PROGMEM="\nTpa1=";
@@ -102,4 +102,7 @@ const uint8_t _ERROR[] PROGMEM ="\n%error*";
 const uint8_t _SHUT_DOWN[] PROGMEM ="\nwaiting off...";
 const uint8_t _COMBINATION[] PROGMEM ="\ncombination= ";
 const uint8_t _OVER_TEMP[] PROGMEM ="\novertemperature";
+const uint8_t _OVER_POWER[] PROGMEM ="\nover power= ";
+const uint8_t _OVER_POWER_BW[] PROGMEM ="\nover bw power= ";
+
 

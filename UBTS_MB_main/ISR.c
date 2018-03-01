@@ -38,8 +38,8 @@ ISR(PORTF_INT0_vect){
 			default:{
 				w5200_writeByte(Sn_IR(ch), socketInt);
 				if (socketInt & 0x01){
-					if(ch == MAIN_CH)	utils_sendAnswerDebug(MAIN_CH, _START, 0, 0);
-					if(ch == DEBUG_CH) utils_sendAnswerDebug(DEBUG_CH, _START, 0, 0);
+					if(ch == MAIN_CH) utils_sendDebugPGM(MAIN_CH, _START, 0, 0);
+					if(ch == DEBUG_CH) utils_sendDebugPGM(DEBUG_CH, _START, 0, 0);
 				}
 				break;
 			}
@@ -81,7 +81,7 @@ ISR(USARTD0_DRE_vect){
 	if (FIFO_nmChRx.head != FIFO_nmChRx.tail){
 		USARTD0.DATA = FIFO_nmChRx.data[FIFO_nmChRx.tail++];
 		//FIFO_nmChRx.tail &= (BUFFER_SIZE-1);
-		blinkFuncPtr = (fpStatusLed)(blinkPtrTable[0]);				//speed of led blinking
+		blinkFuncPtr = (fpStatusLed)(blinkLedTable[0]);				//speed of led blinking
 	}
 	else USARTD0.CTRLA &= ~USART_DREINTLVL0_bm;
 	utils_irqRestore(flags);

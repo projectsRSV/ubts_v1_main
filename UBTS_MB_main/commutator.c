@@ -2,6 +2,13 @@
 
 
 
+static inline uint16_t* getArrayOfLeds(uint8_t standart, uint8_t isDouble){
+	if (standart == 'L' && isDouble == 1) return arrLed1L;
+	else if (standart == 'L' && isDouble == 2) return arrLed2L;
+	else if (standart == 'U' && isDouble == 1) return arrLed1U;
+	else if (standart == 'U' && isDouble == 2) return arrLed2U;
+	else return arrLed3U;
+}
 
 bool commutator_decoder(uint8_t address){
 	bool validCommand = true;
@@ -22,6 +29,7 @@ bool commutator_decoder(uint8_t address){
 			_1_1();
 			setAttCommutator(0, 0);
 			setPaState(PA1.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
 			break;
 		}
 		case 0x02:{
@@ -31,6 +39,7 @@ bool commutator_decoder(uint8_t address){
 			_1_2();
 			setAttCommutator(0, 0);
 			setPaState(PA2.channel);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
 			break;
 		}
 		case 0x03:{
@@ -40,6 +49,7 @@ bool commutator_decoder(uint8_t address){
 			_1_3();
 			setAttCommutator(0, 0);
 			setPaState(PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
 			break;
 		}
 		case 0x04:{
@@ -49,6 +59,7 @@ bool commutator_decoder(uint8_t address){
 			_2_1();
 			setAttCommutator(0, 0);
 			setPaState(PA1.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
 			break;
 		}
 		case 0x05:{
@@ -58,6 +69,7 @@ bool commutator_decoder(uint8_t address){
 			_2_2();
 			setAttCommutator(0, 0);
 			setPaState(PA2.channel);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
 			break;
 		}
 		case 0x06:{
@@ -67,6 +79,7 @@ bool commutator_decoder(uint8_t address){
 			_2_3();
 			setAttCommutator(0, 0);
 			setPaState(PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
 			break;
 		}
 		case 0x07:{
@@ -76,6 +89,7 @@ bool commutator_decoder(uint8_t address){
 			_3_3();
 			setAttCommutator(0, 0);
 			setPaState(PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 1);
 			break;
 		}
 		case 0x08:{
@@ -85,6 +99,7 @@ bool commutator_decoder(uint8_t address){
 			_4_3();
 			setAttCommutator(0, 0);
 			setPaState(PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_4, 1);
 			break;
 		}
 		case 0x09:{
@@ -94,6 +109,8 @@ bool commutator_decoder(uint8_t address){
 			_3_3();
 			setAttCommutator(0x0018, 0x0018);
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 2);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 1);
 			break;
 		}
 		case 0x0a:{
@@ -103,6 +120,7 @@ bool commutator_decoder(uint8_t address){
 			_2_1();
 			setAttCommutator(0x0018, 0x0018);
 			setPaState(PA1.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 2);
 			break;
 		}
 		case 0x0b:{
@@ -110,8 +128,10 @@ bool commutator_decoder(uint8_t address){
 			_4_off();
 			_1_1();
 			_3_3();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 1);
 			break;
 		}
 		case 0x0c:{
@@ -119,8 +139,10 @@ bool commutator_decoder(uint8_t address){
 			_3_off();
 			_1_1();
 			_4_3();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_4, 1);
 			break;
 		}
 		case 0x0d:{
@@ -128,17 +150,21 @@ bool commutator_decoder(uint8_t address){
 			_3_off();
 			_1_1();
 			_2_2();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel | PA2.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
 			break;
 		}
 		case 0x0e:{
-			_2_off();
 			_3_off();
+			_4_off();
 			_1_2();
 			_2_1();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel | PA2.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
 			break;
 		}
 		case 0x0f:{
@@ -146,8 +172,10 @@ bool commutator_decoder(uint8_t address){
 			_4_off();
 			_1_2();
 			_2_3();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA2.channel | PA3.channel);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
 			break;
 		}
 		case 0x10:{
@@ -155,8 +183,10 @@ bool commutator_decoder(uint8_t address){
 			_4_off();
 			_1_2();
 			_3_3();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA2.channel | PA3.channel);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 1);
 			break;
 		}
 		case 0x11:{
@@ -164,8 +194,10 @@ bool commutator_decoder(uint8_t address){
 			_3_off();
 			_1_2();
 			_4_3();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA2.channel | PA3.channel);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_4, 1);
 			break;
 		}
 		case 0x12:{
@@ -174,8 +206,9 @@ bool commutator_decoder(uint8_t address){
 				_1_3();
 				_3_2100();
 				_4_2100();
-				setAttCommutator(0x0018, 0x1818);
+				setAttCommutator(0x1818, 0x1800);
 				setPaState(PA3.channel);
+				POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 3);
 			}
 			else commutator_decoder(0xff);
 			break;
@@ -187,6 +220,7 @@ bool commutator_decoder(uint8_t address){
 			_2_2();
 			setAttCommutator(0x0018, 0x0018);
 			setPaState(PA2.channel);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 2);
 			break;
 		}
 		case 0x14:{
@@ -194,8 +228,10 @@ bool commutator_decoder(uint8_t address){
 			_4_off();
 			_2_1();
 			_3_3();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 1);
 			break;
 		}
 		case 0x15:{
@@ -203,8 +239,10 @@ bool commutator_decoder(uint8_t address){
 			_3_off();
 			_2_1();
 			_4_3();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_4, 1);
 			break;
 		}
 		case 0x16:{
@@ -212,8 +250,10 @@ bool commutator_decoder(uint8_t address){
 			_4_off();
 			_2_2();
 			_3_3();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA2.channel | PA3.channel);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 1);
 			break;
 		}
 		case 0x17:{
@@ -221,8 +261,10 @@ bool commutator_decoder(uint8_t address){
 			_3_off();
 			_2_2();
 			_4_3();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA2.channel | PA3.channel);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_4, 1);
 			break;
 		}
 		case 0x18:{
@@ -231,7 +273,7 @@ bool commutator_decoder(uint8_t address){
 			if (PA3.band == 0x01){
 				_3_2100();
 				_4_2100();
-				setAttCommutator(0, 0);
+				setAttCommutator(0x0000, 0x0000);
 			}
 			else{
 				_3_3();
@@ -239,6 +281,8 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1800, 0x1800);
 			}
 			setPaState(PA2.channel | PA3.channel);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		case 0x19:{
@@ -247,7 +291,7 @@ bool commutator_decoder(uint8_t address){
 			if (PA3.band == 0x01){
 				_3_2100();
 				_4_2100();
-				setAttCommutator(0, 0);
+				setAttCommutator(0x0000, 0x0000);
 			}
 			else{
 				_3_3();
@@ -255,6 +299,8 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1800, 0x1800);
 			}
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		case 0x1a:{
@@ -263,7 +309,7 @@ bool commutator_decoder(uint8_t address){
 			if (PA3.band == 0x01){
 				_3_2100();
 				_4_2100();
-				setAttCommutator(0, 0);
+				setAttCommutator(0x0000, 0x0000);
 			}
 			else{
 				_3_3();
@@ -271,6 +317,8 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1800, 0x1800);
 			}
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		case 0x1b:{
@@ -279,7 +327,7 @@ bool commutator_decoder(uint8_t address){
 			if (PA3.band == 0x01){
 				_3_2100();
 				_4_2100();
-				setAttCommutator(0, 0);
+				setAttCommutator(0x0000, 0x0000);
 			}
 			else{
 				_3_3();
@@ -287,6 +335,8 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1800, 0x1800);
 			}
 			setPaState(PA2.channel | PA3.channel);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		case 0x1c:{
@@ -295,7 +345,7 @@ bool commutator_decoder(uint8_t address){
 			if (PA3.band == 0x01){
 				_3_2100();
 				_4_2100();
-				setAttCommutator(0, 0);
+				setAttCommutator(0x0000, 0x0000);
 			}
 			else{
 				_3_3();
@@ -303,6 +353,7 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1800, 0x1800);
 			}
 			setPaState(PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		case 0x1d:{
@@ -310,8 +361,10 @@ bool commutator_decoder(uint8_t address){
 			_4_off();
 			_1_3();
 			_2_1();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
 			break;
 		}
 		case 0x1e:{
@@ -319,8 +372,10 @@ bool commutator_decoder(uint8_t address){
 			_4_off();
 			_1_3();
 			_2_2();
-			setAttCommutator(0, 0);
+			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA2.channel | PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
 			break;
 		}
 		case 0x1f:{
@@ -330,6 +385,7 @@ bool commutator_decoder(uint8_t address){
 			_2_3();
 			setAttCommutator(0x0018, 0x0018);
 			setPaState(PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 2);
 			break;
 		}
 		case 0x20:{
@@ -339,6 +395,7 @@ bool commutator_decoder(uint8_t address){
 			_4_3();
 			setAttCommutator(0x0018, 0x1800);
 			setPaState(PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 2);
 			break;
 		}
 		case 0x21:{
@@ -348,6 +405,7 @@ bool commutator_decoder(uint8_t address){
 			_3_3();
 			setAttCommutator(0x1800, 0x0018);
 			setPaState(PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 2);
 			break;
 		}
 		case 0x22:{
@@ -364,6 +422,8 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1818, 0x1818);
 			}
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 2);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		case 0x23:{
@@ -380,6 +440,8 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1818, 0x1818);
 			}
 			setPaState(PA2.channel | PA3.channel);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 2);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		case 0x24:{
@@ -396,6 +458,9 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1800, 0x1800);
 			}
 			setPaState(PA1.channel | PA2.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		case 0x25:{
@@ -412,6 +477,9 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1800, 0x1800);
 			}
 			setPaState(PA1.channel | PA2.channel | PA3.channel);
+			POWER_LEDS2.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		case 0x26:{
@@ -421,6 +489,8 @@ bool commutator_decoder(uint8_t address){
 			_3_3();
 			setAttCommutator(0x1800, 0x0018);
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 2);
 			break;
 		}
 		case 0x27:{
@@ -430,6 +500,8 @@ bool commutator_decoder(uint8_t address){
 			_2_3();
 			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
 			break;
 		}
 		case 0x28:{
@@ -439,35 +511,43 @@ bool commutator_decoder(uint8_t address){
 			_1_1();
 			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
 			break;
 		}
 		case 0x29:{
 			_4_off();
-			if (COMMUTATOR.standart_ch_1 == 'L' && COMMUTATOR.standart_ch_2 == 'L' && COMMUTATOR.standart_ch_3 == 'U'){
+			//if (COMMUTATOR.standart_ch_1 == 'L' && COMMUTATOR.standart_ch_2 == 'L' && COMMUTATOR.standart_ch_3 == 'U'){
+			if (COMMUTATOR.standart_ch_1 == COMMUTATOR.standart_ch_2){
 				_1_1();
 				_2_1();
 				_3_3();
 				setAttCommutator(0x0018, 0x0018);
+				POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 2);
+				POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 1);
 			}
-			else {
+			else if (COMMUTATOR.standart_ch_2 == COMMUTATOR.standart_ch_3){
 				_1_1();
 				_2_3();
 				_3_3();
 				setAttCommutator(0x1800, 0x0018);
+				POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+				POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			}
 			setPaState(PA1.channel | PA3.channel);
 			break;
 		}
 		case 0x2a:{
-			if (PA1.band == 0x01 && PA3.band == 0x01 && PA1.isValid && PA3.isValid){
-				_2_off();
-				_4_off();
-				_1_1();
-				_3_3();
-				setAttCommutator(0x0000, 0x0000);
-			}
-			else commutator_decoder(0xff);
+			//if (PA1.band == 0x01 && PA3.band == 0x01 && PA1.isValid && PA3.isValid){
+			_2_off();
+			_4_off();
+			_1_1();
+			_3_3();
+			setAttCommutator(0x0000, 0x0000);
+			//}
+			//else commutator_decoder(0xff);
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 1);
 			break;
 		}
 		case 0x2b:{
@@ -477,6 +557,8 @@ bool commutator_decoder(uint8_t address){
 			_2_3();
 			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
 			break;
 		}
 		case 0x2c:{
@@ -486,6 +568,7 @@ bool commutator_decoder(uint8_t address){
 			_2_1();
 			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
 			break;
 		}
 		case 0x2d:{
@@ -495,6 +578,8 @@ bool commutator_decoder(uint8_t address){
 			_3_3();
 			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 1);
 			break;
 		}
 		case 0x2e:{
@@ -504,6 +589,7 @@ bool commutator_decoder(uint8_t address){
 			_3_3();
 			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 1);
 			break;
 		}
 		case 0x2f:{
@@ -513,6 +599,7 @@ bool commutator_decoder(uint8_t address){
 			_4_3();
 			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_4, 1);
 			break;
 		}
 		case 0x30:{
@@ -522,6 +609,8 @@ bool commutator_decoder(uint8_t address){
 			_4_3();
 			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA3.channel | PA1.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_4, 1);
 			break;
 		}
 		case 0x31:{
@@ -531,6 +620,8 @@ bool commutator_decoder(uint8_t address){
 			_4_3();
 			setAttCommutator(0x0018, 0x0018);
 			setPaState(PA3.channel | PA1.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 2);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_4, 1);
 			break;
 		}
 		case 0x32:{
@@ -547,6 +638,8 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1800, 0x1800);
 			}
 			setPaState(PA3.channel | PA1.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		case 0x33:{
@@ -563,6 +656,7 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1800, 0x1800);
 			}
 			setPaState(PA3.channel);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		case 0x34:{
@@ -572,6 +666,8 @@ bool commutator_decoder(uint8_t address){
 			_4_3();
 			setAttCommutator(0x0000, 0x0000);
 			setPaState(PA3.channel | PA1.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_4, 1);
 			break;
 		}
 		case 0x35:{
@@ -588,6 +684,8 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1818, 0x1818);
 			}
 			setPaState(PA3.channel | PA1.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 2);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		case 0x36:{
@@ -604,18 +702,20 @@ bool commutator_decoder(uint8_t address){
 				setAttCommutator(0x1800, 0x1800);
 			}
 			setPaState(PA3.channel | PA1.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_2, 1);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
 		
 		
 		
 		case 0xff:{
-			utils_sendAnswerDebug(DEBUG_CH, _COMM_ERR, 0, 0);
+			utils_sendDebugPGM(DEBUG_CH, _COMM_ERR, 0, 0);
 			validCommand = false;
 			break;
 		}
 		default:{
-			utils_sendAnswerDebug(DEBUG_CH, 0, 0, 0);
+			utils_sendDebugPGM(DEBUG_CH, 0, 0, 0);
 			validCommand = false;
 			break;
 		}
@@ -685,7 +785,8 @@ void _1_1(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
-	utils_sendAnswerDebug(DEBUG_CH, _1_1P, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _1_1P, 0, 0);
+	utils_sendDebug(DEBUG_CH, (uint8_t*)&COMMUTATOR.standart_ch_1, 1, 0, 0);
 }
 void _1_2(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
@@ -719,7 +820,8 @@ void _1_2(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
-	utils_sendAnswerDebug(DEBUG_CH, _1_2P, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _1_2P, 0, 0);
+	utils_sendDebug(DEBUG_CH, (uint8_t*)&COMMUTATOR.standart_ch_1, 1, 0, 0);
 }
 void _1_3(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
@@ -753,7 +855,8 @@ void _1_3(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
-	utils_sendAnswerDebug(DEBUG_CH, _1_3P, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _1_3P, 0, 0);
+	utils_sendDebug(DEBUG_CH, (uint8_t*)&COMMUTATOR.standart_ch_1, 1, 0, 0);
 }
 void _1_off(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
@@ -778,7 +881,7 @@ void _1_off(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
-	utils_sendAnswerDebug(DEBUG_CH, _1_OFF, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _1_OFF, 0, 0);
 }
 
 void _2_1(){
@@ -813,7 +916,8 @@ void _2_1(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
-	utils_sendAnswerDebug(DEBUG_CH, _2_1P, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _2_1P, 0, 0);
+	utils_sendDebug(DEBUG_CH, (uint8_t*)&COMMUTATOR.standart_ch_2, 1, 0, 0);
 }
 void _2_2(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
@@ -847,7 +951,8 @@ void _2_2(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
-	utils_sendAnswerDebug(DEBUG_CH, _2_2P, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _2_2P, 0, 0);
+	utils_sendDebug(DEBUG_CH, (uint8_t*)&COMMUTATOR.standart_ch_2, 1, 0, 0);
 }
 void _2_3(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
@@ -879,7 +984,8 @@ void _2_3(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
-	utils_sendAnswerDebug(DEBUG_CH, _2_3P, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _2_3P, 0, 0);
+	utils_sendDebug(DEBUG_CH, (uint8_t*)&COMMUTATOR.standart_ch_2, 1, 0, 0);
 }
 void _2_off(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
@@ -910,14 +1016,14 @@ void _2_off(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
-	utils_sendAnswerDebug(DEBUG_CH, _2_OFF, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _2_OFF, 0, 0);
 }
 
 void _3_1(){
-	utils_sendAnswerDebug(DEBUG_CH, _COMM_ERR, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _COMM_ERR, 0, 0);
 }
 void _3_2(){
-	utils_sendAnswerDebug(DEBUG_CH, _COMM_ERR, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _COMM_ERR, 0, 0);
 }
 void _3_3(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
@@ -949,7 +1055,8 @@ void _3_3(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
-	utils_sendAnswerDebug(DEBUG_CH, _3_3P, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _3_3P, 0, 0);
+	utils_sendDebug(DEBUG_CH, (uint8_t*)&COMMUTATOR.standart_ch_3, 1, 0, 0);
 }
 void _3_2100(){
 	COMMUTATOR.sreg2_state_tx &= ~0b00001011;
@@ -976,7 +1083,8 @@ void _3_2100(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg1_state_rx, RX_SREG_SPI_1);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
-	utils_sendAnswerDebug(DEBUG_CH, _3_2100P, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _3_2100P, 0, 0);
+	utils_sendDebug(DEBUG_CH, (uint8_t*)&COMMUTATOR.standart_ch_3, 1, 0, 0);
 }
 void _3_off(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
@@ -1003,14 +1111,14 @@ void _3_off(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
-	utils_sendAnswerDebug(DEBUG_CH, _3_OFF, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _3_OFF, 0, 0);
 }
 
 void _4_1(){
-	utils_sendAnswerDebug(DEBUG_CH, _COMM_ERR, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _COMM_ERR, 0, 0);
 }
 void _4_2(){
-	utils_sendAnswerDebug(DEBUG_CH, _COMM_ERR, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _COMM_ERR, 0, 0);
 }
 void _4_3(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
@@ -1042,7 +1150,8 @@ void _4_3(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
-	utils_sendAnswerDebug(DEBUG_CH, _4_3P, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _4_3P, 0, 0);
+	utils_sendDebug(DEBUG_CH, (uint8_t*)&COMMUTATOR.standart_ch_4, 1, 0, 0);
 }
 void _4_2100(){
 	COMMUTATOR.sreg2_state_tx &= ~0b00001011;
@@ -1069,7 +1178,8 @@ void _4_2100(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg1_state_rx, RX_SREG_SPI_1);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
-	utils_sendAnswerDebug(DEBUG_CH, _4_2100P, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _4_2100P, 0, 0);
+	utils_sendDebug(DEBUG_CH, (uint8_t*)&COMMUTATOR.standart_ch_4, 1, 0, 0);
 }
 void _4_off(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
@@ -1098,14 +1208,14 @@ void _4_off(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
-	utils_sendAnswerDebug(DEBUG_CH, _4_OFF, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _4_OFF, 0, 0);
 }
 void setAttCommutator(uint16_t value4, uint16_t value5){										//value4 = 0xTTee - TT-ch3, ee-ch1; value5 = 0xYYuu   YY-ch4, uu-ch2
 	
 	spi_setRegDouble(&SPID, &PORTF, COMMUTATOR.sreg4_state_att + value4, ST_SREG_SPI_4);
 	spi_setRegDouble(&SPID, &PORTK, COMMUTATOR.sreg5_state_att + value5, ST_SREG_SPI_5);
-	utils_sendAnswer(DEBUG_CH, (uint8_t*)"\ns4= ", utils_hex16ToAscii32((COMMUTATOR.sreg4_state_att + value4) >> 1), 4);
-	utils_sendAnswer(DEBUG_CH, (uint8_t*)"\ns5= ", utils_hex16ToAscii32((COMMUTATOR.sreg5_state_att + value5) >> 1), 4);
+	utils_sendAnswerMain(DEBUG_CH, (uint8_t*)"\ns4= ", utils_hex16ToAscii32((COMMUTATOR.sreg4_state_att + value4) >> 1), 4);
+	utils_sendAnswerMain(DEBUG_CH, (uint8_t*)"\ns5= ", utils_hex16ToAscii32((COMMUTATOR.sreg5_state_att + value5) >> 1), 4);
 }
 uint8_t checkInChannelState(){
 	return COMMUTATOR.ch_1 | COMMUTATOR.ch_2 | COMMUTATOR.ch_3 | COMMUTATOR.ch_4;

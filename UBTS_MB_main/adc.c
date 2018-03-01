@@ -48,8 +48,8 @@ void adc_readData(ADC_t* adc, uint8_t pin){
 	value = adc_getUnsignedResult(adc);
 	
 	ANALOG_INPUT_t *adc_det;
-	adc_det = adc_selectADC(adc,pin);
-	utils_avgValue(adc_det,value);
+	adc_det = adc_selectADC(adc, pin);
+	utils_avgValue(adc_det, value);
 	
 	//return adc_det->value;
 	

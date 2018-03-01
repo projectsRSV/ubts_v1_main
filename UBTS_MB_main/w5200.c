@@ -149,7 +149,7 @@ uint16_t getSn_RegValue(uint16_t reg){
 	} while (val != val1);
 	return val;
 }
-void w5200_sendData(uint8_t ch,uint8_t *buff, uint16_t length){
+void w5200_sendData(uint8_t ch, uint8_t *buff, uint16_t length){
 	uint16_t ptr;
 	uint16_t upperSizeByte;
 	uint16_t dst_ptr;
@@ -279,15 +279,6 @@ uint8_t w5200_readInterrupt(){
 }
 uint8_t w5200_readStatus(uint8_t ch){
 	return w5200_readByte(Sn_SR(ch));
-}
-void w5200_sendDataPGM(uint8_t ch,const uint8_t *buff){
-	uint8_t temp;
-	while(pgm_read_byte(buff)){
-		temp=pgm_read_byte(buff++);
-		FIFO_mainChTx.data[FIFO_mainChTx.head++]=temp;
-		//FIFO_mainChTx.head &= BUFFER_SIZE-1;
-	}
-	w5200_sendDataFifo(ch,&FIFO_mainChTx);
 }
 void readSpiSendUart(USART_t* usart, uint8_t length, uint8_t* buff, uint16_t addr){
 	w5200_readData(addr,length,buff);

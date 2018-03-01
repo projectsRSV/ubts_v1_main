@@ -27,14 +27,10 @@ void w5200_recvDataFifo(uint8_t ch,fifo_t *fifo);
 void w5200_sendDataFifo(uint8_t ch,fifo_t *buff);
 uint16_t getSn_RegValue(uint16_t reg);
 uint16_t w5200_recvData(uint8_t ch,uint8_t *);
-//extern void usart_sendData_toAscii(USART_t * usart, uint16_t length, uint8_t* buffer);
 extern void readSpiSendUart(USART_t* usart, uint8_t length, uint8_t* buffer, uint16_t addr);
-void w5200_sendData(uint8_t ch,uint8_t *buff, uint16_t length);
-void w5200_sendDataPGM(uint8_t ch,const uint8_t *buff);
 void w5200_init(void);
 
 
-//void readSpiSendUart(USART_t* usart,BUFF_t* buff, uint16_t addr);
 uint8_t w5200_readStatus(uint8_t ch);
 uint8_t w5200_readSocketInt(uint8_t ch);
 uint8_t w5200_readInterChann();

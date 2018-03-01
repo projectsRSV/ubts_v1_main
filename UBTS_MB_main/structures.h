@@ -67,20 +67,23 @@ typedef struct{
 typedef struct{
 	uint16_t value;
 	uint8_t pos;
-	uint16_t sum;
+	uint32_t sum;
 	uint16_t buff[FILTER_SAMPLES];
 } ANALOG_INPUT_t;
 
 typedef void (*fpGeneric)(void);
 typedef struct{
 	uint8_t arrayIndex;
-	uint8_t ledValueRender;
+	uint8_t ledBit;
 	//uint16_t value;
 	uint16_t i;
-	uint16_t *adcValue;
+	uint16_t *adcValueO;
+	uint16_t *adcValueBW;
 	uint8_t pin;
 	fpGeneric fp;
-} POWER_LEDS_t;
+	uint16_t *pArrLedSt;
+	
+} power_leds_t;
 
 typedef struct{
 	uint8_t sreg1_state_tx;

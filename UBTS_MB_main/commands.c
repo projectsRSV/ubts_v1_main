@@ -37,8 +37,8 @@ uint8_t commands_decoder(fifo_t* fifo) {
 void command_exec(uint8_t command){
 	switch (command){
 		case 0x00:{																													//read software version
-			utils_sendAnswerDebug(MAIN_CH,_VERSION,0,0);
-			utils_sendAnswerDebug(DEBUG_CH,_VERSION,0,0);
+			utils_sendDebugPGM(MAIN_CH,_VERSION,0,0);
+			utils_sendDebugPGM(DEBUG_CH,_VERSION,0,0);
 			break;
 		}
 		case 0x01:{																													//GPS on
@@ -50,8 +50,8 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case 0x04:{																													//temp board
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%04*", utils_hexArrayToAsciiArray(BOARD.temperBuff, 2), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _Tboard, utils_hex8ToDecAscii16(BOARD.temperBuff[0]), 2);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%04*", utils_hexArrayToAsciiArray(BOARD.temperBuff, 2), 2);
+			utils_sendDebugPGM(DEBUG_CH, _Tboard, utils_hex8ToDecAscii16(BOARD.temperBuff[0]), 2);
 			break;
 		}
 		case 0x05:{																													//NM on
@@ -63,33 +63,33 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case 0x07:{																													//ina data bts
-			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%07*", utils_hexArrayToAsciiArray(INA_BTS.voltageBuff, 2), 4);
-			utils_sendAnswerDebug(DEBUG_CH, _INA_VOLT, utils_hex2ArrayToDecAscii4Array(INA_BTS.voltageBuff), 4);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%07*", utils_hexArrayToAsciiArray(INA_BTS.voltageBuff, 2), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_VOLT, utils_hex2ArrayToDecAscii4Array(INA_BTS.voltageBuff), 4);
 			break;
 		}
 		case 0x08:{																													//
-			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%08*", utils_hexArrayToAsciiArray(INA_BTS.currentBuff, 2), 4);
-			utils_sendAnswerDebug(DEBUG_CH, _INA_CURRENT, utils_hex2ArrayToDecAscii4Array(INA_BTS.currentBuff), 4);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%08*", utils_hexArrayToAsciiArray(INA_BTS.currentBuff, 2), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_CURRENT, utils_hex2ArrayToDecAscii4Array(INA_BTS.currentBuff), 4);
 			break;
 		}
 		case 0x09:{																													//
-			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%09*", utils_hexArrayToAsciiArray(INA_BTS.powerBuff, 2), 4);
-			utils_sendAnswerDebug(DEBUG_CH, _INA_POWER, utils_hex2ArrayToDecAscii4Array(INA_BTS.powerBuff), 4);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%09*", utils_hexArrayToAsciiArray(INA_BTS.powerBuff, 2), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_POWER, utils_hex2ArrayToDecAscii4Array(INA_BTS.powerBuff), 4);
 			break;
 		}
 		case 0x0a:{																													//ina data periphery
-			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%0a*", utils_hexArrayToAsciiArray(INA_PERIPHERY.voltageBuff, 2), 4);
-			utils_sendAnswerDebug(DEBUG_CH, _INA_VOLT, utils_hex2ArrayToDecAscii4Array(INA_PERIPHERY.voltageBuff), 4);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%0a*", utils_hexArrayToAsciiArray(INA_PERIPHERY.voltageBuff, 2), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_VOLT, utils_hex2ArrayToDecAscii4Array(INA_PERIPHERY.voltageBuff), 4);
 			break;
 		}
 		case 0x0b:{																													//
-			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%0b*", utils_hexArrayToAsciiArray(INA_PERIPHERY.currentBuff, 2), 4);
-			utils_sendAnswerDebug(DEBUG_CH, _INA_CURRENT, utils_hex2ArrayToDecAscii4Array(INA_PERIPHERY.currentBuff), 4);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%0b*", utils_hexArrayToAsciiArray(INA_PERIPHERY.currentBuff, 2), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_CURRENT, utils_hex2ArrayToDecAscii4Array(INA_PERIPHERY.currentBuff), 4);
 			break;
 		}
 		case 0x0c:{																													//
-			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%0c*", utils_hexArrayToAsciiArray(INA_PERIPHERY.powerBuff, 2), 4);
-			utils_sendAnswerDebug(DEBUG_CH, _INA_POWER, utils_hex2ArrayToDecAscii4Array(INA_PERIPHERY.powerBuff), 4);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%0c*", utils_hexArrayToAsciiArray(INA_PERIPHERY.powerBuff, 2), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_POWER, utils_hex2ArrayToDecAscii4Array(INA_PERIPHERY.powerBuff), 4);
 			break;
 		}
 		case 0x0d:{																													//
@@ -103,31 +103,31 @@ void command_exec(uint8_t command){
 		}
 		case 0x0f:{																													//set start wifi
 			uint8_t temp;
-			utils_sendAnswer(DEBUG_CH, 0x00, COMMAND.buffer, COMMAND.length);
+			utils_sendAnswerMain(DEBUG_CH, 0x00, COMMAND.buffer, COMMAND.length);
 			temp = utils_ascii16ToHex8(COMMAND.buffer[1] << 8 | COMMAND.buffer[2]);
-			if (temp) utils_sendAnswerDebug(DEBUG_CH, _WIFI_ON, 0, 0);
-			else utils_sendAnswerDebug(DEBUG_CH, _WIFI_OFF, 0, 0);
+			if (temp) utils_sendDebugPGM(DEBUG_CH, _WIFI_ON, 0, 0);
+			else utils_sendDebugPGM(DEBUG_CH, _WIFI_OFF, 0, 0);
 			read_writeEEPROMBuff(WIFI_ALWAYS_ON, &temp, 1);
 			break;
 		}
 		case 0x10:{																													//pa1 out power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_1, utils_hex16ToDecAscii32(ADC_PA_OUT_1.value), 4);
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%10*", utils_hex16ToAscii32(ADC_PA_OUT_1.value), 4);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_OUT_PA_1, utils_hex16ToDecAscii32(ADC_PA_OUT_1.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%10*", utils_hex16ToAscii32(ADC_PA_OUT_1.value), 4);
 			break;
 		}
 		case 0x11:{																													//pa2 out power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_2, utils_hex16ToDecAscii32(ADC_PA_OUT_2.value), 4);
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%11*", utils_hex16ToAscii32(ADC_PA_OUT_2.value), 4);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_OUT_PA_2, utils_hex16ToDecAscii32(ADC_PA_OUT_2.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%11*", utils_hex16ToAscii32(ADC_PA_OUT_2.value), 4);
 			break;
 		}
 		case 0x12:{																													//pa3 out power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_3, utils_hex16ToDecAscii32(ADC_PA_OUT_3.value), 4);
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%12*", utils_hex16ToAscii32(ADC_PA_OUT_3.value), 4);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_OUT_PA_3, utils_hex16ToDecAscii32(ADC_PA_OUT_3.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%12*", utils_hex16ToAscii32(ADC_PA_OUT_3.value), 4);
 			break;
 		}
 		case 0x13:{																													//pa4 out power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_OUT_PA_4, utils_hex16ToDecAscii32(ADC_PA_OUT_4.value), 4);
-			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%13*", utils_hex16ToAscii32(ADC_PA_OUT_4.value), 4);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_OUT_PA_4, utils_hex16ToDecAscii32(ADC_PA_OUT_4.value), 4);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%13*", utils_hex16ToAscii32(ADC_PA_OUT_4.value), 4);
 			break;
 		}
 		case 0x14:{																													//all pa out power adc
@@ -138,28 +138,28 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case 0x15:{																													//read serial number of the device
-			utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%15*", utils_hexArrayToAsciiArray(buffer_serialNum,4), 8);
-			utils_sendAnswer(DEBUG_CH, (uint8_t*)"\n====", utils_hexArrayToAsciiArray(buffer_serialNum,4), 8);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%15*", utils_hexArrayToAsciiArray(buffer_serialNum,4), 8);
+			utils_sendDebug(DEBUG_CH, (uint8_t*)"\nserial= ", 9, utils_hexArrayToAsciiArray(buffer_serialNum,4), 8);
 			break;
 		}
 		case 0x16:{																													//temp pa0
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%16*", utils_hexArrayToAsciiArray(PA1.temperBuff, 2), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _Tpa1, utils_hex8ToDecAscii16(PA1.temperBuff[0]), 2);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%16*", utils_hexArrayToAsciiArray(PA1.temperBuff, 2), 2);
+			utils_sendDebugPGM(DEBUG_CH, _Tpa1, utils_hex8ToDecAscii16(PA1.temperBuff[0]), 2);
 			break;
 		}
 		case 0x17:{																													//temp pa1
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%17*", utils_hexArrayToAsciiArray(PA2.temperBuff, 2), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _Tpa2, utils_hex8ToDecAscii16(PA2.temperBuff[0]), 2);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%17*", utils_hexArrayToAsciiArray(PA2.temperBuff, 2), 2);
+			utils_sendDebugPGM(DEBUG_CH, _Tpa2, utils_hex8ToDecAscii16(PA2.temperBuff[0]), 2);
 			break;
 		}
 		case 0x18:{																													//temp pa2
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%18*", utils_hexArrayToAsciiArray(PA3.temperBuff, 2), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _Tpa3, utils_hex8ToDecAscii16(PA3.temperBuff[0]), 2);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%18*", utils_hexArrayToAsciiArray(PA3.temperBuff, 2), 2);
+			utils_sendDebugPGM(DEBUG_CH, _Tpa3, utils_hex8ToDecAscii16(PA3.temperBuff[0]), 2);
 			break;
 		}
 		case 0x19:{																													//temp pa3
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%19*", utils_hexArrayToAsciiArray(PA4.temperBuff, 2), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _Tpa4, utils_hex8ToDecAscii16(PA4.temperBuff[0]), 2);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%19*", utils_hexArrayToAsciiArray(PA4.temperBuff, 2), 2);
+			utils_sendDebugPGM(DEBUG_CH, _Tpa4, utils_hex8ToDecAscii16(PA4.temperBuff[0]), 2);
 			break;
 		}
 		case 0x1a:{																													//temp all
@@ -171,23 +171,23 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case 0x1b:{																													//pa1 bw power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_BW_PA_1, utils_hex16ToDecAscii32(ADC_PA_BW_1.value), 4);
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%1b*", utils_hex16ToAscii32(ADC_PA_BW_1.value), 4);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_BW_PA_1, utils_hex16ToDecAscii32(ADC_PA_BW_1.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%1b*", utils_hex16ToAscii32(ADC_PA_BW_1.value), 4);
 			break;
 		}
 		case 0x1c:{																													//pa2 bw power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_BW_PA_2, utils_hex16ToDecAscii32(ADC_PA_BW_2.value), 4);
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%1c*", utils_hex16ToAscii32(ADC_PA_BW_2.value), 4);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_BW_PA_2, utils_hex16ToDecAscii32(ADC_PA_BW_2.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%1c*", utils_hex16ToAscii32(ADC_PA_BW_2.value), 4);
 			break;
 		}
 		case 0x1d:{																													//pa3 bw power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_BW_PA_3, utils_hex16ToDecAscii32(ADC_PA_BW_3.value), 4);
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%1d*", utils_hex16ToAscii32(ADC_PA_BW_3.value), 4);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_BW_PA_3, utils_hex16ToDecAscii32(ADC_PA_BW_3.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%1d*", utils_hex16ToAscii32(ADC_PA_BW_3.value), 4);
 			break;
 		}
 		case 0x1e:{																													//pa4 bw power adc
-			utils_sendAnswerDebug(DEBUG_CH, _ADC_BW_PA_4, utils_hex16ToDecAscii32(ADC_PA_BW_4.value), 4);
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%1e*", utils_hex16ToAscii32(ADC_PA_BW_4.value), 4);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_BW_PA_4, utils_hex16ToDecAscii32(ADC_PA_BW_4.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%1e*", utils_hex16ToAscii32(ADC_PA_BW_4.value), 4);
 			break;
 		}
 		case 0x1f:{																													//all pa bw power adc
@@ -223,7 +223,7 @@ void command_exec(uint8_t command){
 		}*/
 		//******************************************NM*******************************************
 		case 0x5f:{																											//send nm command
-			utils_sendAnswer(DEBUG_CH, (uint8_t*)"\n%5f*", 0, 0);
+			utils_sendAnswerMain(DEBUG_CH, (uint8_t*)"\n%5f*", 0, 0);
 			for (uint8_t i=0; i<COMMAND.length; i++){
 				FIFO_nmChRx.data[FIFO_nmChRx.head++] = COMMAND.buffer[i];
 			}
@@ -234,7 +234,7 @@ void command_exec(uint8_t command){
 		//***************************************tuning att****************************************
 		case 0x60:{																											//set ch1 att
 			uint8_t temp;
-			utils_sendAnswer(DEBUG_CH, 0x00, COMMAND.buffer, COMMAND.length);
+			utils_sendDebug(DEBUG_CH,(uint8_t*)"\natt= ", 6, COMMAND.buffer, COMMAND.length);
 			temp = utils_ascii16ToHex8(COMMAND.buffer[1] << 8 | COMMAND.buffer[2]) << 1;
 			COMMUTATOR.sreg4_state_att &= ~0x00ff;
 			COMMUTATOR.sreg4_state_att |= temp;
@@ -244,7 +244,7 @@ void command_exec(uint8_t command){
 		}
 		case 0x61:{																											//set ch2 att
 			uint8_t temp;
-			utils_sendAnswer(DEBUG_CH, 0x00, COMMAND.buffer, COMMAND.length);
+			utils_sendDebug(DEBUG_CH,(uint8_t*)"\natt= ", 6, COMMAND.buffer, COMMAND.length);
 			temp = utils_ascii16ToHex8(COMMAND.buffer[1] << 8 | COMMAND.buffer[2]) << 1;
 			COMMUTATOR.sreg5_state_att &= ~0x00ff;
 			COMMUTATOR.sreg5_state_att |= temp;
@@ -254,7 +254,7 @@ void command_exec(uint8_t command){
 		}
 		case 0x62:{																											//set ch3 att
 			uint8_t temp;
-			utils_sendAnswer(DEBUG_CH, 0x00, COMMAND.buffer, COMMAND.length);
+			utils_sendDebug(DEBUG_CH,(uint8_t*)"\natt= ", 6, COMMAND.buffer, COMMAND.length);
 			temp = utils_ascii16ToHex8(COMMAND.buffer[1] << 8 | COMMAND.buffer[2]) << 1;
 			COMMUTATOR.sreg4_state_att &= ~0xff00;
 			COMMUTATOR.sreg4_state_att |= temp << 8;
@@ -264,7 +264,7 @@ void command_exec(uint8_t command){
 		}
 		case 0x63:{																											//set ch4 att
 			uint8_t temp;
-			utils_sendAnswer(DEBUG_CH, 0x00, COMMAND.buffer, COMMAND.length);
+			utils_sendDebug(DEBUG_CH,(uint8_t*)"\natt= ", 6, COMMAND.buffer, COMMAND.length);
 			temp = utils_ascii16ToHex8(COMMAND.buffer[1] << 8 | COMMAND.buffer[2]) << 1;
 			COMMUTATOR.sreg5_state_att &= ~0xff00;
 			COMMUTATOR.sreg5_state_att |= temp << 8;
@@ -273,10 +273,10 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case 0x64:{																											//read all att
-			utils_sendAnswerDebug(DEBUG_CH, _ATT_1, utils_hex8ToAscii16(COMMUTATOR.sreg4_state_att >> 1), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _ATT_2, utils_hex8ToAscii16(COMMUTATOR.sreg5_state_att >> 1), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _ATT_3, utils_hex8ToAscii16(COMMUTATOR.sreg4_state_att >> 9), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _ATT_4, utils_hex8ToAscii16(COMMUTATOR.sreg5_state_att >> 9), 2);
+			utils_sendDebugPGM(DEBUG_CH, _ATT_1, utils_hex8ToAscii16(COMMUTATOR.sreg4_state_att >> 1), 2);
+			utils_sendDebugPGM(DEBUG_CH, _ATT_2, utils_hex8ToAscii16(COMMUTATOR.sreg5_state_att >> 1), 2);
+			utils_sendDebugPGM(DEBUG_CH, _ATT_3, utils_hex8ToAscii16(COMMUTATOR.sreg4_state_att >> 9), 2);
+			utils_sendDebugPGM(DEBUG_CH, _ATT_4, utils_hex8ToAscii16(COMMUTATOR.sreg5_state_att >> 9), 2);
 			break;
 		}
 		///////////////////////holding on power/////////////////////////////
@@ -302,31 +302,31 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case 0x77:{																									//read all PA info
-			utils_sendAnswerDebug(DEBUG_CH, _PA1_ADDR, utils_hex8ToAscii16(PA1.addrTWI), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA1_BAND, utils_hex8ToAscii16(PA1.band), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA1_FANPIN, utils_hex8ToAscii16(PA1.fanPin), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA1_ISACTIVE, utils_hex8ToAscii16(PA1.isValid), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA1_ADDR, utils_hex8ToAscii16(PA1.addrTWI), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA1_BAND, utils_hex8ToAscii16(PA1.band), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA1_FANPIN, utils_hex8ToAscii16(PA1.fanPin), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA1_ISACTIVE, utils_hex8ToAscii16(PA1.isValid), 2);
 			break;
 		}
 		case 0x78:{																									//read all PA info
-			utils_sendAnswerDebug(DEBUG_CH, _PA2_ADDR, utils_hex8ToAscii16(PA2.addrTWI), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA2_BAND, utils_hex8ToAscii16(PA2.band), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA2_FANPIN, utils_hex8ToAscii16(PA2.fanPin), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA2_ISACTIVE, utils_hex8ToAscii16(PA2.isValid), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA2_ADDR, utils_hex8ToAscii16(PA2.addrTWI), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA2_BAND, utils_hex8ToAscii16(PA2.band), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA2_FANPIN, utils_hex8ToAscii16(PA2.fanPin), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA2_ISACTIVE, utils_hex8ToAscii16(PA2.isValid), 2);
 			break;
 		}
 		case 0x79:{																									//read all PA info
-			utils_sendAnswerDebug(DEBUG_CH, _PA3_ADDR, utils_hex8ToAscii16(PA3.addrTWI), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA3_BAND, utils_hex8ToAscii16(PA3.band), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA3_FANPIN, utils_hex8ToAscii16(PA3.fanPin), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA3_ISACTIVE, utils_hex8ToAscii16(PA3.isValid), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA3_ADDR, utils_hex8ToAscii16(PA3.addrTWI), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA3_BAND, utils_hex8ToAscii16(PA3.band), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA3_FANPIN, utils_hex8ToAscii16(PA3.fanPin), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA3_ISACTIVE, utils_hex8ToAscii16(PA3.isValid), 2);
 			break;
 		}
 		case 0x7a:{																									//read all PA info
-			utils_sendAnswerDebug(DEBUG_CH, _PA4_ADDR, utils_hex8ToAscii16(PA4.addrTWI), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA4_BAND, utils_hex8ToAscii16(PA4.band), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA4_FANPIN, utils_hex8ToAscii16(PA4.fanPin), 2);
-			utils_sendAnswerDebug(DEBUG_CH, _PA4_ISACTIVE, utils_hex8ToAscii16(PA4.isValid), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA4_ADDR, utils_hex8ToAscii16(PA4.addrTWI), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA4_BAND, utils_hex8ToAscii16(PA4.band), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA4_FANPIN, utils_hex8ToAscii16(PA4.fanPin), 2);
+			utils_sendDebugPGM(DEBUG_CH, _PA4_ISACTIVE, utils_hex8ToAscii16(PA4.isValid), 2);
 			break;
 		}
 		//********************************************************************************************************
@@ -337,15 +337,12 @@ void command_exec(uint8_t command){
 			uint8_t isPaOn = COMMAND.buffer[7] & 0x0f;
 			uint8_t combination;
 			
-			if (standart == 'L') pArrOfLedsvalGlobal = lteOneArrLeds;
-			else if (standart == 'U') pArrOfLedsvalGlobal = umtsOneArrLeds;
-			
 			setChInCommutator(inChannel, getPaNum(band), standart, isPaOn);
 			combination = searchCombination();
 			commutator_decoder(combination);
 			
-			utils_sendAnswerDebug(DEBUG_CH, _COMBINATION, utils_hex8ToAscii16(combination), 2);
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%aa*", COMMAND.buffer, COMMAND.length);
+			utils_sendDebugPGM(DEBUG_CH, _COMBINATION, utils_hex8ToAscii16(combination), 2);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%aa*", COMMAND.buffer, COMMAND.length);
 			break;
 		}
 		/****** nothing to do, don't use ******/
@@ -356,19 +353,19 @@ void command_exec(uint8_t command){
 		case 0xe7:{																													//write command %e7*
 			read_writeEEPROMBuff(LENGTH_e8, &COMMAND.length,1);
 			read_writeEEPROMBuff(STRING_e8, COMMAND.buffer, COMMAND.length);
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%e7*", COMMAND.buffer, COMMAND.length);
-			utils_sendAnswer(DEBUG_CH,(uint8_t*)"\n%e7*", COMMAND.buffer, COMMAND.length);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%e7*", COMMAND.buffer, COMMAND.length);
+			utils_sendAnswerMain(DEBUG_CH,(uint8_t*)"\n%e7*", COMMAND.buffer, COMMAND.length);
 			break;
 		}
 		case 0xe8:{																													//read command %e8*
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%e8*", COMMAND_e8.buffer, COMMAND_e8.length);
-			utils_sendAnswer(DEBUG_CH,(uint8_t*)"\n%e8*", COMMAND_e8.buffer, COMMAND_e8.length);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%e8*", COMMAND_e8.buffer, COMMAND_e8.length);
+			utils_sendAnswerMain(DEBUG_CH,(uint8_t*)"\n%e8*", COMMAND_e8.buffer, COMMAND_e8.length);
 			break;
 		}
 		/**************************************/
 		case 0xfe:{																								//jump to bootloader
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%fe*", 0, 0);
-			utils_sendAnswerDebug(DEBUG_CH, _JMP_BOOTLOADER, 0, 0);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%fe*", 0, 0);
+			utils_sendDebugPGM(DEBUG_CH, _JMP_BOOTLOADER, 0, 0);
 			_delay_ms(500);
 			pBootloader=(void(*)())BOOT_SECTION;
 			EIND = 1;
@@ -376,8 +373,8 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case 0xff:{																								//mcu reboot
-			utils_sendAnswer(MAIN_CH,(uint8_t*)"\n%ff*", 0, 0);
-			utils_sendAnswerDebug(DEBUG_CH, _MCU_REBOOT, 0, 0);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%ff*", 0, 0);
+			utils_sendDebugPGM(DEBUG_CH, _MCU_REBOOT, 0, 0);
 			_delay_ms(500);
 			pBootloader=(void(*)())RESET_SECTION;
 			EIND = 0;
@@ -387,21 +384,22 @@ void command_exec(uint8_t command){
 	}
 }
 void setChInCommutator(uint8_t inChannel, uint8_t paNum, uint8_t standart, uint8_t isPaOn){
-	uint8_t temp = (isPaOn == 1) ? paNum : 0;
+	paNum = (isPaOn == 1) ? paNum : 0;
+	standart = (isPaOn == 1) ? standart : 0;
 	if (inChannel == 1) {
-		COMMUTATOR.ch_1 = temp;
+		COMMUTATOR.ch_1 = paNum;
 		COMMUTATOR.standart_ch_1 = standart;
 	}
 	else if (inChannel == 2) {
-		COMMUTATOR.ch_2 = temp;
+		COMMUTATOR.ch_2 = paNum;
 		COMMUTATOR.standart_ch_2 = standart;
 	}
 	else if (inChannel == 3) {
-		COMMUTATOR.ch_3 = temp;
+		COMMUTATOR.ch_3 = paNum;
 		COMMUTATOR.standart_ch_3 = standart;
 	}
 	else if (inChannel == 4) {
-		COMMUTATOR.ch_4 = temp;
+		COMMUTATOR.ch_4 = paNum;
 		COMMUTATOR.standart_ch_4 = standart;
 	}
 }
@@ -438,7 +436,7 @@ void paOn(twi_device_t* pPa, bool isOn){
 		spi_setReg(&SPID, &PORTH, REGISTERS.ledChState &= ~(1 << pPa->paPin), LED_CH_REG);
 		pPa->isOnState = 0;
 	}
-	utils_sendAnswerDebug(DEBUG_CH, pPa->name, utils_hex8ToAscii16(pPa->isOnState), 2);
+	utils_sendDebugPGM(DEBUG_CH, pPa->name, utils_hex8ToAscii16(pPa->isOnState), 2);
 }
 void nmOn(bool isOn){
 	if (isOn) {
@@ -455,8 +453,8 @@ void nmOn(bool isOn){
 		spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 		spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 		
-		utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%05*", 0, 0);
-		utils_sendAnswerDebug(DEBUG_CH, _NM_ON, 0, 0);
+		utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%05*", 0, 0);
+		utils_sendDebugPGM(DEBUG_CH, _NM_ON, 0, 0);
 	}
 	else {
 		spi_setReg(&SPIC, &PORTK, REGISTERS.nmGpsWifiPpsState &= ~NM_ON, MCU_SREG_NM_GPS);		//off power for telit
@@ -471,20 +469,20 @@ void nmOn(bool isOn){
 		spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 		spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 		
-		utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%06*", 0, 0);
-		utils_sendAnswerDebug(DEBUG_CH, _NM_OFF, 0, 0);
+		utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%06*", 0, 0);
+		utils_sendDebugPGM(DEBUG_CH, _NM_OFF, 0, 0);
 	}
 }
 void gpsOn(bool isOn){
 	if (isOn) {
 		spi_setReg(&SPIC, &PORTK, REGISTERS.nmGpsWifiPpsState |= GPS_ON, MCU_SREG_NM_GPS);
-		utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%01*", 0, 0);
-		utils_sendAnswerDebug(DEBUG_CH, _GPS_ON, 0, 0);
+		utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%01*", 0, 0);
+		utils_sendDebugPGM(DEBUG_CH, _GPS_ON, 0, 0);
 	}
 	else {
 		spi_setReg(&SPIC, &PORTK, REGISTERS.nmGpsWifiPpsState &= ~GPS_ON, MCU_SREG_NM_GPS);
-		utils_sendAnswer(MAIN_CH, (uint8_t*)"\n%03*", 0, 0);
-		utils_sendAnswerDebug(DEBUG_CH, _GPS_OFF, 0, 0);
+		utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%03*", 0, 0);
+		utils_sendDebugPGM(DEBUG_CH, _GPS_OFF, 0, 0);
 	}
 }
 static inline uint8_t command_scanTwi(twi_device_t* pPA){
@@ -567,20 +565,20 @@ void tunePa(){
 				break;
 			}
 			default: {
-				utils_sendAnswerDebug(DEBUG_CH, _ERROR, 0, 0);
+				utils_sendDebugPGM(DEBUG_CH, _ERROR, 0, 0);
 				return;
 			}
 		}
 		command_scanTwi(pPA);
 		if ((PA1.addrTWI > 0 || PA2.addrTWI > 0) && (PA1.addrTWI == PA2.addrTWI)) {
-			utils_sendAnswerDebug(DEBUG_CH, _ERROR, 0, 0);
+			utils_sendDebugPGM(DEBUG_CH, _ERROR, 0, 0);
 			pPA->isValid = 0;
 			pPA->addrTWI = 0;
 			pPA->temperBuff[0] = 0;
 			return;
 		}
 		else if ((PA3.addrTWI > 0 || PA4.addrTWI > 0) && (PA3.addrTWI == PA4.addrTWI)) {
-			utils_sendAnswerDebug(DEBUG_CH, _ERROR, 0, 0);
+			utils_sendDebugPGM(DEBUG_CH, _ERROR, 0, 0);
 			pPA->isValid = 0;
 			pPA->addrTWI = 0;
 			pPA->temperBuff[0] = 0;
@@ -593,9 +591,9 @@ void tunePa(){
 		read_writeEEPROMByte(eeprBand, pPA->band);
 		read_writeEEPROMByte(eeprValid, pPA->isValid);
 		
-		utils_sendAnswerDebug(DEBUG_CH, pADDR, utils_hex8ToAscii16(pPA->addrTWI), 2);
-		utils_sendAnswerDebug(DEBUG_CH, pBAND, utils_hex8ToAscii16(pPA->band), 2);
-		utils_sendAnswerDebug(DEBUG_CH, pFANPIN, utils_hex8ToAscii16(pPA->fanPin), 2);
-		utils_sendAnswerDebug(DEBUG_CH, pISACTIVE, utils_hex8ToAscii16(pPA->isValid), 2);
+		utils_sendDebugPGM(DEBUG_CH, pADDR, utils_hex8ToAscii16(pPA->addrTWI), 2);
+		utils_sendDebugPGM(DEBUG_CH, pBAND, utils_hex8ToAscii16(pPA->band), 2);
+		utils_sendDebugPGM(DEBUG_CH, pFANPIN, utils_hex8ToAscii16(pPA->fanPin), 2);
+		utils_sendDebugPGM(DEBUG_CH, pISACTIVE, utils_hex8ToAscii16(pPA->isValid), 2);
 	}
 }

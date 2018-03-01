@@ -2,19 +2,30 @@
 
 
 
-fpStatusLed blinkPtrTable[] = {utils_fastBlink, utils_middleBlink, utils_slowBlink};
-fpFanLed lightPtrTable[] = {utils_greenLight, utils_yellowLight, utils_redLight, utils_redBLink, utils_allBLink};
+fpStatusLed blinkLedTable[] = {utils_fastBlink, utils_middleBlink, utils_slowBlink};
+fpFanLed ledFanTable[] = {utils_greenLight, utils_yellowLight, utils_redLight, utils_redBLink, utils_allBLink};
 
-fpPowerLed powerLedPtrTable[] = {utils_powerLedNormal, utils_powerLedEmergencyOverPower, utils_powerLedEmergencyBW};
+fpPowerLed ledsTable[] = {utils_powerLedNormal, utils_powerLedEmergencyPower, utils_powerLedEmergencyBW};
 
-void utils_sendAnswerDebug(uint8_t ch, const uint8_t *wordPGM, uint8_t *buff, uint8_t length){
-	w5200_sendDataPGM(ch,wordPGM);
+void utils_sendDebugPGM(uint8_t ch, const uint8_t *wordPGM, uint8_t *buff, uint8_t length){
+	while(pgm_read_byte(wordPGM)){
+		FIFO_mainChTx.data[FIFO_mainChTx.head++] = pgm_read_byte(wordPGM++);
+	}
 	for (uint8_t i=0; i<length; i++){
 		FIFO_mainChTx.data[FIFO_mainChTx.head++] = buff[i];
 	}
-	if(length) w5200_sendDataFifo(ch,&FIFO_mainChTx);
+	w5200_sendDataFifo(ch,&FIFO_mainChTx);
 }
-void utils_sendAnswer(uint8_t ch,uint8_t *word, uint8_t *buff, uint8_t length){
+void utils_sendDebug(uint8_t ch, uint8_t *word, uint8_t lengthWord,	 uint8_t *buff, uint8_t length){
+	while(lengthWord--){
+		FIFO_mainChTx.data[FIFO_mainChTx.head++] = *word++;
+	}
+	while (length--){
+		FIFO_mainChTx.data[FIFO_mainChTx.head++] = *buff++;
+	}
+	w5200_sendDataFifo(ch, &FIFO_mainChTx);
+}
+void utils_sendAnswerMain(uint8_t ch, uint8_t *word, uint8_t *buff, uint8_t length){
 	for (uint8_t i=0; i<4; i++){
 		FIFO_mainChTx.data[FIFO_mainChTx.head++] = word[i];
 	}
@@ -159,25 +170,28 @@ void utils_slowBlink(){
 		i=0;
 	}
 }
-void utils_powerLedNormal(POWER_LEDS_t* ledStruct){
+void utils_powerLedNormal(power_leds_t* ledStruct){
 	if (ledStruct->i++ == 0x1fff) {
-		if (pArrOfLedsvalGlobal[ledStruct->arrayIndex] < *ledStruct->adcValue){
+		if (ledStruct->pArrLedSt[ledStruct->arrayIndex] < *ledStruct->adcValueO){
 			if (ledStruct->arrayIndex < 6){
 				ledStruct->arrayIndex++;
-				ledStruct->ledValueRender |= (ledStruct->ledValueRender << 1);
-				spi_setReg(&SPID, &PORTH, ledStruct->ledValueRender >> 1, ledStruct->pin);
+				ledStruct->ledBit |= (ledStruct->ledBit << 1);
+				//if (ledStruct->arrayIndex < 5){
+					spi_setReg(&SPID, &PORTH, ledStruct->ledBit >> 1, ledStruct->pin);
+				//}
 			}
 			else {
-				ledStruct->fp = (fpGeneric)powerLedPtrTable[2];
+				ledStruct->fp = (fpGeneric)ledsTable[1];
 			}
 		}
-		else if ((pArrOfLedsvalGlobal[ledStruct->arrayIndex - 1] - 5) >= *ledStruct->adcValue){
+		else if ((ledStruct->pArrLedSt[ledStruct->arrayIndex - 1] - 10) >= *ledStruct->adcValueO){
 			if (ledStruct->arrayIndex > 0){
 				ledStruct->arrayIndex--;
-				ledStruct->ledValueRender = (ledStruct->ledValueRender >> 1);
-				spi_setReg(&SPID, &PORTH, ledStruct->ledValueRender >> 1, ledStruct->pin);
+				ledStruct->ledBit = (ledStruct->ledBit >> 1);
+				spi_setReg(&SPID, &PORTH, ledStruct->ledBit >> 1, ledStruct->pin);
 			}
 		}
+		if (*ledStruct->adcValueBW >= ledStruct->pArrLedSt[7]) ledStruct->fp = (fpGeneric)ledsTable[2];		//check bw power value
 		ledStruct->i=0;
 	}
 }
@@ -185,26 +199,30 @@ void paOffAll(){
 	setPaState(0x00);
 	PA1.isValid = 0; PA2.isValid = 0; PA3.isValid = 0; PA4.isValid = 0;
 }
-void utils_powerLedEmergencyBW(POWER_LEDS_t* ledStruct){
+void utils_powerLedEmergencyBW(power_leds_t* ledStruct){
 	static uint8_t latch;
 	if (!latch){
 		latch = 1;
+		utils_sendDebugPGM(DEBUG_CH, _OVER_POWER_BW, utils_hex16ToDecAscii32(*ledStruct->adcValueBW), 4);
 		paOffAll();
+		spi_setReg(&SPID, &PORTH, ledStruct->ledBit = 0x00, ledStruct->pin);
 	}
 	if (ledStruct->i++ == 0x09ff){
-		spi_setReg(&SPID,&PORTH, ledStruct->ledValueRender ^= 0xff, ledStruct->pin);
-		ledStruct->i=0;
+		spi_setReg(&SPID, &PORTH, ledStruct->ledBit ^= 0x20, ledStruct->pin);
+		ledStruct->i = 0;
 	}
 }
-void utils_powerLedEmergencyOverPower(POWER_LEDS_t* ledStruct){
+void utils_powerLedEmergencyPower(power_leds_t* ledStruct){
 	static uint8_t latch;
 	if (!latch){
 		latch = 1;
+		utils_sendDebugPGM(DEBUG_CH, _OVER_POWER, utils_hex16ToDecAscii32(*ledStruct->adcValueO), 4);
 		paOffAll();
+		spi_setReg(&SPID, &PORTH, ledStruct->ledBit = 0x00, ledStruct->pin);
 	}
 	if (ledStruct->i++ == 0x09ff){
-		spi_setReg(&SPID,&PORTH, ledStruct->ledValueRender ^= 0x20, ledStruct->pin);
-		ledStruct->i = 0;
+		spi_setReg(&SPID, &PORTH, ledStruct->ledBit ^= 0xff, ledStruct->pin);
+		ledStruct->i=0;
 	}
 }
 uint8_t utils_returnOrderedNum(uint8_t* interReg){
@@ -220,6 +238,7 @@ uint8_t utils_returnOrderedNum(uint8_t* interReg){
 void utils_avgValue(ANALOG_INPUT_t* filter, uint16_t newValue){
 	filter->sum = filter->sum - filter->buff[filter->pos] + newValue;
 	filter->value = filter->sum / FILTER_SAMPLES;
+	//filter->value = newValue;
 	filter->buff[filter->pos] = newValue;
 	filter->pos++;
 	filter->pos &= (FILTER_SAMPLES - 1);

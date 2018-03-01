@@ -106,7 +106,8 @@ extern const uint8_t _ERROR[] PROGMEM;
 extern const const uint8_t _SHUT_DOWN[] PROGMEM;
 extern const uint8_t _COMBINATION[] PROGMEM;
 extern const uint8_t _OVER_TEMP[] PROGMEM;
-
+extern const uint8_t _OVER_POWER[] PROGMEM;
+extern const uint8_t _OVER_POWER_BW[] PROGMEM;
 
 
 #endif /* PROGMEM__H_ */

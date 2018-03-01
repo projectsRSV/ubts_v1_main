@@ -23,10 +23,11 @@ uint8_t buffer_IP_source_4[4];
 uint8_t configBuff[2] = {0x47, 0xff};
 uint8_t calibBuff[2] = {0x02, 0x00};		//scale = 10A (max = 9.999A); 1mA/bit
 
-uint16_t *pArrOfLedsvalGlobal;
-uint16_t umtsOneArrLeds[]={1448, 1641, 1760, 1803, 1875, 1914, 2000};			//3, 8, 13, 18, 23, 28,  40
-uint16_t lteOneArrLeds[]={1135, 1240, 1290, 1330, 1360, 1380, 1420};			//3, 8, 13, 18, 23, 28,  40
-
+uint16_t arrLed1U[] = {1448, 1680, 1757, 1838, 1896, 1950, 2050, 1238};			//6, 11, 16, 21, 27, __,  40, 2.3W - BW
+uint16_t arrLed2U[] = {1448, 1680, 1757, 1838, 1896, 1950, 2050, 1238};			//6, 11, 16, 21, 27, __,  40, 2.3W - BW
+uint16_t arrLed3U[] = {1448, 1680, 1757, 1838, 1896, 1950, 2050, 1238};			//6, 11, 16, 21, 27, __,  40, 2.3W - BW
+uint16_t arrLed1L[] = {1120, 1236, 1301, 1346, 1381, 1415, 1490, 980};			//2.2, 6, 11, 16, 27, __,  40, 2.1W - BW
+uint16_t arrLed2L[] = {1120, 1236, 1301, 1346, 1381, 1415, 2500, 980};			//6, 11, 16, 21, 27, __,  40, 2.1W - BW
 
 twi_device_t PA1 = {.fanPin = FAN_PA1, .paPin = PA_ENABLE_1, .channel = 1, .name = (uint8_t*)_PA1};								//
 twi_device_t PA2 = {.fanPin = FAN_PA2, .paPin = PA_ENABLE_2, .channel = 2, .name = (uint8_t*)_PA2};								//
@@ -38,26 +39,26 @@ twi_device_t INA_BTS = {.addrTWI = I2C_BTS};
 twi_device_t INA_PERIPHERY = {.addrTWI = I2C_PERIPHERY};
 
 regs_t REGISTERS = {.nmGpsWifiPpsState = 0x00, .paState = 0, .dcDcState = 0xf800, .resetWifiGpsNmState = 0x06, .ledChState = 0, .ledFanState = 0};				//on wifi, freset and reset wifi on
+power_leds_t POWER_LEDS1, POWER_LEDS2, POWER_LEDS3;
 
 void main_ledFanFunc(void);
 void setIp(uint8_t* buff, uint8_t value);
 
 
 int main(void) {
-	pArrOfLedsvalGlobal = umtsOneArrLeds;
 	pGate = buffer_GATE;
 	pSub = buffer_SUB;
 	pIpSource = buffer_IP_source;
 	
-	POWER_LEDS_t POWER_LEDS1 = {.ledValueRender = 1, .fp = (fpGeneric)powerLedPtrTable[0], .adcValue = &ADC_PA_OUT_1.value, .pin = LED_POWER_1};
-	POWER_LEDS_t POWER_LEDS2 = {.ledValueRender = 1, .fp = (fpGeneric)powerLedPtrTable[0], .adcValue = &ADC_PA_OUT_2.value, .pin = LED_POWER_2};
-	POWER_LEDS_t POWER_LEDS3 = {.ledValueRender = 1, .fp = (fpGeneric)powerLedPtrTable[0], .adcValue = &ADC_PA_OUT_3.value, .pin = LED_POWER_3};
+	POWER_LEDS1 = (power_leds_t){.ledBit = 1, .fp = (fpGeneric)ledsTable[0], .adcValueO = &ADC_PA_OUT_1.value, .adcValueBW = &ADC_PA_BW_1.value, .pin = LED_POWER_1, .pArrLedSt = arrLed1U};
+	POWER_LEDS2 = (power_leds_t){.ledBit = 1, .fp = (fpGeneric)ledsTable[0], .adcValueO = &ADC_PA_OUT_2.value, .adcValueBW = &ADC_PA_BW_2.value, .pin = LED_POWER_2, .pArrLedSt = arrLed1U};
+	POWER_LEDS3 = (power_leds_t){.ledBit = 1, .fp = (fpGeneric)ledsTable[0], .adcValueO = &ADC_PA_OUT_3.value, .adcValueBW = &ADC_PA_BW_3.value, .pin = LED_POWER_3, .pArrLedSt = arrLed1U};
 	
 	read_eeprom();
 	init_all();
 	fpProgModeVar = (fpProgMode)(fpProgModeTable[0]);			//choose when power off
-	blinkFuncPtr = (fpStatusLed)(blinkPtrTable[2]);				//speed of led blinking
-	fanLedFuncPtr = (fpFanLed)(lightPtrTable[0]);				//fan led light green
+	blinkFuncPtr = (fpStatusLed)(blinkLedTable[2]);				//speed of led blinking
+	fanLedFuncPtr = (fpFanLed)(ledFanTable[0]);					//fan led light green
 	
 	spi_startAnime();
 	//spi_resetRegs();
@@ -108,23 +109,23 @@ void main_ledFanFunc(void){
 	if (i++ == 0x3fff){
 		if (latch == 0) {
 			if ((PA1.temperBuff[0] == 0 && PA1.isValid) || (PA2.temperBuff[0] == 0 && PA2.isValid) || (PA3.temperBuff[0] == 0 && PA3.isValid) || (PA4.temperBuff[0] == 0 && PA4.isValid)){
-				fanLedFuncPtr = (fpFanLed)(lightPtrTable[4]);				//fan led blink all
+				fanLedFuncPtr = (fpFanLed)(ledFanTable[4]);				//fan led blink all
 			}
 			else if (PA1.temperBuff[0] >= TEMP_SHUTDOWN || PA2.temperBuff[0] >= TEMP_SHUTDOWN || PA3.temperBuff[0] >= TEMP_SHUTDOWN || PA4.temperBuff[0] >= TEMP_SHUTDOWN) {
-				fanLedFuncPtr = (fpFanLed)(lightPtrTable[3]);				//fan led blink red
+				fanLedFuncPtr = (fpFanLed)(ledFanTable[3]);				//fan led blink red
 				latch = 1;
-				utils_sendAnswerDebug(DEBUG_CH, _OVER_TEMP, 0, 0);
+				utils_sendDebugPGM(DEBUG_CH, _OVER_TEMP, 0, 0);
 				command_exec(0x1a);
 				paOffAll();
 			}
 			else if (PA1.temperBuff[0] >= TEMP_RED || PA2.temperBuff[0] >= TEMP_RED || PA3.temperBuff[0] >= TEMP_RED || PA4.temperBuff[0] >= TEMP_RED) {
-				fanLedFuncPtr = (fpFanLed)(lightPtrTable[2]);				//fan led light red
+				fanLedFuncPtr = (fpFanLed)(ledFanTable[2]);				//fan led light red
 			}
 			else if (!PA1.fanState && !PA2.fanState && !PA3.fanState && !PA4.fanState){
-				fanLedFuncPtr = (fpFanLed)(lightPtrTable[0]);				//fan led light green
+				fanLedFuncPtr = (fpFanLed)(ledFanTable[0]);				//fan led light green
 			}
 			else if (PA1.temperBuff[0] >= TEMP_YELLOW || PA2.temperBuff[0] >= TEMP_YELLOW || PA3.temperBuff[0] >= TEMP_YELLOW || PA4.temperBuff[0] >= TEMP_YELLOW) {
-				fanLedFuncPtr = (fpFanLed)(lightPtrTable[1]);				//fan led light yellow
+				fanLedFuncPtr = (fpFanLed)(ledFanTable[1]);				//fan led light yellow
 			}
 		}
 		i = 0;
@@ -138,22 +139,22 @@ void sendMode(){
 		if (i++ == 0x1fff) {
 			//_delay_ms(5);
 			w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_IP_source_1);				//set destination ip for udp
-			utils_sendAnswer(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
+			utils_sendAnswerMain(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
 
 			_delay_ms(5);
 			w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_IP_source_2);				//set destination ip for udp
-			utils_sendAnswer(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
+			utils_sendAnswerMain(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
 
 			_delay_ms(5);
 			w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_IP_source_3);				//set destination ip for udp
-			utils_sendAnswer(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
+			utils_sendAnswerMain(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
 
 			_delay_ms(5);
 			w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_IP_source_4);				//set destination ip for udp
-			utils_sendAnswer(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
+			utils_sendAnswerMain(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
 
 			_delay_ms(5);
-			utils_sendAnswerDebug(DEBUG_CH, _SHUT_DOWN, 0, 0);
+			utils_sendDebugPGM(DEBUG_CH, _SHUT_DOWN, 0, 0);
 			i = 0;
 			k++;
 		}
@@ -169,7 +170,7 @@ void offMode(){
 	static uint8_t k;
 	if (k != 10) {
 		if (i++ == 0x0fff) {
-			utils_sendAnswerDebug(DEBUG_CH, _INA_CURRENT, utils_hex2ArrayToDecAscii4Array(INA_BTS.currentBuff), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_CURRENT, utils_hex2ArrayToDecAscii4Array(INA_BTS.currentBuff), 4);
 			if (((INA_BTS.currentBuff[0] << 8) | (INA_BTS.currentBuff[1])) <= SHUTDOWN_LEVEL){
 				command_exec(0x71);
 			}

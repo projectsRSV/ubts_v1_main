@@ -49,7 +49,7 @@
 
 #define BUFFER_SIZE				256		//only 256, if not add	 fifo.tail &= BUFFER_SIZE-1
 #define BUFF_SIZE_COMM_DATA		145
-#define FILTER_SAMPLES			32
+#define FILTER_SAMPLES			16
 
 #define BAUD_RATE_OUT			115200
 #define BAUD_RATE_GPS			9600
@@ -143,8 +143,8 @@
 
 #define TEMP_SHUTDOWN			72
 #define TEMP_RED				67
-#define TEMP_YELLOW				52
-#define TEMP_GREEN				48
+#define TEMP_YELLOW				48
+#define TEMP_GREEN				42
 
 #endif /* DEFINES_H_ */
 

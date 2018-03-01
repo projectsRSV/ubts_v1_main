@@ -9,13 +9,16 @@
 #include "w5200.h"
 #include "commands.h"
 
-extern uint16_t *pArrOfLedsvalGlobal;
-extern uint16_t umtsOneArrLeds[];
-extern uint16_t lteOneArrLeds[];
+extern uint16_t arrLed1U[];
+extern uint16_t arrLed2U[];
+extern uint16_t arrLed3U[];
+extern uint16_t arrLed1L[];
+extern uint16_t arrLed2L[];
 
 
-void utils_sendAnswerDebug(uint8_t ch,const uint8_t *wordPGM,uint8_t *buff, uint8_t length);
-void utils_sendAnswer(uint8_t ch,uint8_t *word,uint8_t *buff, uint8_t length);
+void utils_sendDebugPGM(uint8_t ch,const uint8_t *wordPGM,uint8_t *buff, uint8_t length);
+void utils_sendDebug(uint8_t ch, uint8_t *word, uint8_t, uint8_t *buff, uint8_t length);
+void utils_sendAnswerMain(uint8_t ch,uint8_t *word,uint8_t *buff, uint8_t length);
 uint8_t* utils_hex8ToDecAscii16(uint8_t hex);
 uint8_t* utils_hex8ToAscii16(uint8_t hex);
 uint8_t* utils_hex16ToAscii32(uint16_t hex);
@@ -31,7 +34,7 @@ void utils_fastBlink();
 void utils_middleBlink();
 void utils_slowBlink();
 //extern const fpBlinkLed blinkPtrTable[] PROGMEM;
-extern fpStatusLed blinkPtrTable[];
+extern fpStatusLed blinkLedTable[];
 	
 typedef void (*fpFanLed)(void);
 fpFanLed fanLedFuncPtr;
@@ -40,13 +43,13 @@ void utils_yellowLight();
 void utils_redLight();
 void utils_redBLink();
 void utils_allBLink();
-extern fpFanLed lightPtrTable[];	
+extern fpFanLed ledFanTable[];	
 	
-typedef void (*fpPowerLed)(POWER_LEDS_t*);
-void utils_powerLedNormal(POWER_LEDS_t*);
-void utils_powerLedEmergencyBW(POWER_LEDS_t*);
-void utils_powerLedEmergencyOverPower(POWER_LEDS_t*);
-extern fpPowerLed powerLedPtrTable[];
+typedef void (*fpPowerLed)(power_leds_t*);
+void utils_powerLedNormal(power_leds_t*);
+void utils_powerLedEmergencyBW(power_leds_t*);
+void utils_powerLedEmergencyPower(power_leds_t*);
+extern fpPowerLed ledsTable[];
 
 
 void utils_switchFan(twi_device_t* sensor);
@@ -56,9 +59,9 @@ void paOffAll(void);
 void utils_avgValue(ANALOG_INPUT_t* filter, uint16_t newValue);
 uint8_t* utils_hex16ToDecAscii32(uint16_t hex);
  
-extern POWER_LEDS_t POWER_LEDS1;
-extern POWER_LEDS_t POWER_LEDS2;
-extern POWER_LEDS_t POWER_LEDS3;
+extern power_leds_t POWER_LEDS1;
+extern power_leds_t POWER_LEDS2;
+extern power_leds_t POWER_LEDS3;
 
 static inline bool utils_isFifoEmpty(fifo_t* buff){
 	if (buff->head == buff->tail) return true;
