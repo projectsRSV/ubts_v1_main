@@ -14,6 +14,7 @@ extern uint16_t arrLed2U[];
 extern uint16_t arrLed3U[];
 extern uint16_t arrLed1L[];
 extern uint16_t arrLed2L[];
+extern uint16_t arrLed3L[];
 
 
 void utils_sendDebugPGM(uint8_t ch,const uint8_t *wordPGM,uint8_t *buff, uint8_t length);

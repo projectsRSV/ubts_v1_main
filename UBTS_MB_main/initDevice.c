@@ -81,6 +81,7 @@ void startDCs(){
 	//volatile uint8_t temp = findDuplicate();
 	command_exec(0x70);						//holding power on
 	commutator_decoder(0x00);				//set default commutator
+	command_exec(0x01);						//on gps
 }
 void init_all(){
 	cli();

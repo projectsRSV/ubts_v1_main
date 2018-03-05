@@ -171,28 +171,40 @@ void utils_slowBlink(){
 	}
 }
 void utils_powerLedNormal(power_leds_t* ledStruct){
-	if (ledStruct->i++ == 0x1fff) {
+	const uint16_t COUNT = 0x1fff;
+	if (ledStruct->i_main++ == COUNT) {
 		if (ledStruct->pArrLedSt[ledStruct->arrayIndex] < *ledStruct->adcValueO){
 			if (ledStruct->arrayIndex < 6){
 				ledStruct->arrayIndex++;
 				ledStruct->ledBit |= (ledStruct->ledBit << 1);
-				//if (ledStruct->arrayIndex < 5){
+				if (ledStruct->arrayIndex <= 5){
 					spi_setReg(&SPID, &PORTH, ledStruct->ledBit >> 1, ledStruct->pin);
-				//}
+				}
 			}
-			else {
-				ledStruct->fp = (fpGeneric)ledsTable[1];
-			}
+			//else {
+			//ledStruct->fp = (fpGeneric)ledsTable[1];								//if over out power
+			//}
 		}
-		else if ((ledStruct->pArrLedSt[ledStruct->arrayIndex - 1] - 10) >= *ledStruct->adcValueO){
-			if (ledStruct->arrayIndex > 0){
+		else if (ledStruct->arrayIndex > 0){
+			if ((ledStruct->pArrLedSt[ledStruct->arrayIndex - 1] - 10) >= *ledStruct->adcValueO){
 				ledStruct->arrayIndex--;
 				ledStruct->ledBit = (ledStruct->ledBit >> 1);
 				spi_setReg(&SPID, &PORTH, ledStruct->ledBit >> 1, ledStruct->pin);
 			}
 		}
-		if (*ledStruct->adcValueBW >= ledStruct->pArrLedSt[7]) ledStruct->fp = (fpGeneric)ledsTable[2];		//check bw power value
-		ledStruct->i=0;
+		ledStruct->i_main=0;
+	}
+	else if (ledStruct->i_main == COUNT / 2){
+		if (*ledStruct->adcValueBW >= ledStruct->pArrLedSt[7]) {
+			if (ledStruct->i_out++ >= 5) ledStruct->fp = (fpGeneric)ledsTable[2];									//if over backward power
+		}
+		else ledStruct->i_out = 0;
+	}
+	else if (ledStruct->i_main == COUNT / 3){
+		if (*ledStruct->adcValueO >= ledStruct->pArrLedSt[6]) {
+			if (ledStruct->i_bw++ >= 5) ledStruct->fp = (fpGeneric)ledsTable[1];									//if over out power
+		}
+		else ledStruct->i_bw = 0;
 	}
 }
 void paOffAll(){
@@ -205,11 +217,12 @@ void utils_powerLedEmergencyBW(power_leds_t* ledStruct){
 		latch = 1;
 		utils_sendDebugPGM(DEBUG_CH, _OVER_POWER_BW, utils_hex16ToDecAscii32(*ledStruct->adcValueBW), 4);
 		paOffAll();
-		spi_setReg(&SPID, &PORTH, ledStruct->ledBit = 0x00, ledStruct->pin);
+		spi_setReg(&SPID, &PORTH, ledStruct->ledBit = 0x20, ledStruct->pin);
+		ledStruct->i_main = 0;
 	}
-	if (ledStruct->i++ == 0x09ff){
+	if (ledStruct->i_main++ >= 0x09ff){
 		spi_setReg(&SPID, &PORTH, ledStruct->ledBit ^= 0x20, ledStruct->pin);
-		ledStruct->i = 0;
+		ledStruct->i_main = 0;
 	}
 }
 void utils_powerLedEmergencyPower(power_leds_t* ledStruct){
@@ -218,11 +231,12 @@ void utils_powerLedEmergencyPower(power_leds_t* ledStruct){
 		latch = 1;
 		utils_sendDebugPGM(DEBUG_CH, _OVER_POWER, utils_hex16ToDecAscii32(*ledStruct->adcValueO), 4);
 		paOffAll();
-		spi_setReg(&SPID, &PORTH, ledStruct->ledBit = 0x00, ledStruct->pin);
+		spi_setReg(&SPID, &PORTH, ledStruct->ledBit = 0xff, ledStruct->pin);
+		ledStruct->i_main = 0;
 	}
-	if (ledStruct->i++ == 0x09ff){
+	if (ledStruct->i_main++ >= 0x09ff){
 		spi_setReg(&SPID, &PORTH, ledStruct->ledBit ^= 0xff, ledStruct->pin);
-		ledStruct->i=0;
+		ledStruct->i_main=0;
 	}
 }
 uint8_t utils_returnOrderedNum(uint8_t* interReg){
@@ -244,18 +258,18 @@ void utils_avgValue(ANALOG_INPUT_t* filter, uint16_t newValue){
 	filter->pos &= (FILTER_SAMPLES - 1);
 }
 void utils_greenLight(){
-	spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = LED_FAN_GREEN, MCU_SREG_LED_FAN);
+	spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = LED_FAN_G, MCU_SREG_LED_FAN);
 }
 void utils_yellowLight(){
-	spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = LED_FAN_YELL, MCU_SREG_LED_FAN);
+	spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = LED_FAN_Y, MCU_SREG_LED_FAN);
 }
 void utils_redLight(){
-	spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = LED_FAN_RED, MCU_SREG_LED_FAN);
+	spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = LED_FAN_R, MCU_SREG_LED_FAN);
 }
 void utils_redBLink(){
 	static uint16_t i;
 	if (i++ == 0x09ff){
-		spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState ^= LED_FAN_RED, MCU_SREG_LED_FAN);
+		spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState ^= LED_FAN_R, MCU_SREG_LED_FAN);
 		i=0;
 	}
 }
@@ -263,7 +277,7 @@ void utils_allBLink(){
 	static uint16_t i;
 	
 	if (i++ == 0x09ff){
-		spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = LED_FAN_RED | LED_FAN_GREEN | LED_FAN_YELL, MCU_SREG_LED_FAN);
+		spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = LED_FAN_R | LED_FAN_G | LED_FAN_Y, MCU_SREG_LED_FAN);
 	}
 	else if (i == 0x9ff * 2){
 		spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = 0, MCU_SREG_LED_FAN);

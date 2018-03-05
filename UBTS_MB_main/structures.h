@@ -76,7 +76,9 @@ typedef struct{
 	uint8_t arrayIndex;
 	uint8_t ledBit;
 	//uint16_t value;
-	uint16_t i;
+	uint16_t i_main;
+	uint8_t i_out;
+	uint8_t i_bw;
 	uint16_t *adcValueO;
 	uint16_t *adcValueBW;
 	uint8_t pin;

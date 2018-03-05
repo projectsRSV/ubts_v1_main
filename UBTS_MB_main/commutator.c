@@ -5,6 +5,7 @@
 static inline uint16_t* getArrayOfLeds(uint8_t standart, uint8_t isDouble){
 	if (standart == 'L' && isDouble == 1) return arrLed1L;
 	else if (standart == 'L' && isDouble == 2) return arrLed2L;
+	else if (standart == 'L' && isDouble == 3) return arrLed3L;
 	else if (standart == 'U' && isDouble == 1) return arrLed1U;
 	else if (standart == 'U' && isDouble == 2) return arrLed2U;
 	else return arrLed3U;
@@ -516,7 +517,6 @@ bool commutator_decoder(uint8_t address){
 		}
 		case 0x29:{
 			_4_off();
-			//if (COMMUTATOR.standart_ch_1 == 'L' && COMMUTATOR.standart_ch_2 == 'L' && COMMUTATOR.standart_ch_3 == 'U'){
 			if (COMMUTATOR.standart_ch_1 == COMMUTATOR.standart_ch_2){
 				_1_1();
 				_2_1();

@@ -102,6 +102,13 @@ void spi_startAnime(){
 		spi_setReg(&SPID, &PORTH, ledValueRender >> 1, LED_CH_REG);
 		_delay_ms(START_ANIME_PAUSE);
 	}
+	spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = LED_FAN_G, MCU_SREG_LED_FAN);
+	_delay_ms(START_ANIME_PAUSE);
+	spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState |= LED_FAN_Y, MCU_SREG_LED_FAN);
+	_delay_ms(START_ANIME_PAUSE);
+	spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState |= LED_FAN_R, MCU_SREG_LED_FAN);
+	_delay_ms(START_ANIME_PAUSE);
+	
 	spi_setRegDouble(&SPID, &PORTJ, REGISTERS.dcDcState | (1 << FAN_BACK), MCU_C4_CS0_SREG);
 	_delay_ms(START_ANIME_PAUSE * 2);
 	spi_setRegDouble(&SPID, &PORTJ, REGISTERS.dcDcState, MCU_C4_CS0_SREG);
@@ -127,4 +134,5 @@ void spi_startAnime(){
 	spi_setReg(&SPID, &PORTH, 0, LED_POWER_2);
 	spi_setReg(&SPID, &PORTH, 0, LED_POWER_3);
 	spi_setReg(&SPID, &PORTH, 0, LED_CH_REG);
+	spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = 0, MCU_SREG_LED_FAN);
 }

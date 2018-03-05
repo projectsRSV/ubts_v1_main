@@ -12,7 +12,7 @@
 #define RESET_SECTION			0x0000
 
 //#define DEBUG					0
-#define START_ANIME_PAUSE		100
+#define START_ANIME_PAUSE		500
 #define SHUTDOWN_LEVEL			116
 
 #define MAIN_CH			0
@@ -130,9 +130,9 @@
 #define LED_CH2				(1 << 1)
 #define LED_CH3				(1 << 2)
 #define LED_CH4				(1 << 3)
-#define LED_FAN_GREEN		(1 << 5)
-#define LED_FAN_YELL		(1 << 6)
-#define LED_FAN_RED			(1 << 7)
+#define LED_FAN_G		(1 << 5)
+#define LED_FAN_Y		(1 << 6)
+#define LED_FAN_R			(1 << 7)
 
 //**************************************************
 
