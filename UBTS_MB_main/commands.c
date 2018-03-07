@@ -125,16 +125,16 @@ void command_exec(uint8_t command){
 			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%12*", utils_hex16ToAscii32(ADC_PA_OUT_3.value), 4);
 			break;
 		}
-		case 0x13:{																													//pa4 out power adc
+		/*case 0x13:{																													//pa4 out power adc
 			utils_sendDebugPGM(DEBUG_CH, _ADC_OUT_PA_4, utils_hex16ToDecAscii32(ADC_PA_OUT_4.value), 4);
 			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%13*", utils_hex16ToAscii32(ADC_PA_OUT_4.value), 4);
 			break;
-		}
+		}*/
 		case 0x14:{																													//all pa out power adc
 			command_exec(0x10);
 			command_exec(0x11);
 			command_exec(0x12);
-			command_exec(0x13);
+			//command_exec(0x13);
 			break;
 		}
 		case 0x15:{																													//read serial number of the device
@@ -157,17 +157,17 @@ void command_exec(uint8_t command){
 			utils_sendDebugPGM(DEBUG_CH, _Tpa3, utils_hex8ToDecAscii16(PA3.temperBuff[0]), 2);
 			break;
 		}
-		case 0x19:{																													//temp pa3
+		/*case 0x19:{																													//temp pa3
 			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%19*", utils_hexArrayToAsciiArray(PA4.temperBuff, 2), 2);
 			utils_sendDebugPGM(DEBUG_CH, _Tpa4, utils_hex8ToDecAscii16(PA4.temperBuff[0]), 2);
 			break;
-		}
+		}*/
 		case 0x1a:{																													//temp all
 			command_exec(0x04);
 			command_exec(0x16);
 			command_exec(0x17);
 			command_exec(0x18);
-			command_exec(0x19);
+			//command_exec(0x19);
 			break;
 		}
 		case 0x1b:{																													//pa1 bw power adc
@@ -185,16 +185,16 @@ void command_exec(uint8_t command){
 			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%1d*", utils_hex16ToAscii32(ADC_PA_BW_3.value), 4);
 			break;
 		}
-		case 0x1e:{																													//pa4 bw power adc
+		/*case 0x1e:{																													//pa4 bw power adc
 			utils_sendDebugPGM(DEBUG_CH, _ADC_BW_PA_4, utils_hex16ToDecAscii32(ADC_PA_BW_4.value), 4);
 			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%1e*", utils_hex16ToAscii32(ADC_PA_BW_4.value), 4);
 			break;
-		}
+		}*/
 		case 0x1f:{																													//all pa bw power adc
 			command_exec(0x1b);
 			command_exec(0x1c);
 			command_exec(0x1d);
-			command_exec(0x1e);
+			//command_exec(0x1e);
 			break;
 		}
 		/*case 0x20:{																												//write command %20*
@@ -322,13 +322,13 @@ void command_exec(uint8_t command){
 			utils_sendDebugPGM(DEBUG_CH, _PA3_ISACTIVE, utils_hex8ToAscii16(PA3.isValid), 2);
 			break;
 		}
-		case 0x7a:{																									//read all PA info
+		/*case 0x7a:{																									//read all PA info
 			utils_sendDebugPGM(DEBUG_CH, _PA4_ADDR, utils_hex8ToAscii16(PA4.addrTWI), 2);
 			utils_sendDebugPGM(DEBUG_CH, _PA4_BAND, utils_hex8ToAscii16(PA4.band), 2);
 			utils_sendDebugPGM(DEBUG_CH, _PA4_FANPIN, utils_hex8ToAscii16(PA4.fanPin), 2);
 			utils_sendDebugPGM(DEBUG_CH, _PA4_ISACTIVE, utils_hex8ToAscii16(PA4.isValid), 2);
 			break;
-		}
+		}*/
 		//********************************************************************************************************
 		case 0xaa:{																//%aa,x,Yyy,z*	- x-input channel, Y-standart, yy-band, z-on or off
 			uint8_t band = utils_ascii16ToHex8(COMMAND.buffer[4] << 8 | COMMAND.buffer[5]);
@@ -405,16 +405,16 @@ void setChInCommutator(uint8_t inChannel, uint8_t paNum, uint8_t standart, uint8
 }
 uint8_t getPaNum(uint8_t band){
 	uint8_t temp = 0;
-	if (PA1.band == band && PA1.isValid){
+	if (PA1.band == band && PA1.isValid == 1){
 		temp |= PA1.channel;
 	}
-	if (PA2.band == band && PA2.isValid) {
+	if (PA2.band == band && PA2.isValid == 1) {
 		temp |= PA2.channel;
 	}
-	if (PA3.band == band && PA3.isValid) {
+	if (PA3.band == band && PA3.isValid == 1) {
 		temp |= PA3.channel;
 	}
-	if (PA4.band == band && PA4.isValid) {
+	if (PA4.band == band && PA4.isValid == 1) {
 		temp |= PA4.channel;
 	}
 	return temp;
@@ -426,7 +426,7 @@ void setPaState(uint8_t temp){
 	paOn(&PA4, temp & 0x08);
 }
 void paOn(twi_device_t* pPa, bool isOn){
-	if (isOn && pPa->isValid)	{
+	if (isOn && pPa->isValid == 1)	{
 		spi_setReg(&SPIC, &PORTK, REGISTERS.paState |= (1 << pPa->paPin), MCU_SREG_PA);
 		spi_setReg(&SPID, &PORTH, REGISTERS.ledChState |= (1 << pPa->paPin), LED_CH_REG);
 		pPa->isOnState = 1;
@@ -503,7 +503,7 @@ static inline uint8_t command_scanTwi(twi_device_t* pPA){
 		pPA->addrTWI++;
 	}
 	
-	if (!pPA->isValid) pPA->addrTWI = 0;
+	if (pPA->isValid != 1) pPA->addrTWI = 0;
 	return pPA->addrTWI;
 }
 void tunePa(){

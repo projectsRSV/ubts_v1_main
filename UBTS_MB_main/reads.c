@@ -21,8 +21,8 @@ void read_adc() {
 		adc_readData(&_ADCA, ADC_CH_3);				//pa2 bw
 		adc_readData(&_ADCA, ADC_CH_4);				//pa3 out
 		adc_readData(&_ADCA, ADC_CH_5);				//pa3 bw
-		adc_readData(&_ADCA, ADC_CH_6);				//pa4 bw
-		adc_readData(&_ADCA, ADC_CH_7);				//pa4 out
+		//adc_readData(&_ADCA, ADC_CH_6);				//pa4 bw
+		//adc_readData(&_ADCA, ADC_CH_7);				//pa4 out
 		i=0;
 	}
 }
@@ -133,17 +133,17 @@ void read_eeprom() {
 	PA1.addrTWI = read_eeprByte(I2C_PA0_EEPR);
 	PA2.addrTWI = read_eeprByte(I2C_PA1_EEPR);
 	PA3.addrTWI = read_eeprByte(I2C_PA2_EEPR);
-	PA4.addrTWI = read_eeprByte(I2C_PA3_EEPR);
+	//PA4.addrTWI = read_eeprByte(I2C_PA3_EEPR);
 	
 	PA1.band = read_eeprByte(BAND_PA0_EEPR);
 	PA2.band = read_eeprByte(BAND_PA1_EEPR);
 	PA3.band = read_eeprByte(BAND_PA2_EEPR);
-	PA4.band = read_eeprByte(BAND_PA3_EEPR);
+	//PA4.band = read_eeprByte(BAND_PA3_EEPR);
 	
 	PA1.isValid = read_eeprByte(VALID_PA0_EEPR);
 	PA2.isValid = read_eeprByte(VALID_PA1_EEPR);
 	PA3.isValid = read_eeprByte(VALID_PA2_EEPR);
-	PA4.isValid = read_eeprByte(VALID_PA3_EEPR);
+	//PA4.isValid = read_eeprByte(VALID_PA3_EEPR);
 	
 	COMMUTATOR.sreg4_state_att = read_eeprByte(ATT_1_EEPR) | read_eeprByte(ATT_3_EEPR) << 8;
 	COMMUTATOR.sreg5_state_att = read_eeprByte(ATT_2_EEPR) | read_eeprByte(ATT_4_EEPR) << 8;
@@ -186,7 +186,7 @@ void read_twiSensors() {
 	}
 	else if (i == COUNT / 3){
 		twi_start(&TWIF, &PA3, false, 1);
-		twi_start(&TWIF, &PA4, false, 1);
+		//twi_start(&TWIF, &PA4, false, 1);
 	}
 	else if (i == COUNT / 2){
 		twi_start(&TWIC, &BOARD, false, 1);

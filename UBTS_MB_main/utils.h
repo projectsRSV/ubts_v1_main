@@ -49,7 +49,7 @@ extern fpFanLed ledFanTable[];
 typedef void (*fpPowerLed)(power_leds_t*);
 void utils_powerLedNormal(power_leds_t*);
 void utils_powerLedEmergencyBW(power_leds_t*);
-void utils_powerLedEmergencyPower(power_leds_t*);
+void utils_powerLedEmergencyOutP(power_leds_t*);
 extern fpPowerLed ledsTable[];
 
 

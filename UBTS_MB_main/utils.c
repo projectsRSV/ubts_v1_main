@@ -5,7 +5,7 @@
 fpStatusLed blinkLedTable[] = {utils_fastBlink, utils_middleBlink, utils_slowBlink};
 fpFanLed ledFanTable[] = {utils_greenLight, utils_yellowLight, utils_redLight, utils_redBLink, utils_allBLink};
 
-fpPowerLed ledsTable[] = {utils_powerLedNormal, utils_powerLedEmergencyPower, utils_powerLedEmergencyBW};
+fpPowerLed ledsTable[] = {utils_powerLedNormal, utils_powerLedEmergencyOutP, utils_powerLedEmergencyBW};
 
 void utils_sendDebugPGM(uint8_t ch, const uint8_t *wordPGM, uint8_t *buff, uint8_t length){
 	while(pgm_read_byte(wordPGM)){
@@ -225,7 +225,7 @@ void utils_powerLedEmergencyBW(power_leds_t* ledStruct){
 		ledStruct->i_main = 0;
 	}
 }
-void utils_powerLedEmergencyPower(power_leds_t* ledStruct){
+void utils_powerLedEmergencyOutP(power_leds_t* ledStruct){
 	static uint8_t latch;
 	if (!latch){
 		latch = 1;
@@ -300,7 +300,7 @@ void utils_controlTempPA(twi_device_t* pa){
 	if (pa->i_temp++ == COUNT){
 		pa->i_temp=0;
 		uint8_t temperature = pa->temperBuff[0];
-		if (temperature == 0 && pa->isValid) pa->fanState = true;
+		if (temperature == 0 && pa->isValid == 1) pa->fanState = true;
 		else if (temperature >= TEMP_YELLOW) {
 			pa->fanState = true;
 		}

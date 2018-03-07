@@ -94,8 +94,8 @@ int main(void) {
 		utils_switchFan(&PA2);
 		utils_controlTempPA(&PA3);
 		utils_switchFan(&PA3);
-		utils_controlTempPA(&PA4);
-		utils_switchFan(&PA4);
+		//utils_controlTempPA(&PA4);
+		//utils_switchFan(&PA4);
 		utils_controlTempPA(&BOARD);
 		utils_switchFan(&BOARD);
 		
@@ -109,7 +109,8 @@ void main_ledFanFunc(void){
 	
 	if (i++ == 0x3fff){
 		if (latch == 0) {
-			if ((PA1.temperBuff[0] == 0 && PA1.isValid) || (PA2.temperBuff[0] == 0 && PA2.isValid) || (PA3.temperBuff[0] == 0 && PA3.isValid) || (PA4.temperBuff[0] == 0 && PA4.isValid)){
+			if ((PA1.temperBuff[0] == 0 && PA1.isValid == 1) || (PA2.temperBuff[0] == 0 && PA2.isValid == 1) || 
+			(PA3.temperBuff[0] == 0 && PA3.isValid == 1) || (PA4.temperBuff[0] == 0 && PA4.isValid == 1)){
 				fanLedFuncPtr = (fpFanLed)(ledFanTable[4]);				//fan led blink all
 			}
 			else if (PA1.temperBuff[0] >= TEMP_SHUTDOWN || PA2.temperBuff[0] >= TEMP_SHUTDOWN || PA3.temperBuff[0] >= TEMP_SHUTDOWN || PA4.temperBuff[0] >= TEMP_SHUTDOWN) {
