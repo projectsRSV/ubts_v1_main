@@ -27,6 +27,17 @@ void read_adc() {
 	}
 }
 void read_isrW5200() {
+	if (ISR_W5200.connect) {
+		if(ISR_W5200.main) {
+			utils_sendDebugPGM(MAIN_CH, _START, 0, 0);
+			ISR_W5200.main = 0;
+		}
+		if(ISR_W5200.debug) {
+			utils_sendDebugPGM(DEBUG_CH, _START, 0, 0);
+			ISR_W5200.debug = 0;
+		}
+		ISR_W5200.connect = 0;
+	}
 	if (ISR_W5200.nm) {
 		w5200_recvDataFifo(NM_CH, &FIFO_nmChRx);
 		ISR_W5200.nm = 0;

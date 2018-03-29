@@ -269,7 +269,11 @@ void utils_redLight(){
 void utils_redBLink(){
 	static uint16_t i;
 	if (i++ == 0x09ff){
-		spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState ^= LED_FAN_R, MCU_SREG_LED_FAN);
+		spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = LED_FAN_R, MCU_SREG_LED_FAN);
+		i=0;
+	}
+	else if (i == 0x9ff * 2){
+		spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = 0, MCU_SREG_LED_FAN);
 		i=0;
 	}
 }

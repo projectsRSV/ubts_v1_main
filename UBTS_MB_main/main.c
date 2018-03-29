@@ -137,9 +137,9 @@ void mainMode(){}															//
 void sendMode(){
 	static uint16_t i;
 	static uint8_t k;
-	if (k != 5) {
-		if (i++ == 0x1fff) {
-			//_delay_ms(5);
+	if (k <= 5) {
+		if (i++ >= 0x0fff) {
+			/*_delay_ms(5);
 			w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_IP_source_1);				//set destination ip for udp
 			utils_sendAnswerMain(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
 
@@ -153,10 +153,11 @@ void sendMode(){
 
 			_delay_ms(5);
 			w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_IP_source_4);				//set destination ip for udp
-			utils_sendAnswerMain(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
+			utils_sendAnswerMain(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack*/
 
-			_delay_ms(5);
+			_delay_ms(50);
 			utils_sendDebugPGM(DEBUG_CH, _SHUT_DOWN, 0, 0);
+			_delay_ms(50);
 			i = 0;
 			k++;
 		}

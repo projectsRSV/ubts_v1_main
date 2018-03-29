@@ -114,6 +114,7 @@ typedef struct{
 	uint8_t main;
 	uint8_t debug;
 	uint8_t udp;
+	uint8_t connect;
 }isr_w5200;
 
 //ANALOG_INPUT_t ADC_DET_0, ADC_DET_1, ADC_DET_2, ADC_DET_3, ADC_DET_4, ADC_DET_5, ADC_DET_6, ADC_DET_7;

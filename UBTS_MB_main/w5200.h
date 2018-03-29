@@ -32,7 +32,7 @@ void w5200_init(void);
 
 
 uint8_t w5200_readStatus(uint8_t ch);
-uint8_t w5200_readSocketInt(uint8_t ch);
+uint8_t w5200_readSn_IR(uint8_t ch);
 uint8_t w5200_readInterChann();
 uint8_t w5200_readInterrupt();
 void w5200_openSocket(uint8_t ch);

@@ -92,13 +92,19 @@ void command_exec(uint8_t command){
 			utils_sendDebugPGM(DEBUG_CH, _INA_POWER, utils_hex2ArrayToDecAscii4Array(INA_PERIPHERY.powerBuff), 4);
 			break;
 		}
-		case 0x0d:{																													//
-			command_exec(0x07);
-			command_exec(0x08);
-			command_exec(0x09);
-			command_exec(0x0a);
-			command_exec(0x0b);
-			command_exec(0x0c);
+		case 0x0d:{
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%07*", utils_hexArrayToAsciiArray(INA_BTS.voltageBuff, 2), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_VOLT, utils_hex2ArrayToDecAscii4Array(INA_BTS.voltageBuff), 4);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%08*", utils_hexArrayToAsciiArray(INA_BTS.currentBuff, 2), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_CURRENT, utils_hex2ArrayToDecAscii4Array(INA_BTS.currentBuff), 4);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%09*", utils_hexArrayToAsciiArray(INA_BTS.powerBuff, 2), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_POWER, utils_hex2ArrayToDecAscii4Array(INA_BTS.powerBuff), 4);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%0a*", utils_hexArrayToAsciiArray(INA_PERIPHERY.voltageBuff, 2), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_VOLT, utils_hex2ArrayToDecAscii4Array(INA_PERIPHERY.voltageBuff), 4);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%0b*", utils_hexArrayToAsciiArray(INA_PERIPHERY.currentBuff, 2), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_CURRENT, utils_hex2ArrayToDecAscii4Array(INA_PERIPHERY.currentBuff), 4);
+			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%0c*", utils_hexArrayToAsciiArray(INA_PERIPHERY.powerBuff, 2), 4);
+			utils_sendDebugPGM(DEBUG_CH, _INA_POWER, utils_hex2ArrayToDecAscii4Array(INA_PERIPHERY.powerBuff), 4);
 			break;
 		}
 		case 0x0f:{																													//set start wifi
@@ -126,15 +132,19 @@ void command_exec(uint8_t command){
 			break;
 		}
 		/*case 0x13:{																													//pa4 out power adc
-			utils_sendDebugPGM(DEBUG_CH, _ADC_OUT_PA_4, utils_hex16ToDecAscii32(ADC_PA_OUT_4.value), 4);
-			utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%13*", utils_hex16ToAscii32(ADC_PA_OUT_4.value), 4);
-			break;
+		utils_sendDebugPGM(DEBUG_CH, _ADC_OUT_PA_4, utils_hex16ToDecAscii32(ADC_PA_OUT_4.value), 4);
+		utils_sendAnswerMain(MAIN_CH, (uint8_t*)"\n%13*", utils_hex16ToAscii32(ADC_PA_OUT_4.value), 4);
+		break;
 		}*/
 		case 0x14:{																													//all pa out power adc
-			command_exec(0x10);
-			command_exec(0x11);
-			command_exec(0x12);
-			//command_exec(0x13);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%04*", utils_hexArrayToAsciiArray(BOARD.temperBuff, 2), 2);
+			utils_sendDebugPGM(DEBUG_CH, _Tboard, utils_hex8ToDecAscii16(BOARD.temperBuff[0]), 2);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_OUT_PA_1, utils_hex16ToDecAscii32(ADC_PA_OUT_1.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%10*", utils_hex16ToAscii32(ADC_PA_OUT_1.value), 4);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_OUT_PA_2, utils_hex16ToDecAscii32(ADC_PA_OUT_2.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%11*", utils_hex16ToAscii32(ADC_PA_OUT_2.value), 4);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_OUT_PA_3, utils_hex16ToDecAscii32(ADC_PA_OUT_3.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%12*", utils_hex16ToAscii32(ADC_PA_OUT_3.value), 4);
 			break;
 		}
 		case 0x15:{																													//read serial number of the device
@@ -158,16 +168,17 @@ void command_exec(uint8_t command){
 			break;
 		}
 		/*case 0x19:{																													//temp pa3
-			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%19*", utils_hexArrayToAsciiArray(PA4.temperBuff, 2), 2);
-			utils_sendDebugPGM(DEBUG_CH, _Tpa4, utils_hex8ToDecAscii16(PA4.temperBuff[0]), 2);
-			break;
+		utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%19*", utils_hexArrayToAsciiArray(PA4.temperBuff, 2), 2);
+		utils_sendDebugPGM(DEBUG_CH, _Tpa4, utils_hex8ToDecAscii16(PA4.temperBuff[0]), 2);
+		break;
 		}*/
 		case 0x1a:{																													//temp all
-			command_exec(0x04);
-			command_exec(0x16);
-			command_exec(0x17);
-			command_exec(0x18);
-			//command_exec(0x19);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%16*", utils_hexArrayToAsciiArray(PA1.temperBuff, 2), 2);
+			utils_sendDebugPGM(DEBUG_CH, _Tpa1, utils_hex8ToDecAscii16(PA1.temperBuff[0]), 2);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%17*", utils_hexArrayToAsciiArray(PA2.temperBuff, 2), 2);
+			utils_sendDebugPGM(DEBUG_CH, _Tpa2, utils_hex8ToDecAscii16(PA2.temperBuff[0]), 2);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%18*", utils_hexArrayToAsciiArray(PA3.temperBuff, 2), 2);
+			utils_sendDebugPGM(DEBUG_CH, _Tpa3, utils_hex8ToDecAscii16(PA3.temperBuff[0]), 2);
 			break;
 		}
 		case 0x1b:{																													//pa1 bw power adc
@@ -186,14 +197,17 @@ void command_exec(uint8_t command){
 			break;
 		}
 		/*case 0x1e:{																													//pa4 bw power adc
-			utils_sendDebugPGM(DEBUG_CH, _ADC_BW_PA_4, utils_hex16ToDecAscii32(ADC_PA_BW_4.value), 4);
-			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%1e*", utils_hex16ToAscii32(ADC_PA_BW_4.value), 4);
-			break;
+		utils_sendDebugPGM(DEBUG_CH, _ADC_BW_PA_4, utils_hex16ToDecAscii32(ADC_PA_BW_4.value), 4);
+		utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%1e*", utils_hex16ToAscii32(ADC_PA_BW_4.value), 4);
+		break;
 		}*/
 		case 0x1f:{																													//all pa bw power adc
-			command_exec(0x1b);
-			command_exec(0x1c);
-			command_exec(0x1d);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_BW_PA_1, utils_hex16ToDecAscii32(ADC_PA_BW_1.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%1b*", utils_hex16ToAscii32(ADC_PA_BW_1.value), 4);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_BW_PA_2, utils_hex16ToDecAscii32(ADC_PA_BW_2.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%1c*", utils_hex16ToAscii32(ADC_PA_BW_2.value), 4);
+			utils_sendDebugPGM(DEBUG_CH, _ADC_BW_PA_3, utils_hex16ToDecAscii32(ADC_PA_BW_3.value), 4);
+			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%1d*", utils_hex16ToAscii32(ADC_PA_BW_3.value), 4);
 			//command_exec(0x1e);
 			break;
 		}
@@ -323,11 +337,11 @@ void command_exec(uint8_t command){
 			break;
 		}
 		/*case 0x7a:{																									//read all PA info
-			utils_sendDebugPGM(DEBUG_CH, _PA4_ADDR, utils_hex8ToAscii16(PA4.addrTWI), 2);
-			utils_sendDebugPGM(DEBUG_CH, _PA4_BAND, utils_hex8ToAscii16(PA4.band), 2);
-			utils_sendDebugPGM(DEBUG_CH, _PA4_FANPIN, utils_hex8ToAscii16(PA4.fanPin), 2);
-			utils_sendDebugPGM(DEBUG_CH, _PA4_ISACTIVE, utils_hex8ToAscii16(PA4.isValid), 2);
-			break;
+		utils_sendDebugPGM(DEBUG_CH, _PA4_ADDR, utils_hex8ToAscii16(PA4.addrTWI), 2);
+		utils_sendDebugPGM(DEBUG_CH, _PA4_BAND, utils_hex8ToAscii16(PA4.band), 2);
+		utils_sendDebugPGM(DEBUG_CH, _PA4_FANPIN, utils_hex8ToAscii16(PA4.fanPin), 2);
+		utils_sendDebugPGM(DEBUG_CH, _PA4_ISACTIVE, utils_hex8ToAscii16(PA4.isValid), 2);
+		break;
 		}*/
 		//********************************************************************************************************
 		case 0xaa:{																//%aa,x,Yyy,z*	- x-input channel, Y-standart, yy-band, z-on or off

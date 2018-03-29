@@ -56,10 +56,6 @@ void spi_setRegDouble(SPI_t* spi, PORT_t *port, uint16_t data, uint8_t pin){
 	port->OUTCLR=pin;
 }
 void spi_resetRegs(){
-	//spi_setRegDouble(&SPID, &PORTJ, 0, MCU_C4_CS0_SREG);				//dc-dc on bts all;
-	//spi_setReg(&SPIC, &PORTK, 0, MCU_SREG_NM_GPS);
-	//spi_setReg(&SPIC, &PORTQ, 0, MCU_SREG_Reset);
-	//spi_setReg(&SPIC, &PORTK, 0, MCU_SREG_PA);
 	
 	spi_sendData(&SPIC,0);
 	spi_sendData(&SPID,0);

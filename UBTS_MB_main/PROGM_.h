@@ -103,7 +103,7 @@ extern const uint8_t _START[] PROGMEM;
 extern const uint8_t _JMP_BOOTLOADER[] PROGMEM;
 extern const uint8_t _MCU_REBOOT[] PROGMEM;
 extern const uint8_t _ERROR[] PROGMEM;
-extern const const uint8_t _SHUT_DOWN[] PROGMEM;
+extern const uint8_t _SHUT_DOWN[] PROGMEM;
 extern const uint8_t _COMBINATION[] PROGMEM;
 extern const uint8_t _OVER_TEMP[] PROGMEM;
 extern const uint8_t _OVER_POWER[] PROGMEM;

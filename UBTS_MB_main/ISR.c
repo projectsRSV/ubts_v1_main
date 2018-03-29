@@ -11,36 +11,39 @@ void ISR_init(void){
 
 /***************interrupt vectors******************/
 ISR(PORTF_INT0_vect){
-	uint8_t ch, interReg, socketInt;
-	uint8_t flags = utils_irqSave();
+	volatile uint8_t ch;
+	uint8_t interReg;
+	volatile uint8_t socketInt;
+	volatile uint8_t flags = utils_irqSave();
 	
 	//blinkFuncPtr = (fpStatusLed)(blinkPtrTable[0]);				//speed of led blinking
-
-	interReg = w5200_readInterChann() & 0x1f;
+	socketInt = w5200_readInterrupt();
+	interReg = w5200_readInterChann();
 	while(interReg){
 		ch = utils_returnOrderedNum(&interReg);
-		socketInt = w5200_readSocketInt(ch);
+		socketInt = w5200_readSn_IR(ch);
 		switch (socketInt) {
 			case 0x02:{														//disconnect
 				w5200_writeByte(Sn_IR(ch), socketInt);
 				w5200_discSocket(ch);
 				w5200_openSocket(ch);
+				break;
 			}
-			break;
 			case 0x04:{														//receive
-				w5200_writeByte(Sn_IR(ch), socketInt);
 				if(ch == NM_CH) ISR_W5200.nm = 1;
 				if(ch == MAIN_CH) ISR_W5200.main = 1;
 				if(ch == DEBUG_CH) ISR_W5200.debug = 1;
-				if (ch == UDP_CH) ISR_W5200.udp = 1; 
+				if (ch == UDP_CH) ISR_W5200.udp = 1;
+				w5200_writeByte(Sn_IR(ch), socketInt);
 				break;
 			}
 			default:{
-				w5200_writeByte(Sn_IR(ch), socketInt);
 				if (socketInt & 0x01){
-					if(ch == MAIN_CH) utils_sendDebugPGM(MAIN_CH, _START, 0, 0);
-					if(ch == DEBUG_CH) utils_sendDebugPGM(DEBUG_CH, _START, 0, 0);
+					ISR_W5200.connect = 1;
+					if(ch == MAIN_CH) ISR_W5200.main = 1;
+					if(ch == DEBUG_CH) ISR_W5200.debug = 1;
 				}
+				w5200_writeByte(Sn_IR(ch), socketInt);
 				break;
 			}
 		}

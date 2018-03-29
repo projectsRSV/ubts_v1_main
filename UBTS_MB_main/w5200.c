@@ -2,10 +2,11 @@
 
 void w5200_init(void){
 	uint8_t reset = 0x80;
-	uint8_t IMR = 0x1f;
+	uint8_t IMR = 0xff;					//0x1f
 	//uint8_t buffer_RTR[]={0x01,0xe8};
 	//uint8_t buffer_RCR[]={0x08};
 	uint8_t IMR2 = 0x00;
+	uint8_t PHY = 0x00;
 	uint8_t MR_TCP = 0x01;
 	uint8_t MR_UDP = 0x02 | 0x00;
 	
@@ -30,7 +31,7 @@ void w5200_init(void){
 	_delay_ms(1);
 	w5200_writeData(IMR_W5200, 1, &IMR);
 	w5200_writeData(IMR2_W5200, 1, &IMR2);
-	w5200_writeData(PHY_STATUS, 1, &IMR2);
+	w5200_writeData(PHY_STATUS, 1, &PHY);
 	w5200_writeData(MAC, 6, buffer_MAC);						//set mac address
 	//w5200_writeData(0x3031,2,buffer_INTLEVEL);
 	//w5200_writeData(RTR_W5200,2,buffer_RTR);
@@ -149,6 +150,7 @@ uint16_t getSn_RegValue(uint16_t reg){
 	} while (val != val1);
 	return val;
 }
+/*
 void w5200_sendData(uint8_t ch, uint8_t *buff, uint16_t length){
 	uint16_t ptr;
 	uint16_t upperSizeByte;
@@ -174,7 +176,7 @@ void w5200_sendData(uint8_t ch, uint8_t *buff, uint16_t length){
 	w5200_writeByte(Sn_TX_WR(ch),ptr>>8);
 	w5200_writeByte(Sn_TX_WR(ch) + 1,ptr);
 	w5200_writeByte(Sn_CR(ch),0x20);									//send command
-}
+}*/
 void w5200_sendDataFifo(uint8_t ch,fifo_t *buff){
 	uint16_t ptr;
 	uint16_t upperSizeByte;
@@ -201,7 +203,9 @@ void w5200_sendDataFifo(uint8_t ch,fifo_t *buff){
 	w5200_writeByte(Sn_TX_WR(ch),ptr>>8);
 	w5200_writeByte(Sn_TX_WR(ch) + 1,ptr);
 	w5200_writeByte(Sn_CR(ch),0x20);									//send command
+	_delay_ms(1);
 }
+/*
 uint16_t w5200_recvData(uint8_t ch,uint8_t *buff){
 	uint16_t ptr;
 	uint16_t length;
@@ -230,7 +234,7 @@ uint16_t w5200_recvData(uint8_t ch,uint8_t *buff){
 	w5200_writeByte(Sn_RX_RD(ch) + 1,ptr);
 	w5200_writeByte(Sn_CR(ch),0x40);									//receive command
 	return length;
-}
+}*/
 void w5200_recvDataFifo(uint8_t ch,fifo_t *fifo){
 	uint16_t ptr;
 	uint16_t length;
@@ -268,7 +272,7 @@ void w5200_openSocket(uint8_t ch){
 	w5200_writeByte(Sn_CR(ch),0x01);									//open command
 	w5200_writeByte(Sn_CR(ch),0x02);									//listen command
 }
-uint8_t w5200_readSocketInt(uint8_t ch){
+uint8_t w5200_readSn_IR(uint8_t ch){
 	return w5200_readByte(Sn_IR(ch));
 }
 uint8_t w5200_readInterChann(){
