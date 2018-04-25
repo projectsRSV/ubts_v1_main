@@ -13,11 +13,11 @@
 #include "utils.h"
 
 
-extern uint8_t buffer_GATE[];
-extern uint8_t buffer_SUB[];
-extern uint8_t buffer_IP_source[];
+extern uint8_t buffer_gate[];
+extern uint8_t buffer_mask[];
+extern uint8_t buffer_ip[];
 extern uint8_t buffer_SOCKET_main[];
-extern uint8_t *pGate, *pSub, *pIpSource;
+extern uint8_t *pGate, *pMask, *pIp;
 
 void w5200_readData(uint16_t addr,uint16_t length,uint8_t* buffer);
 void w5200_writeData(uint16_t addr,uint16_t length,uint8_t* buff);

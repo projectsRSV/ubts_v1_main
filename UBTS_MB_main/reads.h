@@ -13,10 +13,13 @@
 
 
 void read_twiSensors();
-void read_gps();
+void read_sendGps();
 void read_sendNMAnswer();
 void read_sendNMCommand();
 void read_mainCommand();
+void read_sendMainAnswer();
+void read_sendDebugAnswer();
+void read_debugCommand();
 void read_adc();
 
 extern uint8_t commands_decoder(fifo_t*);

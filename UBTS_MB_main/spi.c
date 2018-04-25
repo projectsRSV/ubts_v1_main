@@ -38,19 +38,42 @@ void spi_xmega_set_baud_div(SPI_t *spi, uint32_t baudrate, uint32_t clkper_hz){
 
 	spi->CTRL = (spi->CTRL & ~(SPI_CLK2X_bm | SPI_PRESCALER_gm)) | ctrl;
 }
+uint8_t spi_sendData(SPI_t* spi, uint8_t data){
+	uint16_t count = 0x0000;
+	if (spi == &SPIC || spi == &SPIE || spi == &SPID){
+		spi->DATA = data;
+		while((spi->STATUS & SPI_IF_bm) != SPI_IF_bm) {
+			if (count++ >= 0xffff){
+				return 0x40;
+			}
+		}
+		return spi->DATA;
+	}
+	else return 0x40;
+}
+uint8_t spi_recvData(SPI_t* spi, uint8_t data){
+	if (spi == &SPIC || spi == &SPIE || spi == &SPID){
+		spi->DATA = 0;
+		while((spi->STATUS & SPI_IF_bm) != SPI_IF_bm) {};
+		return spi->DATA;
+	}
+	else {
+		return 0x40;
+	}
+}
 void spi_setReg(SPI_t* spi, PORT_t *port, uint8_t data, uint8_t pin){
 	spi_sendData(spi, data);
 	
-	_delay_us(1);
+	_delay_us(5);
 	port->OUTSET=pin;
 	_delay_us(5);
 	port->OUTCLR=pin;
 }
 void spi_setRegDouble(SPI_t* spi, PORT_t *port, uint16_t data, uint8_t pin){
 	spi_sendData(spi, data >> 8);
-	spi_sendData(spi, data);
+	spi_sendData(spi, (uint8_t)data);
 	
-	_delay_us(1);
+	_delay_us(10);
 	port->OUTSET=pin;
 	_delay_us(10);
 	port->OUTCLR=pin;

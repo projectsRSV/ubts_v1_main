@@ -17,7 +17,7 @@ extern uint16_t arrLed2L[];
 extern uint16_t arrLed3L[];
 
 
-void utils_sendDebugPGM(uint8_t ch,const uint8_t *wordPGM,uint8_t *buff, uint8_t length);
+void utils_sendDebugPGM(uint8_t ch, const uint8_t *wordPGM, uint8_t *buff, uint8_t length);
 void utils_sendDebug(uint8_t ch, uint8_t *word, uint8_t, uint8_t *buff, uint8_t length);
 void utils_sendAnswerMain(uint8_t ch,uint8_t *word,uint8_t *buff, uint8_t length);
 uint8_t* utils_hex8ToDecAscii16(uint8_t hex);
@@ -27,6 +27,8 @@ uint8_t* utils_hexArrayToAsciiArray(uint8_t* hex, uint8_t length);
 uint8_t utils_ascii16ToHex8(uint16_t ascii);
 uint8_t utils_returnOrderedNum(uint8_t* interReg);
 uint8_t* utils_hex2ArrayToDecAscii4Array(uint8_t* hex);
+//void utils_sendDebPgmLen(uint8_t ch, const uint8_t *wordPGM, uint8_t pgmLen, uint8_t *buff, uint8_t length);
+
 
 
 typedef void (*fpStatusLed)(void);
@@ -36,7 +38,7 @@ void utils_middleBlink();
 void utils_slowBlink();
 //extern const fpBlinkLed blinkPtrTable[] PROGMEM;
 extern fpStatusLed blinkLedTable[];
-	
+
 typedef void (*fpFanLed)(void);
 fpFanLed fanLedFuncPtr;
 void utils_greenLight();
@@ -44,8 +46,8 @@ void utils_yellowLight();
 void utils_redLight();
 void utils_redBLink();
 void utils_allBLink();
-extern fpFanLed ledFanTable[];	
-	
+extern fpFanLed ledFanTable[];
+
 typedef void (*fpPowerLed)(power_leds_t*);
 void utils_powerLedNormal(power_leds_t*);
 void utils_powerLedEmergencyBW(power_leds_t*);
@@ -59,7 +61,7 @@ void paOffAll(void);
 
 void utils_avgValue(ANALOG_INPUT_t* filter, uint16_t newValue);
 uint8_t* utils_hex16ToDecAscii32(uint16_t hex);
- 
+
 extern power_leds_t POWER_LEDS1;
 extern power_leds_t POWER_LEDS2;
 extern power_leds_t POWER_LEDS3;

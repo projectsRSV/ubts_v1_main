@@ -46,6 +46,7 @@ bool commutator_decoder(uint8_t address){
 		}
 		case 0x04:{
 			_1_off();
+			_2_off();
 			_3_off();
 			_4_off();
 			_2_1();
@@ -859,7 +860,7 @@ void _1_3(){
 }
 void _1_off(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
-	COMMUTATOR.sreg2_state_tx &= ~0b00010011;
+	COMMUTATOR.sreg2_state_tx &= ~0b11000011;
 	COMMUTATOR.sreg3_state_tx &= ~0b01010000;
 	if (!checkInChannelState()) {
 		COMMUTATOR.sreg1_state_tx &= ~0b11100000;
@@ -919,8 +920,8 @@ void _2_1(){
 	utils_sendDebug(DEBUG_CH, (uint8_t*)&COMMUTATOR.standart_ch_2, 1, 0, 0);
 }
 void _2_2(){
-	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
-	COMMUTATOR.sreg1_state_tx |=  0b01000000;
+	//COMMUTATOR.sreg1_state_tx &= ~0b00011111;
+	COMMUTATOR.sreg1_state_tx =  0b01000000;
 
 	COMMUTATOR.sreg2_state_tx &= ~0b00100011;
 	COMMUTATOR.sreg2_state_tx |=  0b00010000;
@@ -954,10 +955,11 @@ void _2_2(){
 	utils_sendDebug(DEBUG_CH, (uint8_t*)&COMMUTATOR.standart_ch_2, 1, 0, 0);
 }
 void _2_3(){
-	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
-	COMMUTATOR.sreg1_state_tx |=  0b10000000;
+	//COMMUTATOR.sreg1_state_tx &= ~0b00011111;
+	COMMUTATOR.sreg1_state_tx =  0b10000000;
 
 	COMMUTATOR.sreg2_state_tx &= ~0b00110011;
+	//COMMUTATOR.sreg2_state_tx |=  0b00000100;
 
 	COMMUTATOR.sreg3_state_tx &= ~0b10101000;
 	COMMUTATOR.sreg3_state_tx |=  0b00000100;
@@ -1210,7 +1212,7 @@ void _4_off(){
 	utils_sendDebugPGM(DEBUG_CH, _4_OFF, 0, 0);
 }
 void setAttCommutator(uint16_t value4, uint16_t value5){										//value4 = 0xTTee - TT-ch3, ee-ch1; value5 = 0xYYuu   YY-ch4, uu-ch2
-	
+
 	spi_setRegDouble(&SPID, &PORTF, COMMUTATOR.sreg4_state_att + value4, ST_SREG_SPI_4);
 	spi_setRegDouble(&SPID, &PORTK, COMMUTATOR.sreg5_state_att + value5, ST_SREG_SPI_5);
 	utils_sendAnswerMain(DEBUG_CH, (uint8_t*)"\ns4= ", utils_hex16ToAscii32((COMMUTATOR.sreg4_state_att + value4) >> 1), 4);

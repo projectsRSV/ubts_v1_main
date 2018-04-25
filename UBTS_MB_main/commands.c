@@ -369,6 +369,8 @@ void command_exec(uint8_t command){
 			read_writeEEPROMBuff(STRING_e8, COMMAND.buffer, COMMAND.length);
 			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%e7*", COMMAND.buffer, COMMAND.length);
 			utils_sendAnswerMain(DEBUG_CH,(uint8_t*)"\n%e7*", COMMAND.buffer, COMMAND.length);
+			read_eeprBuff(LENGTH_e8, &COMMAND_e8.length, 1);
+			read_eeprBuff(STRING_e8, COMMAND_e8.buffer, COMMAND_e8.length);
 			break;
 		}
 		case 0xe8:{																													//read command %e8*
@@ -379,7 +381,7 @@ void command_exec(uint8_t command){
 		/**************************************/
 		case 0xfe:{																								//jump to bootloader
 			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%fe*", 0, 0);
-			utils_sendDebugPGM(DEBUG_CH, _JMP_BOOTLOADER, 0, 0);
+			//utils_sendDebugPGM(DEBUG_CH, _JMP_BOOTLOADER, 0, 0);
 			_delay_ms(500);
 			pBootloader=(void(*)())BOOT_SECTION;
 			EIND = 1;
@@ -388,7 +390,7 @@ void command_exec(uint8_t command){
 		}
 		case 0xff:{																								//mcu reboot
 			utils_sendAnswerMain(MAIN_CH,(uint8_t*)"\n%ff*", 0, 0);
-			utils_sendDebugPGM(DEBUG_CH, _MCU_REBOOT, 0, 0);
+			//utils_sendDebugPGM(DEBUG_CH, _MCU_REBOOT, 0, 0);
 			_delay_ms(500);
 			pBootloader=(void(*)())RESET_SECTION;
 			EIND = 0;

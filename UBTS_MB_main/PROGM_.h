@@ -99,7 +99,12 @@ extern const uint8_t _NM_OFF[] PROGMEM;
 extern const uint8_t _WIFI_ON[] PROGMEM;
 extern const uint8_t _WIFI_OFF[] PROGMEM;
 
-extern const uint8_t _START[] PROGMEM;
+extern const uint8_t _OPEN_MAIN[] PROGMEM;
+extern const uint8_t _OPEN_NM[] PROGMEM;
+extern const uint8_t _OPEN_DEBUG[] PROGMEM;
+extern const uint8_t _OPEN_GPS[] PROGMEM;
+extern const uint8_t _OPEN_UDP[] PROGMEM;
+extern const uint8_t _CLOSE[] PROGMEM;
 extern const uint8_t _JMP_BOOTLOADER[] PROGMEM;
 extern const uint8_t _MCU_REBOOT[] PROGMEM;
 extern const uint8_t _ERROR[] PROGMEM;

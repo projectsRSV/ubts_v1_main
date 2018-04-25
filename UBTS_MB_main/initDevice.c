@@ -47,10 +47,10 @@ void init_port(){
 	//PORTCFG.CLKEVOUT=PORTCFG_CLKOUT_PE7_gc;
 	PORTF.DIR=0xff;
 	PORTF.OUT=0x00;
-	PORTF.INTCTRL = PORT_INT0LVL_MED_gc;		//PORT_INT0LVL_LO_gc;
-	PORTF.DIRCLR=PIN2_bm;						//set input for interrupt from w5200
-	PORTF.INT0MASK=PIN2_bm;
-	PORTF.PIN2CTRL = PORT_OPC_PULLUP_gc | PORT_ISC_LEVEL_gc;
+	//PORTF.INTCTRL = PORT_INT0LVL_MED_gc;		//PORT_INT0LVL_LO_gc;
+	//PORTF.DIRCLR=PIN2_bm;						//set input for interrupt from w5200
+	//PORTF.INT0MASK=PIN2_bm;
+	//PORTF.PIN2CTRL = PORT_OPC_PULLUP_gc | PORT_ISC_LEVEL_gc;
 	//PORTF.PIN2CTRL = PORT_OPC_PULLUP_gc | PORT_ISC_FALLING_gc;
 	PORTF.OUTSET=PIN3_bm;						//set 1 for reset w5200
 	PORTF.PIN3CTRL=PORT_OPC_PULLUP_gc;			//reset w5200
@@ -60,7 +60,7 @@ void init_port(){
 	
 	PORTJ.DIR=0xff;
 	PORTJ.OUT=0x00;
-	PORTJ.INTCTRL = PORT_INT0LVL_MED_gc;				//set input for interrupt from dc-dc on-off button
+	PORTJ.INTCTRL = PORT_INT0LVL_LO_gc;				//set input for interrupt from dc-dc on-off button
 	PORTJ.DIRCLR = PIN5_bm;						
 	PORTJ.INT0MASK = PIN5_bm;
 	PORTJ.PIN5CTRL = PORT_ISC_FALLING_gc;
@@ -112,9 +112,9 @@ void init_all(){
 }
 void reset_w5200(){
 	RESET_w5200_on;
-	_delay_us(2);
+	_delay_us(4);
 	RESET_w5200_off;
-	_delay_ms(150);
+	_delay_ms(200);
 }
 void init_ina(){
 	//////////////////////////////////////////ina bts//////////////////////////////////////////

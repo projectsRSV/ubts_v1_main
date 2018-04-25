@@ -4,6 +4,7 @@
 
 
 //#define COMMON_BASE						0x0000
+#define	RX_MASK							0x07ff			//2048 - 1
 #define CH_BASE                         0x4000
 #define CH_SIZE							0x0100
 #define Sn_MR(ch)			(CH_BASE + ch * CH_SIZE + 0x0000)
@@ -35,8 +36,8 @@
 #define Sn_RX_RSR(ch)		(CH_BASE + ch * CH_SIZE + 0x0026)
 #define Sn_RX_RD(ch)		(CH_BASE + ch * CH_SIZE + 0x0028)
 #define Sn_RX_WR(ch)		(CH_BASE + ch * CH_SIZE + 0x002A)
-#define RX_BASE_ADDR(ch)		(ch * 2048 + 0xc000)
-#define TX_BASE_ADDR(ch)		(ch * 2048 + 0x8000)
+#define RX_BASE(ch)		(ch * (RX_MASK + 1) + 0xc000)
+#define TX_BASE(ch)		(ch * (RX_MASK + 1) + 0x8000)
 
 
 #define MR_W5200		0x0000
@@ -51,6 +52,8 @@
 #define IR2_W5200		0x0034
 #define PHY_STATUS		0x0035
 #define IMR2_W5200		0x0036
+#define INT_W5200		0x3031
+
 
 //#define	SOCKET_CR		0x4001
 //#define	SOCKET_IR		0x4002
@@ -67,18 +70,29 @@
 //#define	Sn_TX_WR		0x4024
 
 
-//#define	RX_BASE_ADDR	0xc000
-//#define	TX_BASE_ADDR	0x8000
+//#define	RX_BASE	0xc000
+//#define	TX_BASE	0x8000
 
-#define	BUFFER_MASK		0x07ff
+
 
 #define _READ				0x00
 #define _WRITE				0x80
 
+#define _OPEN_COMMAND			0x01
+#define _LISTEN_COMMAND			0x02
+//#define _CONNECT_COMMAND		0x04
+#define _DISCONNECT_COMMAND		0x08
+#define _CLOSE_COMMAND			0x10
+#define _SEND_COMMAND			0x20
+#define _RECV_COMMAND			0x40
 
 
-
-
+#define _SOCK_CLOSED					0x00
+#define _SOCK_INIT					0x13
+#define _SOCK_LISTEN				0x14
+#define _SOCK_CONNECT				0x17
+#define _SOCK_UDP					0x22
+#define _SOCK_CLOSE_WAIT			0x1c
 
 
 

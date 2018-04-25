@@ -12,20 +12,28 @@
 #define RESET_SECTION			0x0000
 
 //#define DEBUG					0
-#define START_ANIME_PAUSE		500
+#define START_ANIME_PAUSE		100
 #define SHUTDOWN_LEVEL			116
 
-#define MAIN_CH			0
-#define DEBUG_CH		1
-#define GPS_CH			2
-#define NM_CH			3
-#define UDP_CH			4
+//////*********************************************************************//////
+#define MAIN_CH				0
+#define DEBUG_CH			1
+#define NM_CH				2
+#define UDP_CH				3
+#define GPS_CH				4
+
+#define MAIN_CH_h			0x01
+#define DEBUG_CH_h			0x02
+#define NM_CH_h				0x04
+#define UDP_CH_h			0x08
+#define GPS_CH_h			0x10
+
 #define MAIN_PORT		5000
 #define DEBUG_POR		5001
 #define GPS_PORT		4000
 #define NM_PORT			6000
 #define UDP_PORT		7000
-
+//////////////////////////////////////////////************************************
 
 #define  _ADCB					ADCB
 #define  _ADCA					ADCA
@@ -44,8 +52,10 @@
 #define RESET_w5200_off		PORTF.OUTSET=PIN3_bm
 #define INT_w5200			PORTF.IN&PIN2_bm
 
-#define TGL_RED_LED_left		PORTC.OUTTGL=PIN4_bm
-#define TGL_RED_LED_right		PORTD.OUTTGL=PIN4_bm
+#define TGL_RED_LED_left			PORTC.OUTTGL=PIN4_bm
+#define TGL_RED_LED_right			PORTD.OUTTGL=PIN4_bm
+#define RED_LED_OFF					PORTD.OUTSET=PIN4_bm, PORTC.OUTSET=PIN4_bm
+#define RED_LED_ON					PORTD.OUTCLR=PIN4_bm, PORTC.OUTCLR=PIN4_bm
 
 #define BUFFER_SIZE				256		//only 256, if not add	 fifo.tail &= BUFFER_SIZE-1
 #define BUFF_SIZE_COMM_DATA		145

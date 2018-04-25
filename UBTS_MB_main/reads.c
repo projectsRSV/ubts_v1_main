@@ -26,47 +26,133 @@ void read_adc() {
 		i=0;
 	}
 }
+/*
 void read_isrW5200() {
-	if (ISR_W5200.connect) {
-		if(ISR_W5200.main) {
-			utils_sendDebugPGM(MAIN_CH, _START, 0, 0);
-			ISR_W5200.main = 0;
+if(ISR_W5200.conMain) {
+utils_sendDebugPGM(DEBUG_CH, _OPEN_MAIN, 0, 0);
+ISR_W5200.conMain = 0;
+}
+if(ISR_W5200.conDebug) {
+utils_sendDebugPGM(DEBUG_CH, _OPEN_DEBUG, 0, 0);
+ISR_W5200.conDebug = 0;
+}
+if(ISR_W5200.conNm) {
+utils_sendDebugPGM(DEBUG_CH, _OPEN_NM, 0, 0);
+ISR_W5200.conNm = 0;
+}
+if(ISR_W5200.conGps) {
+utils_sendDebugPGM(DEBUG_CH, _OPEN_GPS, 0, 0);
+ISR_W5200.conGps = 0;
+}
+}*/
+static void read_sendW5200State(uint8_t ch){
+	uint8_t status;
+	status = w5200_readStatus(ch);
+	switch(status){
+		case _SOCK_CLOSED:{
+			utils_sendDebugPGM(DEBUG_CH, _CLOSE, 0, 0);
+			w5200_openSocket(ch);
+			if(ch == MAIN_CH) {
+				utils_sendDebugPGM(DEBUG_CH, _OPEN_MAIN, 0, 0);
+			}
+			else if(ch == DEBUG_CH) {
+				utils_sendDebugPGM(DEBUG_CH, _OPEN_DEBUG, 0, 0);
+			}
+			else if(ch == NM_CH) {
+				utils_sendDebugPGM(DEBUG_CH, _OPEN_NM, 0, 0);
+			}
+			else if(ch == GPS_CH) {
+				utils_sendDebugPGM(DEBUG_CH, _OPEN_GPS, 0, 0);
+			}
+			else if(ch == UDP_CH) {
+				utils_sendDebugPGM(DEBUG_CH, _OPEN_UDP, 0, 0);
+			}
+			break;
 		}
-		if(ISR_W5200.debug) {
-			utils_sendDebugPGM(DEBUG_CH, _START, 0, 0);
-			ISR_W5200.debug = 0;
+		case _SOCK_LISTEN:{
+			//blinkFuncPtr = (fpStatusLed)(blinkLedTable[2]);
+			break;
 		}
-		ISR_W5200.connect = 0;
-	}
-	if (ISR_W5200.nm) {
-		w5200_recvDataFifo(NM_CH, &FIFO_nmChRx);
-		ISR_W5200.nm = 0;
-	}
-	if (ISR_W5200.main) {
-		w5200_recvDataFifo(MAIN_CH, &FIFO_mainChRx);
-		ISR_W5200.main = 0;
-	}
-	if (ISR_W5200.debug) {
-		w5200_recvDataFifo(DEBUG_CH, &FIFO_mainChRx);
-		ISR_W5200.debug = 0;
-	}
-	if (ISR_W5200.udp) {
-		w5200_recvDataFifo(UDP_CH, &FIFO_mainChRx);
-		ISR_W5200.udp = 0;
+		case _SOCK_CONNECT:{
+			if(ch == MAIN_CH) {
+				if (!utils_isFifoEmpty(&FIFO_mainChTx)) {
+					w5200_sendDataFifo(ch, &FIFO_mainChTx);
+				}
+				w5200_recvDataFifo(ch, &FIFO_mainChRx);
+			}
+			else if(ch == GPS_CH) {
+				if (((FIFO_gpsCh.head - FIFO_gpsCh.tail) & 0x00ff) >= 200){
+					w5200_sendDataFifo(ch, &FIFO_gpsCh);
+				}
+			}
+			else if(ch == DEBUG_CH) {
+				if (!utils_isFifoEmpty(&FIFO_debugChTx)) {
+					w5200_sendDataFifo(ch, &FIFO_debugChTx);
+				}
+				w5200_recvDataFifo(ch, &FIFO_debugChRx);
+			}
+			else if(ch == NM_CH) {
+				if (!utils_isFifoEmpty(&FIFO_nmChTx)) {
+					w5200_sendDataFifo(ch, &FIFO_nmChTx);
+				}
+				w5200_recvDataFifo(ch, &FIFO_nmChTx);
+			}
+			else if(ch == UDP_CH) {
+			}
+			break;
+		}
+		case _SOCK_CLOSE_WAIT:{
+			//blinkFuncPtr = (fpStatusLed)(blinkLedTable[0]);
+			w5200_discSocket(ch);
+			break;
+		}
 	}
 }
-void read_gps() {
+void read_sendGps() {
 	static uint16_t i=0;
-	if (i++ == 0x07ff) {
-		if(!utils_isFifoEmpty(&FIFO_gpsCh)) {
-			w5200_sendDataFifo(GPS_CH,&FIFO_gpsCh);
+	if (i++ >= 0x00ff) {
+		read_sendW5200State(GPS_CH);
+		i = 0;
+	}
+}
+void read_sendMainAnswer() {
+	static uint16_t i=0;
+	if (i++ >= 0x2ff) {
+		read_sendW5200State(MAIN_CH);
+		i=0;
+	}
+}
+void read_sendDebugAnswer() {
+	static uint16_t i=0;
+	if (i++ >= 0x3ff) {
+		read_sendW5200State(DEBUG_CH);
+		i=0;
+	}
+}
+void read_mainCommand() {
+	static uint16_t i=0;
+	if (i++ >= 0x00ff) {
+		read_sendW5200State(MAIN_CH);
+		if (!utils_isFifoEmpty(&FIFO_mainChRx)) {
+			command_exec(commands_decoder(&FIFO_mainChRx));
+		}
+		i=0;
+	}
+}
+void read_debugCommand() {
+	static uint16_t i=0;
+	if (i++ >= 0x01ff) {
+		read_sendW5200State(DEBUG_CH);
+		if (!utils_isFifoEmpty(&FIFO_debugChRx)) {
+			command_exec(commands_decoder(&FIFO_debugChRx));
 		}
 		i=0;
 	}
 }
 void read_sendNMCommand() {
 	static uint8_t i=0;
-	if (i++ == 0xff) {
+	if (i++ >= 0xff) {
+		read_sendW5200State(NM_CH);
 		if (!utils_isFifoEmpty(&FIFO_nmChRx)) {
 			USARTD0.CTRLA |= USART_DREINTLVL0_bm;
 		}
@@ -75,19 +161,9 @@ void read_sendNMCommand() {
 }
 void read_sendNMAnswer() {
 	static uint8_t i=0;
-	if (i++ == 0xff) {
+	if (i++ >= 0xff) {
 		if (!utils_isFifoEmpty(&FIFO_nmChTx)) {
-			//usart_sendDataFifo(&USARTE0, &FIFO_nmChTx);
-			w5200_sendDataFifo(NM_CH, &FIFO_nmChTx);
-		}
-		i=0;
-	}
-}
-void read_mainCommand() {
-	static uint8_t i=0;
-	if (i++ == 0x7f) {
-		if (!utils_isFifoEmpty(&FIFO_mainChRx)) {
-			command_exec(commands_decoder(&FIFO_mainChRx));
+			read_sendW5200State(NM_CH);
 		}
 		i=0;
 	}
@@ -129,9 +205,9 @@ void read_writeEEPROMBuff(uint16_t addr, uint8_t* buff, uint8_t length) {
 }
 void read_eeprom() {
 	read_eeprBuff(SERIAL_NUM,buffer_serialNum,4);
-	read_eeprBuff(IP_SOURCE,buffer_IP_source,4);
-	read_eeprBuff(SUBNET_MASK,buffer_SUB,4);
-	read_eeprBuff(GATEWAY_ADDR,buffer_GATE,4);
+	read_eeprBuff(IP_SOURCE,buffer_ip,4);
+	read_eeprBuff(SUBNET_MASK,buffer_mask,4);
+	read_eeprBuff(GATEWAY_ADDR,buffer_gate,4);
 	read_eeprBuff(SOCKET+1,&buffer_SOCKET_main[0],1);
 	read_eeprBuff(SOCKET,&buffer_SOCKET_main[1],1);
 	/*read_eeprBuff(LENGTH_3d,&COMMAND_3d.length,1);
@@ -162,7 +238,7 @@ void read_eeprom() {
 	REGISTERS.nmGpsWifiPpsState = read_eeprByte(WIFI_ALWAYS_ON) << 6;
 }
 void read_twiSensors() {
-	const uint16_t COUNT = 0x3fff;
+	const uint16_t COUNT = 0x4fff;
 	static uint16_t i;
 	
 	if (i++ == 0){

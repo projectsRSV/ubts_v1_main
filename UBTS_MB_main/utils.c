@@ -8,32 +8,52 @@ fpFanLed ledFanTable[] = {utils_greenLight, utils_yellowLight, utils_redLight, u
 fpPowerLed ledsTable[] = {utils_powerLedNormal, utils_powerLedEmergencyOutP, utils_powerLedEmergencyBW};
 
 void utils_sendDebugPGM(uint8_t ch, const uint8_t *wordPGM, uint8_t *buff, uint8_t length){
-	while(pgm_read_byte(wordPGM)){
-		FIFO_mainChTx.data[FIFO_mainChTx.head++] = pgm_read_byte(wordPGM++);
+	if (ch == DEBUG_CH){
+		while(pgm_read_byte(wordPGM)){
+			FIFO_debugChTx.data[FIFO_debugChTx.head++] = pgm_read_byte(wordPGM++);
+		}
+		for (uint8_t i=0; i<length; i++){
+			FIFO_debugChTx.data[FIFO_debugChTx.head++] = buff[i];
+		}
 	}
-	for (uint8_t i=0; i<length; i++){
-		FIFO_mainChTx.data[FIFO_mainChTx.head++] = buff[i];
-	}
-	w5200_sendDataFifo(ch,&FIFO_mainChTx);
 }
 void utils_sendDebug(uint8_t ch, uint8_t *word, uint8_t lengthWord,	 uint8_t *buff, uint8_t length){
-	while(lengthWord--){
-		FIFO_mainChTx.data[FIFO_mainChTx.head++] = *word++;
+	if (ch == MAIN_CH){
+		while(lengthWord--){
+			FIFO_mainChTx.data[FIFO_mainChTx.head++] = *word++;
+		}
+		while (length--){
+			FIFO_mainChTx.data[FIFO_mainChTx.head++] = *buff++;
+		}
 	}
-	while (length--){
-		FIFO_mainChTx.data[FIFO_mainChTx.head++] = *buff++;
+	else if (ch == DEBUG_CH){
+		while(lengthWord--){
+			FIFO_debugChTx.data[FIFO_debugChTx.head++] = *word++;
+		}
+		while (length--){
+			FIFO_debugChTx.data[FIFO_debugChTx.head++] = *buff++;
+		}
 	}
-	w5200_sendDataFifo(ch, &FIFO_mainChTx);
 }
 void utils_sendAnswerMain(uint8_t ch, uint8_t *word, uint8_t *buff, uint8_t length){
-	for (uint8_t i=0; i<4; i++){
-		FIFO_mainChTx.data[FIFO_mainChTx.head++] = word[i];
+	if (ch == MAIN_CH){
+		for (uint8_t i=0; i<4; i++){
+			FIFO_mainChTx.data[FIFO_mainChTx.head++] = word[i];
+		}
+		for (uint8_t i=0; i<length; i++){
+			FIFO_mainChTx.data[FIFO_mainChTx.head++] = buff[i];
+		}
+		FIFO_mainChTx.data[FIFO_mainChTx.head++] = word[4];
 	}
-	for (uint8_t i=0; i<length; i++){
-		FIFO_mainChTx.data[FIFO_mainChTx.head++] = buff[i];
+	else if (ch == DEBUG_CH){
+		for (uint8_t i=0; i<4; i++){
+			FIFO_debugChTx.data[FIFO_debugChTx.head++] = word[i];
+		}
+		for (uint8_t i=0; i<length; i++){
+			FIFO_debugChTx.data[FIFO_debugChTx.head++] = buff[i];
+		}
+		FIFO_debugChTx.data[FIFO_debugChTx.head++] = word[4];
 	}
-	FIFO_mainChTx.data[FIFO_mainChTx.head++] = word[4];
-	w5200_sendDataFifo(ch,&FIFO_mainChTx);
 }
 uint8_t* utils_hex8ToDecAscii16(uint8_t hex){
 	uint8_t a=0,b=0,c=0;
@@ -270,7 +290,7 @@ void utils_redBLink(){
 	static uint16_t i;
 	if (i++ == 0x09ff){
 		spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = LED_FAN_R, MCU_SREG_LED_FAN);
-		i=0;
+		//i=0;
 	}
 	else if (i == 0x9ff * 2){
 		spi_setReg(&SPIC, &PORTQ, REGISTERS.ledFanState = 0, MCU_SREG_LED_FAN);
@@ -291,8 +311,8 @@ void utils_allBLink(){
 void utils_switchFan(twi_device_t* pa){
 	const uint16_t COUNT = 0x3fff;
 	
-	if (pa->i_fan++ == COUNT){
-		pa->i_fan=0;
+	if (pa->i_tempFan++ >= COUNT){
+		pa->i_tempFan=0;
 		if (pa->fanState) REGISTERS.dcDcState |= (1 << pa->fanPin);
 		else REGISTERS.dcDcState &= ~ (1 << pa->fanPin);
 		spi_setRegDouble(&SPID, &PORTJ, REGISTERS.dcDcState, MCU_C4_CS0_SREG);
@@ -301,8 +321,8 @@ void utils_switchFan(twi_device_t* pa){
 void utils_controlTempPA(twi_device_t* pa){
 	const uint16_t COUNT = 0x3fff;
 	
-	if (pa->i_temp++ == COUNT){
-		pa->i_temp=0;
+	if (pa->i_tempPA++ >= COUNT){
+		pa->i_tempPA=0;
 		uint8_t temperature = pa->temperBuff[0];
 		if (temperature == 0 && pa->isValid == 1) pa->fanState = true;
 		else if (temperature >= TEMP_YELLOW) {

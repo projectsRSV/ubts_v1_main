@@ -2,6 +2,7 @@
 #define COMMANDS_H_
 
 
+//#include <avr/pgmspace.h>
 #include "usart.h"
 #include "PROGM_.h"
 #include "w5200.h"
