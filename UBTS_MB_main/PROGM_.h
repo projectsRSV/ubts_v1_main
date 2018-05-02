@@ -27,7 +27,7 @@ extern const uint8_t _4_1P[] PROGMEM;
 extern const uint8_t _4_2P[] PROGMEM;
 extern const uint8_t _4_3P[] PROGMEM;
 extern const uint8_t _4_OFF[] PROGMEM;
-extern const uint8_t _COMM_ERR[] PROGMEM;
+extern const uint8_t _CHANN_ERR[] PROGMEM;
 extern const uint8_t _3_2100P[] PROGMEM;
 extern const uint8_t _4_2100P[] PROGMEM;
 
@@ -99,10 +99,10 @@ extern const uint8_t _NM_OFF[] PROGMEM;
 extern const uint8_t _WIFI_ON[] PROGMEM;
 extern const uint8_t _WIFI_OFF[] PROGMEM;
 
-extern const uint8_t _OPEN_MAIN[] PROGMEM;
-extern const uint8_t _OPEN_NM[] PROGMEM;
-extern const uint8_t _OPEN_DEBUG[] PROGMEM;
-extern const uint8_t _OPEN_GPS[] PROGMEM;
+extern const uint8_t _CONN_MAIN[] PROGMEM;
+extern const uint8_t _CONN_NM[] PROGMEM;
+extern const uint8_t _CONN_DEBUG[] PROGMEM;
+extern const uint8_t _CONN_GPS[] PROGMEM;
 extern const uint8_t _OPEN_UDP[] PROGMEM;
 extern const uint8_t _CLOSE[] PROGMEM;
 extern const uint8_t _JMP_BOOTLOADER[] PROGMEM;

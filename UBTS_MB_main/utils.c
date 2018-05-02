@@ -8,34 +8,18 @@ fpFanLed ledFanTable[] = {utils_greenLight, utils_yellowLight, utils_redLight, u
 fpPowerLed ledsTable[] = {utils_powerLedNormal, utils_powerLedEmergencyOutP, utils_powerLedEmergencyBW};
 
 void utils_sendDebugPGM(uint8_t ch, const uint8_t *wordPGM, uint8_t *buff, uint8_t length){
-	if (ch == DEBUG_CH){
-		while(pgm_read_byte(wordPGM)){
-			FIFO_debugChTx.data[FIFO_debugChTx.head++] = pgm_read_byte(wordPGM++);
-		}
-		for (uint8_t i=0; i<length; i++){
-			FIFO_debugChTx.data[FIFO_debugChTx.head++] = buff[i];
-		}
+	fifo_t *buffer;
+	if (ch == DEBUG_CH) buffer = &FIFO_debugChTx;
+	else buffer = &FIFO_mainChTx;
+	
+	while(pgm_read_byte(wordPGM)){
+		buffer->data[buffer->head++] = pgm_read_byte(wordPGM++);
+	}
+	for (uint8_t i=0; i<length; i++){
+		buffer->data[buffer->head++] = buff[i];
 	}
 }
-void utils_sendDebug(uint8_t ch, uint8_t *word, uint8_t lengthWord,	 uint8_t *buff, uint8_t length){
-	if (ch == MAIN_CH){
-		while(lengthWord--){
-			FIFO_mainChTx.data[FIFO_mainChTx.head++] = *word++;
-		}
-		while (length--){
-			FIFO_mainChTx.data[FIFO_mainChTx.head++] = *buff++;
-		}
-	}
-	else if (ch == DEBUG_CH){
-		while(lengthWord--){
-			FIFO_debugChTx.data[FIFO_debugChTx.head++] = *word++;
-		}
-		while (length--){
-			FIFO_debugChTx.data[FIFO_debugChTx.head++] = *buff++;
-		}
-	}
-}
-void utils_sendAnswerMain(uint8_t ch, uint8_t *word, uint8_t *buff, uint8_t length){
+void utils_sendAnswerMain(uint8_t ch, char *word, uint8_t *buff, uint8_t length){
 	if (ch == MAIN_CH){
 		for (uint8_t i=0; i<4; i++){
 			FIFO_mainChTx.data[FIFO_mainChTx.head++] = word[i];
@@ -46,15 +30,18 @@ void utils_sendAnswerMain(uint8_t ch, uint8_t *word, uint8_t *buff, uint8_t leng
 		FIFO_mainChTx.data[FIFO_mainChTx.head++] = word[4];
 	}
 	else if (ch == DEBUG_CH){
-		for (uint8_t i=0; i<4; i++){
+		for (uint8_t i=0; i<strlen(word); i++){
 			FIFO_debugChTx.data[FIFO_debugChTx.head++] = word[i];
 		}
 		for (uint8_t i=0; i<length; i++){
 			FIFO_debugChTx.data[FIFO_debugChTx.head++] = buff[i];
 		}
-		FIFO_debugChTx.data[FIFO_debugChTx.head++] = word[4];
 	}
 }
+void utils_sendStDebug(char *word){
+	FIFO_debugChTx.data[FIFO_debugChTx.head++] = *word;
+}
+
 uint8_t* utils_hex8ToDecAscii16(uint8_t hex){
 	uint8_t a=0,b=0,c=0;
 	static uint8_t pdec[2];
@@ -201,9 +188,6 @@ void utils_powerLedNormal(power_leds_t* ledStruct){
 					spi_setReg(&SPID, &PORTH, ledStruct->ledBit >> 1, ledStruct->pin);
 				}
 			}
-			//else {
-			//ledStruct->fp = (fpGeneric)ledsTable[1];								//if over out power
-			//}
 		}
 		else if (ledStruct->arrayIndex > 0){
 			if ((ledStruct->pArrLedSt[ledStruct->arrayIndex - 1] - 10) >= *ledStruct->adcValueO){
@@ -215,14 +199,14 @@ void utils_powerLedNormal(power_leds_t* ledStruct){
 		ledStruct->i_main=0;
 	}
 	else if (ledStruct->i_main == COUNT / 2){
-		if (*ledStruct->adcValueBW >= ledStruct->pArrLedSt[7]) {
-			if (ledStruct->i_out++ >= 5) ledStruct->fp = (fpGeneric)ledsTable[2];									//if over backward power
+		if (*ledStruct->adcValueBW > ledStruct->pArrLedSt[7]) {
+			if (ledStruct->i_out++ > PAUSE_OVER) ledStruct->fp = (fpGeneric)ledsTable[2];									//if over backward power
 		}
 		else ledStruct->i_out = 0;
 	}
 	else if (ledStruct->i_main == COUNT / 3){
-		if (*ledStruct->adcValueO >= ledStruct->pArrLedSt[6]) {
-			if (ledStruct->i_bw++ >= 5) ledStruct->fp = (fpGeneric)ledsTable[1];									//if over out power
+		if (*ledStruct->adcValueO > ledStruct->pArrLedSt[6]) {
+			if (ledStruct->i_bw++ > PAUSE_OVER) ledStruct->fp = (fpGeneric)ledsTable[1];									//if over out power
 		}
 		else ledStruct->i_bw = 0;
 	}

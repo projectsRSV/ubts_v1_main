@@ -86,7 +86,6 @@ typedef struct{
 	uint8_t pin;
 	fpGeneric fp;
 	uint16_t *pArrLedSt;
-	
 } power_leds_t;
 
 typedef struct{
@@ -106,18 +105,18 @@ typedef struct{
 	uint8_t ch_3;
 	uint8_t ch_4;
 	
-	uint8_t standart_ch_1;
-	uint8_t standart_ch_2;
-	uint8_t standart_ch_3;
-	uint8_t standart_ch_4;
+	uint8_t ch_1_band;
+	uint8_t ch_2_band;
+	uint8_t ch_3_band;
+	uint8_t ch_4_band;
+	
+	char standart_ch_1;
+	char standart_ch_2;
+	char standart_ch_3;
+	char standart_ch_4;
+
 }commut_regs_t;
-/*
 typedef struct{
-	uint8_t nm;
-	uint8_t main;
-	uint8_t debug;
-	uint8_t gps;
-	uint8_t udp;
 	uint8_t conNm;
 	uint8_t conMain;
 	uint8_t conDebug;
@@ -126,21 +125,16 @@ typedef struct{
 	uint8_t discMain;
 	uint8_t discDebug;
 	uint8_t discGps;
-	
-	//uint8_t statusClose;
-	//uint8_t statusOpen;
-	//uint8_t statusListen;
-	//uint8_t statusConnect;
-}isr_w5200;*/
+}isr_w5200;
 
 //ANALOG_INPUT_t ADC_DET_0, ADC_DET_1, ADC_DET_2, ADC_DET_3, ADC_DET_4, ADC_DET_5, ADC_DET_6, ADC_DET_7;
 ANALOG_INPUT_t ADC_PA_BW_1, ADC_PA_BW_2, ADC_PA_BW_3, ADC_PA_BW_4, ADC_PA_OUT_1, ADC_PA_OUT_2, ADC_PA_OUT_3, ADC_PA_OUT_4;
 //regs_t REGISTERS;
 BUFF_t COMMAND, COMMAND_3d, COMMAND_21, COMMAND_e8;
-fifo_t FIFO_gpsCh, FIFO_recUART, FIFO_nmChRx, FIFO_nmChTx, FIFO_mainChTx, FIFO_mainChRx, FIFO_debugChRx, FIFO_debugChTx;
+fifo_t FIFO_gpsCh, FIFO_recUART, FIFO_nmChRx, FIFO_nmChTx, FIFO_mainChTx, FIFO_mainChRx, FIFO_debugChRx, FIFO_debugChTx, FIFO_udpChTx, FIFO_udpChRx;
 transfer_t TRANSFER;
 commut_regs_t COMMUTATOR;
-//isr_w5200 ISR_W5200;
+isr_w5200 ISR_W5200;
 typedef void (*fpProgMode)(void);
 fpProgMode fpProgModeVar;
 void mainMode();

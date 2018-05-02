@@ -15,11 +15,6 @@ uint8_t buffer_SOCKET_main[2];
 uint8_t buffer_serialNum[4];
 uint8_t *pGate, *pMask, *pIp;
 
-//uint8_t buffer_IP_source_1[4];
-//uint8_t buffer_IP_source_2[4];
-//uint8_t buffer_IP_source_3[4];
-//uint8_t buffer_IP_source_4[4];
-
 uint8_t configBuff[2] = {0x47, 0xff};
 uint8_t calibBuff[2] = {0x02, 0x00};		//scale = 10A (max = 9.999A); 1mA/bit
 
@@ -46,7 +41,6 @@ power_leds_t POWER_LEDS1, POWER_LEDS2, POWER_LEDS3;
 void main_ledFanFunc(void);
 void setIp(uint8_t* buff, uint8_t value);
 
-
 int main(void) {
 	pGate = buffer_gate;
 	pMask = buffer_mask;
@@ -59,33 +53,23 @@ int main(void) {
 	read_eeprom();
 	init_all();
 	
-	//RED_LED_OFF;
-	
-	fpProgModeVar = (fpProgMode)(fpProgModeTable[0]);			//choose when power off
+	fpProgModeVar = (fpProgMode)(fpProgModeTable[0]);			//main mode
 	blinkFuncPtr = (fpStatusLed)(blinkLedTable[2]);				//speed of led blinking
 	fanLedFuncPtr = (fpFanLed)(ledFanTable[0]);					//fan led light green
 	
 	spi_startAnime();
 	startDCs();
 	
-	//setIp(buffer_IP_source_1, 1);
-	//setIp(buffer_IP_source_2, 2);
-	//setIp(buffer_IP_source_3, 3);
-	//setIp(buffer_IP_source_4, 4);
-	
 	while (1) {
 		blinkFuncPtr();
 		fpProgModeVar();
 		fanLedFuncPtr();
 		
-		//read_isrW5200();
+		read_udpCommand();
 		read_mainCommand();
 		read_debugCommand();
 		//read_commandUART();
-		read_sendNMAnswer();
-		read_sendNMCommand();
-		read_sendMainAnswer();
-		read_sendDebugAnswer();
+		read_nmCommand();
 		read_sendGps();
 		read_twiSensors();
 		read_adc();
@@ -139,38 +123,29 @@ void main_ledFanFunc(void){
 		i = 0;
 	}
 }
-void mainMode(){}															//
+void mainMode(){}														//main mode, doing nothing
 void sendMode(){
 	static uint16_t i;
 	static uint8_t k;
+	//char charact[] = "\n%72*";
+	char *charact = "\n%72*";
+
 	if (k <= 5) {
-		if (i++ >= 0x0fff) {
-			_delay_ms(5);
-			//w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_ip);					//set destination ip for udp
-			//utils_sendAnswerMain(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
-
-			/*_delay_ms(5);
-			w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_IP_source_2);				//set destination ip for udp
-			utils_sendAnswerMain(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
-
-			_delay_ms(5);
-			w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_IP_source_3);				//set destination ip for udp
-			utils_sendAnswerMain(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack
-
-			_delay_ms(5);
-			w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_IP_source_4);				//set destination ip for udp
-			utils_sendAnswerMain(UDP_CH, (uint8_t*)"\n%72*", 0, 0);				//send command for shutting down till no ack*/
-
-			_delay_ms(50);
+		if (i++ >= 0x5fff) {
+			for (uint8_t i=0; i<strlen(charact); i++){
+				FIFO_udpChTx.data[FIFO_udpChTx.head++] = charact[i];
+			}
+			for (uint8_t i=0; i<strlen(charact); i++){
+				FIFO_udpChTx.data[FIFO_udpChTx.head++] = charact[i];
+			}
 			utils_sendDebugPGM(DEBUG_CH, _SHUT_DOWN, 0, 0);
-			_delay_ms(50);
 			i = 0;
 			k++;
 		}
 	}
 	else {
-		command_exec(0x71);
-		fpProgModeVar = (fpProgMode)fpProgModeTable[0];
+		command_exec(DC_DC_OFF);
+		fpProgModeVar = (fpProgMode)fpProgModeTable[0];					//go to main mode
 		k = 0;
 	}
 }
@@ -181,22 +156,15 @@ void offMode(){
 		if (i++ == 0x0fff) {
 			utils_sendDebugPGM(DEBUG_CH, _INA_CURRENT, utils_hex2ArrayToDecAscii4Array(INA_BTS.currentBuff), 4);
 			if (((INA_BTS.currentBuff[0] << 8) | (INA_BTS.currentBuff[1])) <= SHUTDOWN_LEVEL){
-				command_exec(0x71);
+				command_exec(DC_DC_OFF);
 			}
 			i = 0;
 			k++;
 		}
 	}
 	else {
-		command_exec(0x71);
-		fpProgModeVar = (fpProgMode)fpProgModeTable[0];
+		command_exec(DC_DC_OFF);
+		fpProgModeVar = (fpProgMode)fpProgModeTable[0];			//go to main mode
 		k = 0;
 	}
 }
-/*
-void setIp(uint8_t* buff, uint8_t value){
-*buff++ = *(pIp + 0);
-*buff++ = *(pIp + 1);
-*buff++ = *(pIp + 2);
-*buff = *(pIp + 3) + value;
-}*/

@@ -4,6 +4,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <stdbool.h>
+#include <string.h>
 #include "defines.h"
 #include "structures.h"
 #include "w5200.h"
@@ -18,8 +19,7 @@ extern uint16_t arrLed3L[];
 
 
 void utils_sendDebugPGM(uint8_t ch, const uint8_t *wordPGM, uint8_t *buff, uint8_t length);
-void utils_sendDebug(uint8_t ch, uint8_t *word, uint8_t, uint8_t *buff, uint8_t length);
-void utils_sendAnswerMain(uint8_t ch,uint8_t *word,uint8_t *buff, uint8_t length);
+void utils_sendAnswerMain(uint8_t ch, char *word, uint8_t *buff, uint8_t length);
 uint8_t* utils_hex8ToDecAscii16(uint8_t hex);
 uint8_t* utils_hex8ToAscii16(uint8_t hex);
 uint8_t* utils_hex16ToAscii32(uint16_t hex);
@@ -27,16 +27,13 @@ uint8_t* utils_hexArrayToAsciiArray(uint8_t* hex, uint8_t length);
 uint8_t utils_ascii16ToHex8(uint16_t ascii);
 uint8_t utils_returnOrderedNum(uint8_t* interReg);
 uint8_t* utils_hex2ArrayToDecAscii4Array(uint8_t* hex);
-//void utils_sendDebPgmLen(uint8_t ch, const uint8_t *wordPGM, uint8_t pgmLen, uint8_t *buff, uint8_t length);
-
-
+void utils_sendStDebug(char *word);
 
 typedef void (*fpStatusLed)(void);
 fpStatusLed blinkFuncPtr;
 void utils_fastBlink();
 void utils_middleBlink();
 void utils_slowBlink();
-//extern const fpBlinkLed blinkPtrTable[] PROGMEM;
 extern fpStatusLed blinkLedTable[];
 
 typedef void (*fpFanLed)(void);

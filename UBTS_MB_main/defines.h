@@ -7,13 +7,16 @@
 
 #define F_CPU				14745600
 //#define F_CPU				32000000
-
+	
 #define BOOT_SECTION			0x10000
 #define RESET_SECTION			0x0000
 
 //#define DEBUG					0
-#define START_ANIME_PAUSE		100
+#define START_ANIME_PAUSE		500
 #define SHUTDOWN_LEVEL			116
+
+#define PAUSE_OVER				15
+
 
 //////*********************************************************************//////
 #define MAIN_CH				0
@@ -32,7 +35,7 @@
 #define DEBUG_POR		5001
 #define GPS_PORT		4000
 #define NM_PORT			6000
-#define UDP_PORT		7000
+#define UDP_PORT		5000
 //////////////////////////////////////////////************************************
 
 #define  _ADCB					ADCB
@@ -96,7 +99,12 @@
 #define WIFI_ON			0x0040
 //#define NM_OFF			~0x10 & 0xff
 
-#define EMPTY_CMD		0xfd
+#define EMPTY_CMD					0xfd
+#define SHUTTING_DOWN				0x72
+#define DC_DC_ON					0x70
+#define DC_DC_OFF					0x71
+#define EMULATE_DC_DC_INTERR		0x73
+
 
 //***************************************************
 #define FAN_PA1			5

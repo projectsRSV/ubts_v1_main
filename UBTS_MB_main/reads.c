@@ -5,10 +5,9 @@
 void read_commandUART() {
 	static uint16_t i=0;
 	if (i++ == 0x0fff) {
-		if (!utils_isFifoEmpty(&FIFO_recUART)) {
-			//w5200_sendDataFifo(DEBUG_CH,&FIFO_recUART);
-			command_exec(commands_decoder(&FIFO_recUART));
-		}
+		//if (!utils_isFifoEmpty(&FIFO_recUART)) {
+		command_exec(commands_decoder(&FIFO_recUART));
+		//}
 		i=0;
 	}
 }
@@ -26,25 +25,7 @@ void read_adc() {
 		i=0;
 	}
 }
-/*
-void read_isrW5200() {
-if(ISR_W5200.conMain) {
-utils_sendDebugPGM(DEBUG_CH, _OPEN_MAIN, 0, 0);
-ISR_W5200.conMain = 0;
-}
-if(ISR_W5200.conDebug) {
-utils_sendDebugPGM(DEBUG_CH, _OPEN_DEBUG, 0, 0);
-ISR_W5200.conDebug = 0;
-}
-if(ISR_W5200.conNm) {
-utils_sendDebugPGM(DEBUG_CH, _OPEN_NM, 0, 0);
-ISR_W5200.conNm = 0;
-}
-if(ISR_W5200.conGps) {
-utils_sendDebugPGM(DEBUG_CH, _OPEN_GPS, 0, 0);
-ISR_W5200.conGps = 0;
-}
-}*/
+
 static void read_sendW5200State(uint8_t ch){
 	uint8_t status;
 	status = w5200_readStatus(ch);
@@ -52,21 +33,10 @@ static void read_sendW5200State(uint8_t ch){
 		case _SOCK_CLOSED:{
 			utils_sendDebugPGM(DEBUG_CH, _CLOSE, 0, 0);
 			w5200_openSocket(ch);
-			if(ch == MAIN_CH) {
-				utils_sendDebugPGM(DEBUG_CH, _OPEN_MAIN, 0, 0);
-			}
-			else if(ch == DEBUG_CH) {
-				utils_sendDebugPGM(DEBUG_CH, _OPEN_DEBUG, 0, 0);
-			}
-			else if(ch == NM_CH) {
-				utils_sendDebugPGM(DEBUG_CH, _OPEN_NM, 0, 0);
-			}
-			else if(ch == GPS_CH) {
-				utils_sendDebugPGM(DEBUG_CH, _OPEN_GPS, 0, 0);
-			}
-			else if(ch == UDP_CH) {
-				utils_sendDebugPGM(DEBUG_CH, _OPEN_UDP, 0, 0);
-			}
+			if(ch == MAIN_CH) ISR_W5200.conMain = 0;
+			else if(ch == DEBUG_CH) ISR_W5200.conDebug = 0;
+			else if(ch == NM_CH) ISR_W5200.conNm = 0;
+			else if(ch == GPS_CH) ISR_W5200.conGps = 0;
 			break;
 		}
 		case _SOCK_LISTEN:{
@@ -75,30 +45,43 @@ static void read_sendW5200State(uint8_t ch){
 		}
 		case _SOCK_CONNECT:{
 			if(ch == MAIN_CH) {
-				if (!utils_isFifoEmpty(&FIFO_mainChTx)) {
-					w5200_sendDataFifo(ch, &FIFO_mainChTx);
+				if (ISR_W5200.conMain == 0) {
+					ISR_W5200.conMain = 1;
+					utils_sendDebugPGM(DEBUG_CH, _CONN_MAIN, 0, 0);
 				}
+				w5200_sendDataFifo(ch, &FIFO_mainChTx);
 				w5200_recvDataFifo(ch, &FIFO_mainChRx);
 			}
 			else if(ch == GPS_CH) {
-				if (((FIFO_gpsCh.head - FIFO_gpsCh.tail) & 0x00ff) >= 200){
+				if (ISR_W5200.conGps == 0) {
+					ISR_W5200.conGps = 1;
+					utils_sendDebugPGM(DEBUG_CH, _CONN_GPS, 0, 0);
+				}
+				if (((FIFO_gpsCh.head - FIFO_gpsCh.tail) & 0xff) >= 200){
 					w5200_sendDataFifo(ch, &FIFO_gpsCh);
 				}
 			}
 			else if(ch == DEBUG_CH) {
-				if (!utils_isFifoEmpty(&FIFO_debugChTx)) {
-					w5200_sendDataFifo(ch, &FIFO_debugChTx);
+				if (ISR_W5200.conDebug == 0) {
+					ISR_W5200.conDebug = 1;
+					utils_sendDebugPGM(DEBUG_CH, _CONN_DEBUG, 0, 0);
 				}
+				w5200_sendDataFifo(ch, &FIFO_debugChTx);
 				w5200_recvDataFifo(ch, &FIFO_debugChRx);
 			}
 			else if(ch == NM_CH) {
-				if (!utils_isFifoEmpty(&FIFO_nmChTx)) {
-					w5200_sendDataFifo(ch, &FIFO_nmChTx);
+				if (ISR_W5200.conNm == 0) {
+					ISR_W5200.conNm = 1;
+					utils_sendDebugPGM(DEBUG_CH, _CONN_NM, 0, 0);
 				}
+				w5200_sendDataFifo(ch, &FIFO_nmChTx);
 				w5200_recvDataFifo(ch, &FIFO_nmChTx);
 			}
-			else if(ch == UDP_CH) {
-			}
+			break;
+		}
+		case _SOCK_UDP:{
+			w5200_sendDataFifo(ch, &FIFO_udpChTx);
+			w5200_recvDataFifo(ch, &FIFO_udpChRx);
 			break;
 		}
 		case _SOCK_CLOSE_WAIT:{
@@ -108,62 +91,43 @@ static void read_sendW5200State(uint8_t ch){
 		}
 	}
 }
-void read_sendGps() {
+void read_udpCommand(){
 	static uint16_t i=0;
 	if (i++ >= 0x00ff) {
+		read_sendW5200State(UDP_CH);
+		command_exec(commands_decoder(&FIFO_udpChRx));
+		i = 0;
+	}
+}
+void read_sendGps() {
+	static uint16_t i=0;
+	if (i++ >= 0x00ef) {
 		read_sendW5200State(GPS_CH);
 		i = 0;
 	}
 }
-void read_sendMainAnswer() {
-	static uint16_t i=0;
-	if (i++ >= 0x2ff) {
-		read_sendW5200State(MAIN_CH);
-		i=0;
-	}
-}
-void read_sendDebugAnswer() {
-	static uint16_t i=0;
-	if (i++ >= 0x3ff) {
-		read_sendW5200State(DEBUG_CH);
-		i=0;
-	}
-}
 void read_mainCommand() {
 	static uint16_t i=0;
-	if (i++ >= 0x00ff) {
+	if (i++ >= 0x01ff) {
 		read_sendW5200State(MAIN_CH);
-		if (!utils_isFifoEmpty(&FIFO_mainChRx)) {
-			command_exec(commands_decoder(&FIFO_mainChRx));
-		}
+		command_exec(commands_decoder(&FIFO_mainChRx));
 		i=0;
 	}
 }
 void read_debugCommand() {
 	static uint16_t i=0;
-	if (i++ >= 0x01ff) {
+	if (i++ >= 0x02ff) {
 		read_sendW5200State(DEBUG_CH);
-		if (!utils_isFifoEmpty(&FIFO_debugChRx)) {
-			command_exec(commands_decoder(&FIFO_debugChRx));
-		}
+		command_exec(commands_decoder(&FIFO_debugChRx));
 		i=0;
 	}
 }
-void read_sendNMCommand() {
+void read_nmCommand() {
 	static uint8_t i=0;
-	if (i++ >= 0xff) {
+	if (i++ >= 0x00df) {
 		read_sendW5200State(NM_CH);
 		if (!utils_isFifoEmpty(&FIFO_nmChRx)) {
 			USARTD0.CTRLA |= USART_DREINTLVL0_bm;
-		}
-		i=0;
-	}
-}
-void read_sendNMAnswer() {
-	static uint8_t i=0;
-	if (i++ >= 0xff) {
-		if (!utils_isFifoEmpty(&FIFO_nmChTx)) {
-			read_sendW5200State(NM_CH);
 		}
 		i=0;
 	}
@@ -204,18 +168,18 @@ void read_writeEEPROMBuff(uint16_t addr, uint8_t* buff, uint8_t length) {
 	sei();
 }
 void read_eeprom() {
-	read_eeprBuff(SERIAL_NUM,buffer_serialNum,4);
-	read_eeprBuff(IP_SOURCE,buffer_ip,4);
-	read_eeprBuff(SUBNET_MASK,buffer_mask,4);
-	read_eeprBuff(GATEWAY_ADDR,buffer_gate,4);
-	read_eeprBuff(SOCKET+1,&buffer_SOCKET_main[0],1);
-	read_eeprBuff(SOCKET,&buffer_SOCKET_main[1],1);
+	read_eeprBuff(SERIAL_NUM, buffer_serialNum, 4);
+	read_eeprBuff(IP_SOURCE, buffer_ip, 4);
+	read_eeprBuff(SUBNET_MASK, buffer_mask, 4);
+	read_eeprBuff(GATEWAY_ADDR, buffer_gate, 4);
+	read_eeprBuff(SOCKET+1, &buffer_SOCKET_main[0], 1);
+	read_eeprBuff(SOCKET, &buffer_SOCKET_main[1], 1);
 	/*read_eeprBuff(LENGTH_3d,&COMMAND_3d.length,1);
 	read_eeprBuff(STRING_3d,COMMAND_3d.buffer,COMMAND_3d.length);
 	read_eeprBuff(LENGTH_21,&COMMAND_21.length,1);
 	read_eeprBuff(STRING_21,COMMAND_21.buffer,COMMAND_21.length);*/
-	read_eeprBuff(LENGTH_e8,&COMMAND_e8.length,1);
-	read_eeprBuff(STRING_e8,COMMAND_e8.buffer,COMMAND_e8.length);
+	read_eeprBuff(LENGTH_e8, &COMMAND_e8.length, 1);
+	read_eeprBuff(STRING_e8, COMMAND_e8.buffer, COMMAND_e8.length);
 	
 	PA1.addrTWI = read_eeprByte(I2C_PA0_EEPR);
 	PA2.addrTWI = read_eeprByte(I2C_PA1_EEPR);

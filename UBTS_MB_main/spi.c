@@ -38,6 +38,7 @@ void spi_xmega_set_baud_div(SPI_t *spi, uint32_t baudrate, uint32_t clkper_hz){
 
 	spi->CTRL = (spi->CTRL & ~(SPI_CLK2X_bm | SPI_PRESCALER_gm)) | ctrl;
 }
+/*
 uint8_t spi_sendData(SPI_t* spi, uint8_t data){
 	uint16_t count = 0x0000;
 	if (spi == &SPIC || spi == &SPIE || spi == &SPID){
@@ -60,7 +61,7 @@ uint8_t spi_recvData(SPI_t* spi, uint8_t data){
 	else {
 		return 0x40;
 	}
-}
+}*/
 void spi_setReg(SPI_t* spi, PORT_t *port, uint8_t data, uint8_t pin){
 	spi_sendData(spi, data);
 	

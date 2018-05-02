@@ -15,11 +15,13 @@
 void read_twiSensors();
 void read_sendGps();
 void read_sendNMAnswer();
-void read_sendNMCommand();
+void read_nmCommand();
 void read_mainCommand();
 void read_sendMainAnswer();
 void read_sendDebugAnswer();
 void read_debugCommand();
+void read_readUDP();
+void read_udpCommand();
 void read_adc();
 
 extern uint8_t commands_decoder(fifo_t*);
@@ -30,7 +32,7 @@ void read_eeprom();
 void read_writeEEPROMBuff(uint16_t addr, uint8_t* buff, uint8_t length);
 void read_writeEEPROMByte(uint16_t addr, uint8_t byte);
 void read_commandUART();
-void read_isrW5200();
+//void read_isrW5200();
 
 
 #endif /* READS_H_ */

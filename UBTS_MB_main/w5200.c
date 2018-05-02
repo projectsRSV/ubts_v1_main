@@ -19,6 +19,8 @@ void w5200_init(void){
 	uint8_t	buffer_GATE_def[] = {192,168,6,1};
 	uint8_t	buffer_SUB_def[] = {255,255,255,0};
 	uint8_t	buffer_IP_source_def[] = {192, 168, 6, 10};
+	//uint8_t	buffer_IP_destUDP[] = {192, 168, 6, 41};
+	
 	
 	uint8_t buffer_SOCKET_main[] = {MAIN_PORT >> 8, (uint8_t)MAIN_PORT};					//5000
 	uint8_t buffer_SOCKET_debug[] = {DEBUG_POR >> 8, (uint8_t)DEBUG_POR};					//5001
@@ -61,10 +63,11 @@ void w5200_init(void){
 	w5200_writeData(Sn_MR(GPS_CH), 1, &MR_TCP);							//0x01 set TCP mode
 	w5200_writeData(Sn_PORT(GPS_CH), 2, buffer_SOCKET_gps);				//set source port number (socket)
 	
-	//w5200_writeData(Sn_MR(UDP_CH), 1, &MR_UDP);							//0x02 set UDP mode
-	//w5200_writeData(Sn_DPORT0(UDP_CH), 2, buffer_SOCKET_main);			//set destination port number (socket)
-	//w5200_writeData(Sn_PORT(UDP_CH), 2, buffer_SOCKET_UDP);				//set source port number (socket)
-	//w5200_writeData(Sn_DIRP0(UDP_CH), 4, bufferUdpDestinIp);			//set destination ip for udp
+	w5200_writeData(Sn_MR(UDP_CH), 1, &MR_UDP);							//0x02 set UDP mode
+	w5200_writeData(Sn_PORT(UDP_CH), 2, buffer_SOCKET_main);			//set source port number (socket)
+	w5200_writeData(Sn_DPORT0(UDP_CH), 2, buffer_SOCKET_main);			//set destination port number (socket)
+	w5200_writeData(Sn_DIRP0(UDP_CH), 4, pIp);							//set destination ip for udp
+	//w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_IP_destUDP);			//set destination ip for udp
 	
 	//w5200_openSocket(MAIN_CH);
 	//w5200_openSocket(DEBUG_CH);
@@ -80,7 +83,7 @@ void w5200_readData(uint16_t addr,uint16_t length, uint8_t* buff){
 	spi_sendData(&SPIE,_READ|(length>>8));			//data length upper byte
 	spi_sendData(&SPIE,(length));					//data length lower byte
 	for (uint16_t i=0;i<length;i++){
-		buff[i]=spi_recvData(&SPIE,0x00);
+		buff[i]=spi_sendData(&SPIE,0x00);
 	}
 	CS_OFF;
 }
@@ -91,7 +94,7 @@ void w5200_readDataFifo(uint16_t addr,uint16_t length,fifo_t* buff){
 	spi_sendData(&SPIE,_READ|(length>>8));			//data length upper byte
 	spi_sendData(&SPIE,(length));					//data length lower byte
 	for (uint16_t i=0;i<length;i++){
-		buff->data[buff->head++] = spi_recvData(&SPIE,0x00);
+		buff->data[buff->head++] = spi_sendData(&SPIE,0x00);
 		//buff->head &=(BUFFER_SIZE-1);
 	}
 	CS_OFF;
@@ -136,7 +139,7 @@ uint8_t w5200_readByte(uint16_t addr){
 	spi_sendData(&SPIE,addr);					//addr lower byte
 	spi_sendData(&SPIE,(_READ));				//data length upper byte
 	spi_sendData(&SPIE,(0x01));					//data length lower byte
-	data = spi_recvData(&SPIE,0x00);
+	data = spi_sendData(&SPIE,0x00);
 	CS_OFF;
 	return data;
 }
@@ -158,30 +161,32 @@ void w5200_sendDataFifo(uint8_t ch, fifo_t *buff){
 	uint16_t upperSizeByte;
 	uint16_t dst_ptr;
 	uint16_t dst_mask;
-	uint16_t length = (buff->head - buff->tail) & 0x00ff;
+	uint16_t length = (buff->head - buff->tail) & 0xff;
 	
-	while (getSn_RegValue(Sn_TX_FSR(ch)) < length){};
+	if (length > 0){	
+		while (getSn_RegValue(Sn_TX_FSR(ch)) < length){};
 
-	dst_mask = getSn_RegValue(Sn_TX_WR(ch)) & RX_MASK;
-	dst_ptr = TX_BASE(ch) + dst_mask;								//physical start address
-	
+		dst_mask = getSn_RegValue(Sn_TX_WR(ch)) & RX_MASK;
+		dst_ptr = TX_BASE(ch) + dst_mask;								//physical start address
+		
 
-	if( (dst_mask + length) > (RX_MASK + 1)){
-		upperSizeByte = (RX_MASK + 1) - dst_mask;
-		w5200_writeDataFifo(dst_ptr, upperSizeByte, buff);
-		upperSizeByte = length - upperSizeByte;
-		//dst_ptr = TX_BASE(ch);										//physical base start address
-		w5200_writeDataFifo(TX_BASE(ch), upperSizeByte, buff);
+		if( (dst_mask + length) > (RX_MASK + 1)){
+			upperSizeByte = (RX_MASK + 1) - dst_mask;
+			w5200_writeDataFifo(dst_ptr, upperSizeByte, buff);
+			upperSizeByte = length - upperSizeByte;
+			//dst_ptr = TX_BASE(ch);										//physical base start address
+			w5200_writeDataFifo(TX_BASE(ch), upperSizeByte, buff);
+		}
+		else{
+			w5200_writeDataFifo(dst_ptr, length, buff);
+		}
+		ptr = getSn_RegValue(Sn_TX_WR(ch)) + length;
+		
+		w5200_writeByte(Sn_TX_WR(ch), ptr >> 8);
+		w5200_writeByte(Sn_TX_WR(ch) + 1, ptr);
+		w5200_writeByte(Sn_CR(ch), _SEND_COMMAND);								//send command
+		//_delay_ms(2);
 	}
-	else{
-		w5200_writeDataFifo(dst_ptr, length, buff);
-	}
-	ptr = getSn_RegValue(Sn_TX_WR(ch)) + length;
-	
-	w5200_writeByte(Sn_TX_WR(ch), ptr >> 8);
-	w5200_writeByte(Sn_TX_WR(ch) + 1, ptr);
-	w5200_writeByte(Sn_CR(ch), _SEND_COMMAND);								//send command
-	_delay_ms(10);
 }
 void w5200_recvDataFifo(uint8_t ch,fifo_t *fifo){
 	uint16_t ptr;
@@ -224,8 +229,6 @@ void w5200_discSocket(uint8_t ch){
 
 void w5200_openSocket(uint8_t ch){
 	uint8_t temp;
-	//if (ch == UDP_CH) temp = _SOCK_UDP;
-	//else temp = _SOCK_INIT;
 	
 	w5200_writeByte(Sn_CR(ch), _OPEN_COMMAND);															//open
 	temp = w5200_readStatus(ch);

@@ -23,7 +23,7 @@ const uint8_t _4_1P[] PROGMEM="\n4_1";
 const uint8_t _4_2P[] PROGMEM="\n4_2";
 const uint8_t _4_3P[] PROGMEM="\n4_3";
 const uint8_t _4_OFF[] PROGMEM="\n4_off";
-const uint8_t _COMM_ERR[] PROGMEM="\nchannel error";
+const uint8_t _CHANN_ERR[] PROGMEM="\n%channel error*";
 const uint8_t _3_2100P[] PROGMEM="\n3_2100";
 const uint8_t _4_2100P[] PROGMEM="\n4_2100";
 
@@ -95,12 +95,12 @@ const uint8_t _NM_OFF[] PROGMEM="\nNM OFF";
 const uint8_t _WIFI_ON[] PROGMEM="\nwifi always on";
 const uint8_t _WIFI_OFF[] PROGMEM="\nwifi always off";
 
-const uint8_t _OPEN_MAIN[] PROGMEM ="\n**OPENED main**";
-const uint8_t _OPEN_NM[] PROGMEM ="\n**OPENED nm**";
-const uint8_t _OPEN_DEBUG[] PROGMEM ="\n**OPENED debug**";
-const uint8_t _OPEN_GPS[] PROGMEM ="\n**OPENED gps**";
-const uint8_t _OPEN_UDP[] PROGMEM ="\n**OPENED udp**";
-const uint8_t _CLOSE[] PROGMEM ="\n*******CLOSED*******";
+const uint8_t _CONN_MAIN[] PROGMEM ="\n**CONNECTED main**";
+const uint8_t _CONN_NM[] PROGMEM ="\n**CONNECTED nm**";
+const uint8_t _CONN_DEBUG[] PROGMEM ="\n**CONNECTED debug**";
+const uint8_t _CONN_GPS[] PROGMEM ="\n**CONNECTED gps**";
+const uint8_t _OPEN_UDP[] PROGMEM ="\n**CONNECTED udp**";
+const uint8_t _CLOSE[] PROGMEM ="\n**CLOSED**";
 const uint8_t _JMP_BOOTLOADER[] PROGMEM="\nJMP_BOOTLOADER";
 const uint8_t _MCU_REBOOT[] PROGMEM="\nMCU_REBOOT";
 const uint8_t _ERROR[] PROGMEM ="\n%error*";
@@ -109,5 +109,3 @@ const uint8_t _COMBINATION[] PROGMEM ="\ncombination= ";
 const uint8_t _OVER_TEMP[] PROGMEM ="\novertemperature";
 const uint8_t _OVER_POWER[] PROGMEM ="\nover power= ";
 const uint8_t _OVER_POWER_BW[] PROGMEM ="\nover bw power= ";
-
-

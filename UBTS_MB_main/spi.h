@@ -16,7 +16,8 @@ void spi_setReg(SPI_t* spi,PORT_t *port,uint8_t data, uint8_t pinDS);
 void spi_setRegDouble(SPI_t* spi,PORT_t *port,uint16_t data, uint8_t pin);
 void spi_resetRegs();
 void spi_startAnime(void);
-
+//uint8_t spi_sendData(SPI_t* spi, uint8_t data);
+//uint8_t spi_recvData(SPI_t* spi, uint8_t data);
 
 static inline void spi_enable(SPI_t *spi){
 	spi->CTRL |= SPI_ENABLE_bm;
@@ -31,16 +32,13 @@ static inline void spi_enable_master_mode(SPI_t *spi){
 static inline void spi_disable(SPI_t *spi){
 	spi->CTRL &= ~SPI_ENABLE_bm;
 }
-uint8_t spi_sendData(SPI_t* spi, uint8_t data);
-uint8_t spi_recvData(SPI_t* spi, uint8_t data);
 
-/*
+
 static inline uint8_t spi_sendData(SPI_t* spi, uint8_t data){
 	spi->DATA = data;
 	while((spi->STATUS & SPI_IF_bm) != SPI_IF_bm) {};
-	//if ((spi->STATUS & SPI_WRCOL_bm) == SPI_WRCOL_bm) TRANSFER.writeCollision = 1;	
 	return spi->DATA;
-}*/
+}
 
 //uint8_t spi_send_w5200(uint8_t byte);
 
