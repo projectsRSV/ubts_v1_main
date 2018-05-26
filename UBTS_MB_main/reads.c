@@ -43,7 +43,7 @@ static void read_sendW5200State(uint8_t ch){
 			//blinkFuncPtr = (fpStatusLed)(blinkLedTable[2]);
 			break;
 		}
-		case _SOCK_CONNECT:{
+		case _SOCK_ESTABL:{
 			if(ch == MAIN_CH) {
 				if (ISR_W5200.conMain == 0) {
 					ISR_W5200.conMain = 1;
@@ -80,8 +80,9 @@ static void read_sendW5200State(uint8_t ch){
 			break;
 		}
 		case _SOCK_UDP:{
-			w5200_sendDataFifo(ch, &FIFO_udpChTx);
-			w5200_recvDataFifo(ch, &FIFO_udpChRx);
+			w5200_recvDataFifoUDP(ch, &FIFO_udpChRx);
+			//w5200_sendDataFifoUDP(ch, &FIFO_udpChTx, &FIFO_udpIp);
+			//w5200_sendDataFifoUDP(ch, &FIFO_udpChTx, &FIFO_udpIp);
 			break;
 		}
 		case _SOCK_CLOSE_WAIT:{
@@ -141,7 +142,7 @@ uint8_t read_eeprByte(uint16_t addr) {
 	sei();
 	return temp;
 }
-void read_eeprBuff(uint8_t addr,uint8_t* buff, uint8_t length) {
+void read_eeprBuff(uint16_t addr,uint8_t* buff, uint8_t length) {
 	cli();
 	EEPROM_DisableMapping();
 	for (uint8_t i=0; i<length; i++) {
@@ -180,6 +181,7 @@ void read_eeprom() {
 	read_eeprBuff(STRING_21,COMMAND_21.buffer,COMMAND_21.length);*/
 	read_eeprBuff(LENGTH_e8, &COMMAND_e8.length, 1);
 	read_eeprBuff(STRING_e8, COMMAND_e8.buffer, COMMAND_e8.length);
+	read_eeprBuff(MAC_EEP, buffer_mac, 6);
 	
 	PA1.addrTWI = read_eeprByte(I2C_PA0_EEPR);
 	PA2.addrTWI = read_eeprByte(I2C_PA1_EEPR);

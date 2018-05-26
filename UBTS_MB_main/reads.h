@@ -27,7 +27,7 @@ void read_adc();
 extern uint8_t commands_decoder(fifo_t*);
 
 uint8_t read_eeprByte(uint16_t addr);
-void read_eeprBuff(uint8_t addr,uint8_t* buff,uint8_t);
+void read_eeprBuff(uint16_t addr,uint8_t* buff,uint8_t);
 void read_eeprom();
 void read_writeEEPROMBuff(uint16_t addr, uint8_t* buff, uint8_t length);
 void read_writeEEPROMByte(uint16_t addr, uint8_t byte);

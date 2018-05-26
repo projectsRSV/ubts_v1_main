@@ -17,6 +17,8 @@ extern uint8_t buffer_gate[];
 extern uint8_t buffer_mask[];
 extern uint8_t buffer_ip[];
 extern uint8_t buffer_SOCKET_main[];
+extern uint8_t buffer_mac[6];								//ff-ff-ff-ff-ff-ff-ff-ff
+
 extern uint8_t *pGate, *pMask, *pIp;
 
 void w5200_readData(uint16_t addr,uint16_t length,uint8_t* buffer);
@@ -24,6 +26,8 @@ void w5200_writeData(uint16_t addr,uint16_t length,uint8_t* buff);
 void w5200_writeByte(uint16_t addr, uint8_t data);
 uint8_t w5200_readByte(uint16_t addr);
 void w5200_recvDataFifo(uint8_t ch,fifo_t *fifo);
+void w5200_recvDataFifoUDP(uint8_t ch,fifo_t *fifo);
+void w5200_sendDataFifoUDP(uint8_t ch, fifo_t *buff, fifo_t *addr);
 void w5200_sendDataFifo(uint8_t ch,fifo_t *buff);
 uint16_t getSn_RegValue(uint16_t reg);
 uint16_t w5200_recvData(uint8_t ch,uint8_t *);

@@ -3,8 +3,8 @@
 void w5200_init(void){
 	uint8_t reset = 0x80;
 	uint8_t IMR = 0x00;					//0x1f
-	uint8_t buffer_RTR[]={0x00,0xff};
-	uint8_t buffer_RCR[]={0x02};
+	uint8_t buffer_RTR[] = {0x00,0xff};
+	uint8_t buffer_RCR[] = {0x02};
 	uint8_t IMR2 = 0x00;
 	uint8_t PHY = 0x00;
 	uint8_t MR_TCP = 0x01;
@@ -12,9 +12,7 @@ void w5200_init(void){
 	
 	//uint8_t buffer_INTLEVEL[]={0x00,0xff};
 	
-	uint8_t buffer_MAC[] = {0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
-	//uint8_t	bufferGroupMac[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-	//uint8_t	bufferUdpDestinIp[] = {192, 168, 6, 145};
+	//uint8_t buffer_MAC[] = {0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
 
 	uint8_t	buffer_GATE_def[] = {192,168,6,1};
 	uint8_t	buffer_SUB_def[] = {255,255,255,0};
@@ -26,7 +24,6 @@ void w5200_init(void){
 	uint8_t buffer_SOCKET_debug[] = {DEBUG_POR >> 8, (uint8_t)DEBUG_POR};					//5001
 	uint8_t buffer_SOCKET_gps[] = {GPS_PORT >> 8, (uint8_t)GPS_PORT};						//4000
 	uint8_t buffer_SOCKET_nm[] = {NM_PORT >> 8, (uint8_t)NM_PORT};							//6000
-	//uint8_t buffer_SOCKET_UDP[] = {UDP_PORT >> 8, (uint8_t)UDP_PORT};						//7000	-	UDP
 	
 	_delay_ms(1);
 	w5200_writeData(MR_W5200, 1, &reset);						//reset
@@ -36,7 +33,7 @@ void w5200_init(void){
 	w5200_writeData(IMR2_W5200, 1, &IMR2);
 	w5200_writeData(PHY_STATUS, 1, &PHY);
 	
-	w5200_writeData(MAC, 6, buffer_MAC);						//set mac address
+	w5200_writeData(MAC, 6, buffer_mac);						//set mac address
 	//w5200_writeData(INT_W5200, 2, buffer_INTLEVEL);
 	w5200_writeData(RTR_W5200,2,buffer_RTR);
 	w5200_writeData(RCR_W5200,2,buffer_RCR);
@@ -65,15 +62,10 @@ void w5200_init(void){
 	
 	w5200_writeData(Sn_MR(UDP_CH), 1, &MR_UDP);							//0x02 set UDP mode
 	w5200_writeData(Sn_PORT(UDP_CH), 2, buffer_SOCKET_main);			//set source port number (socket)
-	w5200_writeData(Sn_DPORT0(UDP_CH), 2, buffer_SOCKET_main);			//set destination port number (socket)
-	w5200_writeData(Sn_DIRP0(UDP_CH), 4, pIp);							//set destination ip for udp
-	//w5200_writeData(Sn_DIRP0(UDP_CH), 4, buffer_IP_destUDP);			//set destination ip for udp
 	
-	//w5200_openSocket(MAIN_CH);
-	//w5200_openSocket(DEBUG_CH);
-	//w5200_openSocket(GPS_CH);
-	//w5200_openSocket(NM_CH);
-	//w5200_openSocket(UDP_CH);
+	w5200_writeData(Sn_DPORT0(UDP_CH), 2, buffer_SOCKET_main);			//set destination port number (socket)
+	//w5200_writeData(Sn_DIPR0(UDP_CH), 4, pIp);						//set destination ip for udp
+	//w5200_writeData(Sn_DIPR0(UDP_CH), 4, buffer_IP_destUDP);			//set destination ip for udp
 }
 
 void w5200_readData(uint16_t addr,uint16_t length, uint8_t* buff){
@@ -163,7 +155,7 @@ void w5200_sendDataFifo(uint8_t ch, fifo_t *buff){
 	uint16_t dst_mask;
 	uint16_t length = (buff->head - buff->tail) & 0xff;
 	
-	if (length > 0){	
+	if (length > 0){
 		while (getSn_RegValue(Sn_TX_FSR(ch)) < length){};
 
 		dst_mask = getSn_RegValue(Sn_TX_WR(ch)) & RX_MASK;
@@ -175,6 +167,39 @@ void w5200_sendDataFifo(uint8_t ch, fifo_t *buff){
 			w5200_writeDataFifo(dst_ptr, upperSizeByte, buff);
 			upperSizeByte = length - upperSizeByte;
 			//dst_ptr = TX_BASE(ch);										//physical base start address
+			w5200_writeDataFifo(TX_BASE(ch), upperSizeByte, buff);
+		}
+		else{
+			w5200_writeDataFifo(dst_ptr, length, buff);
+		}
+		ptr = getSn_RegValue(Sn_TX_WR(ch)) + length;
+		
+		w5200_writeByte(Sn_TX_WR(ch), ptr >> 8);
+		w5200_writeByte(Sn_TX_WR(ch) + 1, ptr);
+		w5200_writeByte(Sn_CR(ch), _SEND_COMMAND);								//send command
+		//_delay_ms(2);
+	}
+}
+void w5200_sendDataFifoUDP(uint8_t ch, fifo_t *buff, fifo_t *addr){
+	uint16_t ptr;
+	uint16_t upperSizeByte;
+	uint16_t dst_ptr;
+	uint16_t dst_mask;
+	uint16_t length = (buff->head - buff->tail) & 0xff;
+	
+	if (length > 0 && (FIFO_udpIp.head - FIFO_udpIp.tail) != 0){
+		while (getSn_RegValue(Sn_TX_FSR(ch)) < length){};
+
+		dst_mask = getSn_RegValue(Sn_TX_WR(ch)) & RX_MASK;
+		dst_ptr = TX_BASE(ch) + dst_mask;								//physical start address
+		
+		w5200_writeDataFifo(Sn_DIPR0(ch), 4, addr);				//set destination ip for udp
+
+		if( (dst_mask + length) > (RX_MASK + 1)){
+			upperSizeByte = (RX_MASK + 1) - dst_mask;
+			w5200_writeDataFifo(dst_ptr, upperSizeByte, buff);
+			upperSizeByte = length - upperSizeByte;
+			//dst_ptr = TX_BASE(ch);									//physical base start address
 			w5200_writeDataFifo(TX_BASE(ch), upperSizeByte, buff);
 		}
 		else{
@@ -201,7 +226,7 @@ void w5200_recvDataFifo(uint8_t ch,fifo_t *fifo){
 		src_mask = getSn_RegValue(Sn_RX_RD(ch)) & RX_MASK;
 		src_ptr = RX_BASE(ch) + src_mask;								//physical start address
 		
-		if( (src_mask + length) > (RX_MASK + 1)){
+		if((src_mask + length) > (RX_MASK + 1)){
 			upperSizeByte = (RX_MASK + 1) - src_mask;
 			w5200_readDataFifo(src_ptr, upperSizeByte, fifo);
 			upperSizeByte = length - upperSizeByte;
@@ -215,7 +240,43 @@ void w5200_recvDataFifo(uint8_t ch,fifo_t *fifo){
 		
 		w5200_writeByte(Sn_RX_RD(ch), ptr >> 8);
 		w5200_writeByte(Sn_RX_RD(ch) + 1, ptr);
+		w5200_writeByte(Sn_CR(ch), _RECV_COMMAND);							//receive command
+	}
+}
+void w5200_recvDataFifoUDP(uint8_t ch,fifo_t *fifo){
+	uint16_t ptr;
+	uint16_t length;
+	uint16_t upperSizeByte;
+	uint16_t src_ptr;
+	uint16_t src_mask;
+	//uint8_t startSourceIp;
+	
+	//startSourceIp = fifo->head;
+
+	length = getSn_RegValue(Sn_RX_RSR(ch));
+	
+	if (length > 0){
+		src_mask = getSn_RegValue(Sn_RX_RD(ch)) & RX_MASK;
+		src_ptr = RX_BASE(ch) + src_mask;									//physical start address
+		
+		if((src_mask + length) > (RX_MASK + 1)){
+			upperSizeByte = (RX_MASK + 1) - src_mask;
+			w5200_readDataFifo(src_ptr, upperSizeByte, fifo);
+			upperSizeByte = length - upperSizeByte;
+			w5200_readDataFifo(RX_BASE(ch), upperSizeByte, fifo);
+		}
+		else{
+			w5200_readDataFifo(src_ptr, length, fifo);
+		}
+		ptr = getSn_RegValue(Sn_RX_RD(ch)) + length;
+		
+		w5200_writeByte(Sn_RX_RD(ch), ptr >> 8);
+		w5200_writeByte(Sn_RX_RD(ch) + 1, ptr);
 		w5200_writeByte(Sn_CR(ch), _RECV_COMMAND);								//receive command
+		
+		/*for (uint8_t i=0; i<4; i++){
+			FIFO_udpIp.data[FIFO_udpIp.head++] = fifo->data[startSourceIp++];
+		}*/
 	}
 }
 void w5200_closeSocket(uint8_t ch){
@@ -236,7 +297,7 @@ void w5200_openSocket(uint8_t ch){
 		case _SOCK_INIT:{
 			w5200_writeByte(Sn_CR(ch), _LISTEN_COMMAND);												//listen
 			temp = w5200_readStatus(ch);
-			if (temp != _SOCK_LISTEN) w5200_writeByte(Sn_CR(ch), _CLOSE_COMMAND);		//close
+			if (temp != _SOCK_LISTEN) w5200_writeByte(Sn_CR(ch), _CLOSE_COMMAND);						//close
 			break;
 		}
 		case _SOCK_UDP:{

@@ -1,6 +1,7 @@
 ﻿#include "PROGM_.h"
 
 const uint8_t _VERSION[] PROGMEM="\n%UBTS_3U_H00S00*";
+//const uint8_t _VERSION[] PROGMEM="\n%CDMA_3U_H00S00*";
 const uint8_t _Tboard[] PROGMEM="\ntb=";
 const uint8_t _Tpa1[] PROGMEM="\nt0=";
 const uint8_t _Tpa2[] PROGMEM="\nt1=";
@@ -23,26 +24,26 @@ const uint8_t _4_1P[] PROGMEM="\n4_1";
 const uint8_t _4_2P[] PROGMEM="\n4_2";
 const uint8_t _4_3P[] PROGMEM="\n4_3";
 const uint8_t _4_OFF[] PROGMEM="\n4_off";
-const uint8_t _CHANN_ERR[] PROGMEM="\n%channel error*";
+const uint8_t _ABSENT[] PROGMEM="\n%absent*";
 const uint8_t _3_2100P[] PROGMEM="\n3_2100";
 const uint8_t _4_2100P[] PROGMEM="\n4_2100";
 
 const uint8_t _PA1_ADDR[] PROGMEM="\nPA0_address=";
 const uint8_t _PA2_ADDR[] PROGMEM="\nPA1_address=";
 const uint8_t _PA3_ADDR[] PROGMEM="\nPA2_address=";
-const uint8_t _PA4_ADDR[] PROGMEM="\nPA3_address=";
+//const uint8_t _PA4_ADDR[] PROGMEM="\nPA3_address=";
 const uint8_t _PA1_BAND[] PROGMEM="\nPA0_band=";
 const uint8_t _PA2_BAND[] PROGMEM="\nPA1_band=";
 const uint8_t _PA3_BAND[] PROGMEM="\nPA2_band=";
-const uint8_t _PA4_BAND[] PROGMEM="\nPA3_band=";
+//const uint8_t _PA4_BAND[] PROGMEM="\nPA3_band=";
 const uint8_t _PA1_FANPIN[] PROGMEM="\nPA0_fanpin=";
 const uint8_t _PA2_FANPIN[] PROGMEM="\nPA1_fanpin=";
 const uint8_t _PA3_FANPIN[] PROGMEM="\nPA2_fanpin=";
-const uint8_t _PA4_FANPIN[] PROGMEM="\nPA3_fanpin=";
+//const uint8_t _PA4_FANPIN[] PROGMEM="\nPA3_fanpin=";
 const uint8_t _PA1_ISACTIVE[] PROGMEM="\nPA0_isactive=";
 const uint8_t _PA2_ISACTIVE[] PROGMEM="\nPA1_isactive=";
 const uint8_t _PA3_ISACTIVE[] PROGMEM="\nPA2_isactive=";
-const uint8_t _PA4_ISACTIVE[] PROGMEM="\nPA3_isactive=";
+//const uint8_t _PA4_ISACTIVE[] PROGMEM="\nPA3_isactive=";
 
 const uint8_t _INA_VOLT[] PROGMEM="\nV=";
 const uint8_t _INA_CALIB[] PROGMEM="\nCA=";
@@ -77,7 +78,7 @@ const uint8_t _ADC_BW_PA_4[] PROGMEM="\nPA_BW4=";
 const uint8_t _PA1[] PROGMEM="\nPA0= ";
 const uint8_t _PA2[] PROGMEM="\nPA1= ";
 const uint8_t _PA3[] PROGMEM="\nPA2= ";
-const uint8_t _PA4[] PROGMEM="\nPA3= ";
+//const uint8_t _PA4[] PROGMEM="\nPA3= ";
 const uint8_t _ATT_1[] PROGMEM="\natt_1= ";
 const uint8_t _ATT_2[] PROGMEM="\natt_2= ";
 const uint8_t _ATT_3[] PROGMEM="\natt_3= ";
@@ -104,7 +105,11 @@ const uint8_t _CLOSE[] PROGMEM ="\n**CLOSED**";
 const uint8_t _JMP_BOOTLOADER[] PROGMEM="\nJMP_BOOTLOADER";
 const uint8_t _MCU_REBOOT[] PROGMEM="\nMCU_REBOOT";
 const uint8_t _ERROR[] PROGMEM ="\n%error*";
+const uint8_t _NOTALLOW[] PROGMEM ="\n%notallow*";
+
 const uint8_t _SHUT_DOWN[] PROGMEM ="\nwaiting off...";
+const uint8_t _OFF[] PROGMEM ="\noff";
+
 const uint8_t _COMBINATION[] PROGMEM ="\ncombination= ";
 const uint8_t _OVER_TEMP[] PROGMEM ="\novertemperature";
 const uint8_t _OVER_POWER[] PROGMEM ="\nover power= ";

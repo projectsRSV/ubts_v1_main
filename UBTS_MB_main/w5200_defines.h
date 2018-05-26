@@ -20,7 +20,7 @@
 //#define Sn_DHAR4(ch)			(CH_BASE + ch * CH_SIZE + 0x000a)
 //#define Sn_DHAR5(ch)			(CH_BASE + ch * CH_SIZE + 0x000b)
 
-#define Sn_DIRP0(ch)			(CH_BASE + ch * CH_SIZE + 0x000c)
+#define Sn_DIPR0(ch)			(CH_BASE + ch * CH_SIZE + 0x000c)
 //#define Sn_DIRP1(ch)			(CH_BASE + ch * CH_SIZE + 0x000d)
 //#define Sn_DIRP2(ch)			(CH_BASE + ch * CH_SIZE + 0x000e)
 //#define Sn_DIRP3(ch)			(CH_BASE + ch * CH_SIZE + 0x000f)
@@ -90,7 +90,7 @@
 #define _SOCK_CLOSED					0x00
 #define _SOCK_INIT					0x13
 #define _SOCK_LISTEN				0x14
-#define _SOCK_CONNECT				0x17
+#define _SOCK_ESTABL				0x17
 #define _SOCK_UDP					0x22
 #define _SOCK_CLOSE_WAIT			0x1c
 

@@ -302,6 +302,7 @@ void command_exec(uint8_t command){
 			break;
 		}
 		case DC_DC_OFF:{
+			utils_sendDebugPGM(DEBUG_CH, _OFF, 0, 0);
 			MCU_OFF_DCDC_RELAYS_VDC_IN;		//PORTK.OUTCLR = PIN4_bm;
 			break;
 		}
@@ -353,28 +354,35 @@ void command_exec(uint8_t command){
 			uint8_t inChannel = COMMAND.buffer[1] & 0x0f;
 			uint8_t isPaOn = COMMAND.buffer[7] & 0x0f;
 			uint8_t combination;
-			
-			setChInCommutator(inChannel, getPaNum(band), standart, isPaOn);
-			combination = searchCombination(&COMMUTATOR);
-			commutator_decoder(combination);
-			
-			utils_sendDebugPGM(DEBUG_CH, _COMBINATION, utils_hex8ToAscii16(combination), 2);
-			utils_sendAnswerMain(MAIN_CH, "\n%aa*", COMMAND.buffer, COMMAND.length);
+			uint8_t paNum;
+			paNum = getPaNum(band);
+			if (paNum == 0 || inChannel < 1 || inChannel > 4){
+				utils_sendDebugPGM(MAIN_CH, _ABSENT, 0, 0);
+				utils_sendDebugPGM(DEBUG_CH, _ABSENT, 0, 0);
+			}
+			else{
+				setChInCommutator(inChannel, paNum, standart, isPaOn);
+				combination = searchCombination(&COMMUTATOR);
+				if (commutator_decoder(combination)){
+					utils_sendDebugPGM(DEBUG_CH, _COMBINATION, utils_hex8ToAscii16(combination), 2);
+					utils_sendAnswerMain(MAIN_CH, "\n%aa*", COMMAND.buffer, COMMAND.length);
+				}else setChInCommutator(inChannel, paNum, standart, 0);
+			}
 			break;
 		}
 		//**************************************************************************************************
 		case 0xe7:{																													//write command %e7*
 			read_writeEEPROMBuff(LENGTH_e8, &COMMAND.length,1);
 			read_writeEEPROMBuff(STRING_e8, COMMAND.buffer, COMMAND.length);
-			utils_sendAnswerMain(MAIN_CH, "\n%e7*", COMMAND.buffer, COMMAND.length);
-			utils_sendAnswerMain(DEBUG_CH, "\n%e7*", COMMAND.buffer, COMMAND.length);
 			read_eeprBuff(LENGTH_e8, &COMMAND_e8.length, 1);
 			read_eeprBuff(STRING_e8, COMMAND_e8.buffer, COMMAND_e8.length);
+			utils_sendAnswerMain(MAIN_CH, "\n%e7*", COMMAND.buffer, COMMAND.length);
+			utils_sendAnswerMain(DEBUG_CH + 10, "\n%e7*", COMMAND.buffer, COMMAND.length);
 			break;
 		}
 		case 0xe8:{																													//read command %e8*
 			utils_sendAnswerMain(MAIN_CH, "\n%e8*", COMMAND_e8.buffer, COMMAND_e8.length);
-			utils_sendAnswerMain(DEBUG_CH, "\n%e8*", COMMAND_e8.buffer, COMMAND_e8.length);
+			utils_sendAnswerMain(DEBUG_CH + 10, "\n%e8*", COMMAND_e8.buffer, COMMAND_e8.length);
 			break;
 		}
 		/****** nothing to do, don't use ******/
@@ -421,30 +429,28 @@ void setChInCommutator(uint8_t inChannel, uint8_t paNum, uint8_t standart, uint8
 		COMMUTATOR.ch_4 = paNum;
 		COMMUTATOR.standart_ch_4 = standart;
 	}
-	if (isPaOn) spi_setReg(&SPID, &PORTH, REGISTERS.ledChState |= (1 << (inChannel - 1)), LED_CH_REG);
-	else spi_setReg(&SPID, &PORTH, REGISTERS.ledChState &= ~(1 << (inChannel - 1)), LED_CH_REG);
 }
 uint8_t getPaNum(uint8_t band){
 	uint8_t temp = 0;
-	if (PA1.band == band){
+	if (PA1.band == band && PA1.isValid){
 		temp |= PA1.channel;
 	}
-	if (PA2.band == band) {
+	if (PA2.band == band && PA2.isValid) {
 		temp |= PA2.channel;
 	}
-	if (PA3.band == band) {
+	if (PA3.band == band && PA3.isValid) {
 		temp |= PA3.channel;
 	}
-	if (PA4.band == band) {
-		temp |= PA4.channel;
-	}
+	/*if (PA4.band == band) {
+	temp |= PA4.channel;
+	}*/
 	return temp;
 }
 void setPaState(uint8_t temp){
 	paOn(&PA1, temp & 0x01);
 	paOn(&PA2, temp & 0x02);
 	paOn(&PA3, temp & 0x04);
-	paOn(&PA4, temp & 0x08);
+	//paOn(&PA4, temp & 0x08);
 }
 void paOn(twi_device_t* pPa, bool isOn){
 	if (isOn && pPa->isValid == 1)	{
@@ -461,21 +467,26 @@ void paOn(twi_device_t* pPa, bool isOn){
 }
 void nmOn(bool isOn){
 	if (isOn) {
-		spi_setReg(&SPIC, &PORTK, REGISTERS.nmGpsWifiPpsState |= NM_ON, MCU_SREG_NM_GPS);		//on power for telit
-		
-		COMMUTATOR.sreg1_state_rx = 0b00010000;
-		COMMUTATOR.sreg2_state_rx &= ~0b01110011;
-		COMMUTATOR.sreg2_state_rx |=  0b10000000;
-		COMMUTATOR.sreg3_state_rx &= ~0b11110000;
-		if (!checkInChannelState()){
-			COMMUTATOR.sreg3_state_rx &= ~0b00001111;
+		if (PA1.isOnState || PA2.isOnState || PA3.isOnState) {
+			utils_sendDebugPGM(MAIN_CH, _NOTALLOW, 0, 0);
+			utils_sendDebugPGM(DEBUG_CH, _NOTALLOW, 0, 0);
 		}
-		spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg1_state_rx, RX_SREG_SPI_1);
-		spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
-		spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
-		
-		utils_sendAnswerMain(MAIN_CH, "\n%05*", 0, 0);
-		utils_sendDebugPGM(DEBUG_CH, _NM_ON, 0, 0);
+		else{
+			spi_setReg(&SPIC, &PORTK, REGISTERS.nmGpsWifiPpsState |= NM_ON, MCU_SREG_NM_GPS);		//on power for telit
+			COMMUTATOR.sreg1_state_rx = 0b00010000;
+			COMMUTATOR.sreg2_state_rx &= ~0b01110011;
+			COMMUTATOR.sreg2_state_rx |=  0b10000000;
+			COMMUTATOR.sreg3_state_rx &= ~0b11110000;
+			if (!checkInChannelState()){
+				COMMUTATOR.sreg3_state_rx &= ~0b00001111;
+			}
+			spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg1_state_rx, RX_SREG_SPI_1);
+			spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
+			spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
+			
+			utils_sendAnswerMain(MAIN_CH, "\n%05*", 0, 0);
+			utils_sendDebugPGM(DEBUG_CH, _NM_ON, 0, 0);
+		}
 	}
 	else {
 		spi_setReg(&SPIC, &PORTK, REGISTERS.nmGpsWifiPpsState &= ~NM_ON, MCU_SREG_NM_GPS);		//off power for telit
@@ -574,17 +585,17 @@ void tunePa(){
 				pISACTIVE = (uint8_t *)_PA3_ISACTIVE;
 				break;
 			}
-			case 3:{
-				pPA = &PA4;
-				eeprI2c = I2C_PA3_EEPR;
-				eeprBand = BAND_PA3_EEPR;
-				eeprValid = VALID_PA3_EEPR;
-				pADDR = (uint8_t *)_PA4_ADDR;
-				pBAND = (uint8_t *)_PA4_BAND;
-				pFANPIN = (uint8_t *)_PA4_FANPIN;
-				pISACTIVE = (uint8_t *)_PA4_ISACTIVE;
-				break;
-			}
+			/*case 3:{
+			pPA = &PA4;
+			eeprI2c = I2C_PA3_EEPR;
+			eeprBand = BAND_PA3_EEPR;
+			eeprValid = VALID_PA3_EEPR;
+			pADDR = (uint8_t *)_PA4_ADDR;
+			pBAND = (uint8_t *)_PA4_BAND;
+			pFANPIN = (uint8_t *)_PA4_FANPIN;
+			pISACTIVE = (uint8_t *)_PA4_ISACTIVE;
+			break;
+			}*/
 			default: {
 				utils_sendDebugPGM(DEBUG_CH, _ERROR, 0, 0);
 				return;
@@ -598,13 +609,13 @@ void tunePa(){
 			pPA->temperBuff[0] = 0;
 			return;
 		}
-		else if ((PA3.addrTWI > 0 || PA4.addrTWI > 0) && (PA3.addrTWI == PA4.addrTWI)) {
-			utils_sendDebugPGM(DEBUG_CH, _ERROR, 0, 0);
-			pPA->isValid = 0;
-			pPA->addrTWI = 0;
-			pPA->temperBuff[0] = 0;
-			return;
-		}
+		/*else if ((PA3.addrTWI > 0 || PA4.addrTWI > 0) && (PA3.addrTWI == PA4.addrTWI)) {
+		utils_sendDebugPGM(DEBUG_CH, _ERROR, 0, 0);
+		pPA->isValid = 0;
+		pPA->addrTWI = 0;
+		pPA->temperBuff[0] = 0;
+		return;
+		}*/
 		if (pPA->addrTWI == 0) activeNumber = 0;
 		pPA->isValid = activeNumber;
 		pPA->band = bandNumber;

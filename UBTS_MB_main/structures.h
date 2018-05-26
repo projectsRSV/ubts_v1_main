@@ -131,7 +131,7 @@ typedef struct{
 ANALOG_INPUT_t ADC_PA_BW_1, ADC_PA_BW_2, ADC_PA_BW_3, ADC_PA_BW_4, ADC_PA_OUT_1, ADC_PA_OUT_2, ADC_PA_OUT_3, ADC_PA_OUT_4;
 //regs_t REGISTERS;
 BUFF_t COMMAND, COMMAND_3d, COMMAND_21, COMMAND_e8;
-fifo_t FIFO_gpsCh, FIFO_recUART, FIFO_nmChRx, FIFO_nmChTx, FIFO_mainChTx, FIFO_mainChRx, FIFO_debugChRx, FIFO_debugChTx, FIFO_udpChTx, FIFO_udpChRx;
+fifo_t FIFO_gpsCh, FIFO_recUART, FIFO_nmChRx, FIFO_nmChTx, FIFO_mainChTx, FIFO_mainChRx, FIFO_debugChRx, FIFO_debugChTx, FIFO_udpChTx, FIFO_udpChRx, FIFO_udpIp;
 transfer_t TRANSFER;
 commut_regs_t COMMUTATOR;
 isr_w5200 ISR_W5200;

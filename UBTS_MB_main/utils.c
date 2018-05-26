@@ -29,6 +29,15 @@ void utils_sendAnswerMain(uint8_t ch, char *word, uint8_t *buff, uint8_t length)
 		}
 		FIFO_mainChTx.data[FIFO_mainChTx.head++] = word[4];
 	}
+	else if (ch == (DEBUG_CH + 10)){
+		for (uint8_t i=0; i<4; i++){
+			FIFO_debugChTx.data[FIFO_debugChTx.head++] = word[i];
+		}
+		for (uint8_t i=0; i<length; i++){
+			FIFO_debugChTx.data[FIFO_debugChTx.head++] = buff[i];
+		}
+		FIFO_debugChTx.data[FIFO_debugChTx.head++] = word[4];
+	}
 	else if (ch == DEBUG_CH){
 		for (uint8_t i=0; i<strlen(word); i++){
 			FIFO_debugChTx.data[FIFO_debugChTx.head++] = word[i];
@@ -213,7 +222,7 @@ void utils_powerLedNormal(power_leds_t* ledStruct){
 }
 void paOffAll(){
 	setPaState(0x00);
-	PA1.isValid = 0; PA2.isValid = 0; PA3.isValid = 0; PA4.isValid = 0;
+	PA1.isValid = 0; PA2.isValid = 0; PA3.isValid = 0;
 }
 void utils_powerLedEmergencyBW(power_leds_t* ledStruct){
 	static uint8_t latch;

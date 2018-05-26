@@ -194,7 +194,8 @@ bool commutator_decoder(uint8_t address){
 			break;
 		}
 		case 0x12:{
-			if(PA3.band == 0x01){
+			if(PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_1_3();
 				_2_off();
 				_3_2100();
@@ -203,7 +204,10 @@ bool commutator_decoder(uint8_t address){
 				setPaState(PA3.channel);
 				POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 3);
 			}
-			else commutator_decoder(0xff);
+			else {
+				commutator_decoder(NOCOMBINATION);
+				validCommand = false;
+			}
 			break;
 		}
 		case 0x13:{
@@ -263,7 +267,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x18:{
 			_1_off();
 			_2_2();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -281,7 +286,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x19:{
 			_1_off();
 			_2_1();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -299,7 +305,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x1a:{
 			_1_1();
 			_2_off();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -317,7 +324,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x1b:{
 			_1_2();
 			_2_off();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -335,7 +343,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x1c:{
 			_1_off();
 			_2_off();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -404,7 +413,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x22:{
 			_1_1();
 			_2_1();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0018, 0x0018);
@@ -422,7 +432,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x23:{
 			_1_2();
 			_2_2();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0018, 0x0018);
@@ -440,7 +451,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x24:{
 			_1_1();
 			_2_2();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -459,7 +471,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x25:{
 			_1_2();
 			_2_1();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -619,7 +632,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x32:{
 			_1_1();
 			_2_off();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -637,7 +651,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x33:{
 			_1_off();
 			_2_off();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -665,7 +680,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x35:{
 			_1_1();
 			_2_1();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0018, 0x0018);
@@ -683,7 +699,8 @@ bool commutator_decoder(uint8_t address){
 		case 0x36:{
 			_1_off();
 			_2_1();
-			if (PA3.band == 0x01){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -698,11 +715,21 @@ bool commutator_decoder(uint8_t address){
 			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 2);
 			break;
 		}
+		case 0x37:{
+			_1_1();
+			_2_1();
+			_3_off();
+			_4_3();
+			setAttCommutator(0x0018, 0x0018);
+			setPaState(PA1.channel | PA3.channel);
+			POWER_LEDS1.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_1, 2);
+			POWER_LEDS3.pArrLedSt = getArrayOfLeds(COMMUTATOR.standart_ch_3, 1);
+			break;
+		}
 		
-		
-		case 0xff:{
-			utils_sendDebugPGM(DEBUG_CH, _CHANN_ERR, 0, 0);
-			utils_sendDebugPGM(MAIN_CH, _CHANN_ERR, 0, 0);
+		case NOCOMBINATION:{
+			utils_sendDebugPGM(DEBUG_CH, _ABSENT, 0, 0);
+			utils_sendDebugPGM(MAIN_CH, _ABSENT, 0, 0);
 			validCommand = false;
 			break;
 		}
@@ -715,17 +742,20 @@ bool commutator_decoder(uint8_t address){
 	return validCommand;
 }
 
-const uint8_t table_1[] = {0x00, 0x01, 0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,/*09*/ 0x01, 0x01, 0x01, 0x01, 0x01,/*0e*/ 0x02, 0x02, 0x02, 0x02, 0x04,/*13*/ 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,/*1a*/ 0x01, 0x02, 0x00, 0x04, 0x04, 0x04,/*20*/ 0x04, 0x00, 0x01, 0x02, 0x01, 0x02,/*26*/ 0x01, 0x01, 0x05, 0x05, 0x05,/*2b*/ 0x05, 0x00, 0x00, 0x00, 0x00,/*30*/ 0x05, 0x05, 0x05, 0x00, 0x00, 0x05, 0x00};
-const uint8_t table_2[] = {0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x04, 0x00, 0x00,/*09*/ 0x01, 0x01, 0x00, 0x00, 0x02,/*0e*/ 0x01, 0x04, 0x00, 0x00, 0x00,/*13*/ 0x02, 0x01, 0x01, 0x02, 0x02, 0x02, 0x01,/*1a*/ 0x00, 0x00, 0x00, 0x01, 0x02, 0x04,/*20*/ 0x00, 0x04, 0x01, 0x02, 0x02, 0x01,/*26*/ 0x04, 0x04, 0x00, 0x05, 0x00,/*2b*/ 0x05, 0x05, 0x05, 0x00, 0x00,/*30*/ 0x00, 0x05, 0x00, 0x00, 0x05, 0x05, 0x05};
-const uint8_t table_3[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00,/*09*/ 0x04, 0x00, 0x04, 0x00, 0x00,/*0e*/ 0x00, 0x00, 0x04, 0x00, 0x04,/*13*/ 0x00, 0x04, 0x00, 0x04, 0x00, 0x04, 0x04,/*1a*/ 0x04, 0x04, 0x04, 0x00, 0x00, 0x00,/*20*/ 0x00, 0x04, 0x04, 0x04, 0x04, 0x04,/*26*/ 0x04, 0x00, 0x00, 0x05, 0x05,/*2b*/ 0x00, 0x00, 0x05, 0x05, 0x00,/*30*/ 0x00, 0x00, 0x05, 0x05, 0x00, 0x05, 0x05};
-const uint8_t table_4[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04,/*09*/ 0x00, 0x00, 0x00, 0x04, 0x00,/*0e*/ 0x00, 0x00, 0x00, 0x04, 0x04,/*13*/ 0x00, 0x00, 0x04, 0x00, 0x04, 0x04, 0x04,/*1a*/ 0x04, 0x04, 0x04, 0x00, 0x00, 0x00,/*20*/ 0x04, 0x00, 0x04, 0x04, 0x04, 0x04,/*26*/ 0x00, 0x00, 0x00, 0x00, 0x00,/*2b*/ 0x00, 0x00, 0x00, 0x00, 0x05,/*30*/ 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05};
-	
+const uint8_t table_1[] = {nul, pa1, pa2, pa3, nul, nul, nul, nul, nul,/*09*/ pa1, pa1, pa1, pa1, pa1,/*0e*/ pa2, pa2, pa2, pa2, pa3,/*13*/ pa2, nul, nul, nul, nul, nul, nul,/*1a*/ pa1, pa2, nul, pa3, pa3, pa3,/*20*/ pa3, nul, pa1, pa2, pa1, pa2,/*26*/ pa1, pa1, p13, p13, p13,/*2b*/ p13, nul, nul, nul, nul,/*30*/ p13, p13, p13, nul, nul, p13, nul, pa1};
+const uint8_t table_2[] = {nul, nul, nul, nul, pa1, pa2, pa3, nul, nul,/*09*/ pa1, pa1, nul, nul, pa2,/*0e*/ pa1, pa3, nul, nul, nul,/*13*/ pa2, pa1, pa1, pa2, pa2, pa2, pa1,/*1a*/ nul, nul, nul, pa1, pa2, pa3,/*20*/ nul, pa3, pa1, pa2, pa2, pa1,/*26*/ pa3, pa3, nul, p13, nul,/*2b*/ p13, p13, p13, nul, nul,/*30*/ nul, p13, nul, nul, p13, p13, p13, pa1};
+const uint8_t table_3[] = {nul, nul, nul, nul, nul, nul, nul, pa3, nul,/*09*/ pa3, nul, pa3, nul, nul,/*0e*/ nul, nul, pa3, nul, pa3,/*13*/ nul, pa3, nul, pa3, nul, pa3, pa3,/*1a*/ pa3, pa3, pa3, nul, nul, nul,/*20*/ nul, pa3, pa3, pa3, pa3, pa3,/*26*/ pa3, nul, nul, p13, p13,/*2b*/ nul, nul, p13, p13, nul,/*30*/ nul, nul, p13, p13, nul, p13, p13, nul};
+const uint8_t table_4[] = {nul, nul, nul, nul, nul, nul, nul, nul, pa3,/*09*/ nul, nul, nul, pa3, nul,/*0e*/ nul, nul, nul, pa3, pa3,/*13*/ nul, nul, pa3, nul, pa3, pa3, pa3,/*1a*/ pa3, pa3, pa3, nul, nul, nul,/*20*/ pa3, nul, pa3, pa3, pa3, pa3,/*26*/ nul, nul, nul, nul, nul,/*2b*/ nul, nul, nul, nul, p13,/*30*/ p13, p13, p13, p13, p13, p13, p13, pa3};
+
 uint16_t* getArrayOfLeds(char standart, uint8_t isDouble){
 	if (standart == 'L' && isDouble == 1) return arrLed1L;
 	else if (standart == 'L' && isDouble == 2) return arrLed2L;
 	else if (standart == 'L' && isDouble == 3) return arrLed3L;
 	else if (standart == 'U' && isDouble == 1) return arrLed1U;
 	else if (standart == 'U' && isDouble == 2) return arrLed2U;
+	else if (standart == 'C' && isDouble == 1) return arrLed1C;
+	else if (standart == 'C' && isDouble == 2) return arrLed1C;
+	else if (standart == 'C' && isDouble == 3) return arrLed1C;
 	else return arrLed3U;
 }
 uint8_t searchCombination(commut_regs_t *commutator){
@@ -735,14 +765,14 @@ uint8_t searchCombination(commut_regs_t *commutator){
 			return i;
 		}
 	}
-	return 0xff;
+	return NOCOMBINATION;
 }
 uint8_t findDuplicate(){
 	uint8_t size = sizeof(table_1);
 	for (uint8_t i=0; i < size; i++){
 		for (uint8_t k= i+1; k < size; k++){
 			//if (i == k) continue;
-			if (table_1[i] == table_1[k] && table_2[i] == table_2[k] && table_3[i] == table_3[k] && table_4[i] == table_4[k] ) return i;
+			if ((table_1[i] == table_1[k]) && (table_2[i] == table_2[k]) && (table_3[i] == table_3[k]) && (table_4[i] == table_4[k])) return i;
 		}
 	}
 	return 0xff;
@@ -779,6 +809,8 @@ void _1_1(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState |= LED_CH1, LED_CH_REG);		//set led 1 ch
+
 	utils_sendDebugPGM(DEBUG_CH, _1_1P, 0, 0);
 	utils_sendStDebug(&COMMUTATOR.standart_ch_1);
 }
@@ -813,6 +845,8 @@ void _1_2(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg1_state_rx, RX_SREG_SPI_1);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
+
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState |= LED_CH1, LED_CH_REG);		//set led 1 ch
 
 	utils_sendDebugPGM(DEBUG_CH, _1_2P, 0, 0);
 	utils_sendAnswerMain(DEBUG_CH, &COMMUTATOR.standart_ch_1, 0, 0);
@@ -849,6 +883,8 @@ void _1_3(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState |= LED_CH1, LED_CH_REG);		//set led 1 ch
+
 	utils_sendDebugPGM(DEBUG_CH, _1_3P, 0, 0);
 	utils_sendStDebug(&COMMUTATOR.standart_ch_1);
 }
@@ -874,6 +910,8 @@ void _1_off(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg1_state_rx, RX_SREG_SPI_1);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
+
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState &= ~LED_CH1, LED_CH_REG);
 
 	utils_sendDebugPGM(DEBUG_CH, _1_OFF, 0, 0);
 }
@@ -910,6 +948,8 @@ void _2_1(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState |= LED_CH2, LED_CH_REG);		//set led 2 ch
+
 	utils_sendDebugPGM(DEBUG_CH, _2_1P, 0, 0);
 	utils_sendStDebug(&COMMUTATOR.standart_ch_2);
 }
@@ -945,6 +985,8 @@ void _2_2(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState |= LED_CH2, LED_CH_REG);		//set led 2 ch
+
 	utils_sendDebugPGM(DEBUG_CH, _2_2P, 0, 0);
 	utils_sendStDebug(&COMMUTATOR.standart_ch_2);
 }
@@ -979,6 +1021,8 @@ void _2_3(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState |= LED_CH2, LED_CH_REG);		//set led 2 ch
+
 	utils_sendDebugPGM(DEBUG_CH, _2_3P, 0, 0);
 	utils_sendStDebug(&COMMUTATOR.standart_ch_2);
 }
@@ -1011,14 +1055,16 @@ void _2_off(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState &= ~LED_CH2, LED_CH_REG);
+
 	utils_sendDebugPGM(DEBUG_CH, _2_OFF, 0, 0);
 }
 
 void _3_1(){
-	utils_sendDebugPGM(DEBUG_CH, _CHANN_ERR, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _ABSENT, 0, 0);
 }
 void _3_2(){
-	utils_sendDebugPGM(DEBUG_CH, _CHANN_ERR, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _ABSENT, 0, 0);
 }
 void _3_3(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
@@ -1050,6 +1096,8 @@ void _3_3(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState |= LED_CH3, LED_CH_REG);		//set led 3 ch
+
 	utils_sendDebugPGM(DEBUG_CH, _3_3P, 0, 0);
 	utils_sendStDebug(&COMMUTATOR.standart_ch_3);
 }
@@ -1079,6 +1127,8 @@ void _3_2100(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState |= LED_CH3, LED_CH_REG);		//set led 3 ch
+
 	utils_sendDebugPGM(DEBUG_CH, _3_2100P, 0, 0);
 	utils_sendStDebug(&COMMUTATOR.standart_ch_3);
 }
@@ -1107,14 +1157,16 @@ void _3_off(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState &= ~LED_CH3, LED_CH_REG);
+
 	utils_sendDebugPGM(DEBUG_CH, _3_OFF, 0, 0);
 }
 
 void _4_1(){
-	utils_sendDebugPGM(DEBUG_CH, _CHANN_ERR, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _ABSENT, 0, 0);
 }
 void _4_2(){
-	utils_sendDebugPGM(DEBUG_CH, _CHANN_ERR, 0, 0);
+	utils_sendDebugPGM(DEBUG_CH, _ABSENT, 0, 0);
 }
 void _4_3(){
 	COMMUTATOR.sreg1_state_tx &= ~0b00011111;
@@ -1146,6 +1198,8 @@ void _4_3(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
 
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState |= LED_CH4, LED_CH_REG);		//set led 4 ch
+
 	utils_sendDebugPGM(DEBUG_CH, _4_3P, 0, 0);
 	utils_sendStDebug(&COMMUTATOR.standart_ch_4);
 }
@@ -1174,6 +1228,8 @@ void _4_2100(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg1_state_rx, RX_SREG_SPI_1);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
+
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState |= LED_CH4, LED_CH_REG);		//set led 4 ch
 
 	utils_sendDebugPGM(DEBUG_CH, _4_2100P, 0, 0);
 	utils_sendStDebug(&COMMUTATOR.standart_ch_4);
@@ -1204,6 +1260,8 @@ void _4_off(){
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg1_state_rx, RX_SREG_SPI_1);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg2_state_rx, RX_SREG_SPI_2);
 	spi_setReg(&SPID, &PORTJ, COMMUTATOR.sreg3_state_rx, RX_SREG_SPI_3);
+
+	spi_setReg(&SPID, &PORTH, REGISTERS.ledChState &= ~LED_CH4, LED_CH_REG);
 
 	utils_sendDebugPGM(DEBUG_CH, _4_OFF, 0, 0);
 }

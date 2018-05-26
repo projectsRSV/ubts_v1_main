@@ -12,11 +12,10 @@
 #define RESET_SECTION			0x0000
 
 //#define DEBUG					0
-#define START_ANIME_PAUSE		500
+#define START_ANIME_PAUSE		100
 #define SHUTDOWN_LEVEL			116
 
 #define PAUSE_OVER				15
-
 
 //////*********************************************************************//////
 #define MAIN_CH				0
@@ -104,6 +103,7 @@
 #define DC_DC_ON					0x70
 #define DC_DC_OFF					0x71
 #define EMULATE_DC_DC_INTERR		0x73
+#define NOCOMBINATION				0xff
 
 
 //***************************************************
@@ -148,9 +148,16 @@
 #define LED_CH2				(1 << 1)
 #define LED_CH3				(1 << 2)
 #define LED_CH4				(1 << 3)
+//#define LED_CH4				(1 << 3)
 #define LED_FAN_G		(1 << 5)
 #define LED_FAN_Y		(1 << 6)
-#define LED_FAN_R			(1 << 7)
+#define LED_FAN_R		(1 << 7)
+
+#define pa1				1
+#define pa2				2
+#define pa3				4
+#define nul				0
+#define p13				5
 
 //**************************************************
 

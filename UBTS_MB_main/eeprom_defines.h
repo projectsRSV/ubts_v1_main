@@ -46,6 +46,9 @@
 
 #define WIFI_ALWAYS_ON		OFFSET + 291		//1
 
+#define MAC_EEP				OFFSET + 292		//6
+
+
 
 #endif /* EEPR_H_ */
 

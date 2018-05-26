@@ -13,6 +13,9 @@ uint8_t buffer_mask[4];								//255, 255, 255, 0
 uint8_t buffer_ip[4];								//192, 168, 6, 10
 uint8_t buffer_SOCKET_main[2];
 uint8_t buffer_serialNum[4];
+//uint8_t buffer_mac[6] = {0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};;								//ff-ff-ff-ff-ff-ff
+uint8_t buffer_mac[6];								//ff-ff-ff-ff-ff-ff
+
 uint8_t *pGate, *pMask, *pIp;
 
 uint8_t configBuff[2] = {0x47, 0xff};
@@ -26,10 +29,14 @@ uint16_t arrLed1L[] = {1168, 1234, 1282, 1319, 1412, 1440, 1600, 1000};			//6, 1
 uint16_t arrLed2L[] = {1350, 1442, 1490, 1534, 1790, 1835, 1870, 1080};			//6, 11, 16, 21, 27, __,  40, 2.1W - BW
 uint16_t arrLed3L[] = {1830, 1925, 1991, 2030, 2090, 2135, 2170, 1180};			//6, 11, 16, 21, 27, __,  40, 2.1W - BW
 
-twi_device_t PA1 = {.fanPin = FAN_PA1, .paPin = PA_ENABLE_1, .channel = 1, .name = (uint8_t*)_PA1};								//
-twi_device_t PA2 = {.fanPin = FAN_PA2, .paPin = PA_ENABLE_2, .channel = 2, .name = (uint8_t*)_PA2};								//
-twi_device_t PA3 = {.fanPin = FAN_PA3, .paPin = PA_ENABLE_3, .channel = 4, .name = (uint8_t*)_PA3};								//
-twi_device_t PA4 = {.fanPin = FAN_PA4, .paPin = PA_ENABLE_4, .channel = 8, .name = (uint8_t*)_PA4};								//none
+uint16_t arrLed1C[] = {1846, 1920, 1950, 2000, 2176, 2190, 2268, 1668};			//6, 11, 16, 21, 27, __,  40, 2.1W - BW
+//uint16_t arrLed2C[] = {1350, 1442, 1490, 1534, 1790, 1835, 2670, 1280};		//6, 11, 16, 21, 27, __,  40, 2.1W - BW
+//uint16_t arrLed3C[] = {1830, 1925, 1991, 2030, 2090, 2135, 2970, 1380};		//6, 11, 16, 21, 27, __,  40, 2.1W - BW
+
+twi_device_t PA1 = {.fanPin = FAN_PA1, .paPin = PA_ENABLE_1, .channel = LED_CH1, .name = (uint8_t*)_PA1};								//
+twi_device_t PA2 = {.fanPin = FAN_PA2, .paPin = PA_ENABLE_2, .channel = LED_CH2, .name = (uint8_t*)_PA2};								//
+twi_device_t PA3 = {.fanPin = FAN_PA3, .paPin = PA_ENABLE_3, .channel = LED_CH3, .name = (uint8_t*)_PA3};								//
+//twi_device_t PA4 = {.fanPin = FAN_PA4, .paPin = PA_ENABLE_4, .channel = 8, .name = (uint8_t*)_PA4};								//none
 
 twi_device_t BOARD = {.addrTWI = TEMP_BOARD, .fanPin = FAN_BACK};																//
 twi_device_t INA_BTS = {.addrTWI = I2C_BTS};
@@ -39,7 +46,7 @@ regs_t REGISTERS = {.nmGpsWifiPpsState = 0x00, .paState = 0, .dcDcState = 0xf810
 power_leds_t POWER_LEDS1, POWER_LEDS2, POWER_LEDS3;
 
 void main_ledFanFunc(void);
-void setIp(uint8_t* buff, uint8_t value);
+
 
 int main(void) {
 	pGate = buffer_gate;
@@ -100,23 +107,24 @@ void main_ledFanFunc(void){
 	if (i++ == 0x3fff){
 		if (latch == 0) {
 			if ((PA1.temperBuff[0] == 0 && PA1.isValid == 1) || (PA2.temperBuff[0] == 0 && PA2.isValid == 1) ||
-			(PA3.temperBuff[0] == 0 && PA3.isValid == 1) || (PA4.temperBuff[0] == 0 && PA4.isValid == 1)){
-				fanLedFuncPtr = (fpFanLed)(ledFanTable[4]);				//fan led blink all
+			//(PA3.temperBuff[0] == 0 && PA3.isValid == 1) || (PA4.temperBuff[0] == 0 && PA4.isValid == 1)){
+			(PA3.temperBuff[0] == 0 && PA3.isValid == 1)){
+					fanLedFuncPtr = (fpFanLed)(ledFanTable[4]);				//fan led blink all
 			}
-			else if (PA1.temperBuff[0] >= TEMP_SHUTDOWN || PA2.temperBuff[0] >= TEMP_SHUTDOWN || PA3.temperBuff[0] >= TEMP_SHUTDOWN || PA4.temperBuff[0] >= TEMP_SHUTDOWN) {
+			else if (PA1.temperBuff[0] >= TEMP_SHUTDOWN || PA2.temperBuff[0] >= TEMP_SHUTDOWN || PA3.temperBuff[0] >= TEMP_SHUTDOWN) {
 				fanLedFuncPtr = (fpFanLed)(ledFanTable[3]);				//fan led blink red
 				latch = 1;
 				utils_sendDebugPGM(DEBUG_CH, _OVER_TEMP, 0, 0);
 				command_exec(0x1a);
 				paOffAll();
 			}
-			else if (PA1.temperBuff[0] >= TEMP_RED || PA2.temperBuff[0] >= TEMP_RED || PA3.temperBuff[0] >= TEMP_RED || PA4.temperBuff[0] >= TEMP_RED) {
+			else if (PA1.temperBuff[0] >= TEMP_RED || PA2.temperBuff[0] >= TEMP_RED || PA3.temperBuff[0] >= TEMP_RED) {
 				fanLedFuncPtr = (fpFanLed)(ledFanTable[2]);				//fan led light red
 			}
-			else if (!PA1.fanState && !PA2.fanState && !PA3.fanState && !PA4.fanState){
+			else if (!PA1.fanState && !PA2.fanState && !PA3.fanState){
 				fanLedFuncPtr = (fpFanLed)(ledFanTable[0]);				//fan led light green
 			}
-			else if (PA1.temperBuff[0] >= TEMP_YELLOW || PA2.temperBuff[0] >= TEMP_YELLOW || PA3.temperBuff[0] >= TEMP_YELLOW || PA4.temperBuff[0] >= TEMP_YELLOW) {
+			else if (PA1.temperBuff[0] >= TEMP_YELLOW || PA2.temperBuff[0] >= TEMP_YELLOW || PA3.temperBuff[0] >= TEMP_YELLOW) {
 				fanLedFuncPtr = (fpFanLed)(ledFanTable[1]);				//fan led light yellow
 			}
 		}
@@ -130,14 +138,23 @@ void sendMode(){
 	//char charact[] = "\n%72*";
 	char *charact = "\n%72*";
 
-	if (k <= 5) {
-		if (i++ >= 0x5fff) {
+		
+	if (k <= 7) {
+		if (i++ >= 0x2fff) {
 			for (uint8_t i=0; i<strlen(charact); i++){
 				FIFO_udpChTx.data[FIFO_udpChTx.head++] = charact[i];
 			}
-			for (uint8_t i=0; i<strlen(charact); i++){
-				FIFO_udpChTx.data[FIFO_udpChTx.head++] = charact[i];
+			for (uint8_t i=0; i<3; i++){
+				FIFO_udpIp.data[FIFO_udpIp.head++] = *(pIp + i);
 			}
+			FIFO_udpIp.data[FIFO_udpIp.head++] = *(pIp + 3) + 1;
+			w5200_sendDataFifoUDP(UDP_CH, &FIFO_udpChTx, &FIFO_udpIp);
+			
+			FIFO_udpChTx.tail -= 5;
+			FIFO_udpIp.tail -= 4;
+			FIFO_udpIp.data[FIFO_udpIp.head - 1] += 2;
+			w5200_sendDataFifoUDP(UDP_CH, &FIFO_udpChTx, &FIFO_udpIp);
+			
 			utils_sendDebugPGM(DEBUG_CH, _SHUT_DOWN, 0, 0);
 			i = 0;
 			k++;
@@ -147,15 +164,16 @@ void sendMode(){
 		command_exec(DC_DC_OFF);
 		fpProgModeVar = (fpProgMode)fpProgModeTable[0];					//go to main mode
 		k = 0;
+		i = 0;
 	}
 }
 void offMode(){
 	static uint16_t i;
 	static uint8_t k;
-	if (k != 10) {
-		if (i++ == 0x0fff) {
+	if (k != 20) {
+		if (i++ == 0x1fff) {
 			utils_sendDebugPGM(DEBUG_CH, _INA_CURRENT, utils_hex2ArrayToDecAscii4Array(INA_BTS.currentBuff), 4);
-			if (((INA_BTS.currentBuff[0] << 8) | (INA_BTS.currentBuff[1])) <= SHUTDOWN_LEVEL){
+			if ((((INA_BTS.currentBuff[0] << 8) | (INA_BTS.currentBuff[1])) <= SHUTDOWN_LEVEL) && ((INA_BTS.currentBuff[0] << 8) | (INA_BTS.currentBuff[1])) != 0){
 				command_exec(DC_DC_OFF);
 			}
 			i = 0;
@@ -166,5 +184,6 @@ void offMode(){
 		command_exec(DC_DC_OFF);
 		fpProgModeVar = (fpProgMode)fpProgModeTable[0];			//go to main mode
 		k = 0;
+		i = 0;
 	}
 }
