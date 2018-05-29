@@ -24,7 +24,7 @@ void read_readUDP();
 void read_udpCommand();
 void read_adc();
 
-extern uint8_t commands_decoder(fifo_t*);
+extern uint8_t commands_decoder(fifo_t*, buff_t *);
 
 uint8_t read_eeprByte(uint16_t addr);
 void read_eeprBuff(uint16_t addr,uint8_t* buff,uint8_t);

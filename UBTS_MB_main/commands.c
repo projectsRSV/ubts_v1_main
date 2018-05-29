@@ -1,6 +1,6 @@
 ﻿#include "COMMANDS.h"
 
-uint8_t commands_decoder(fifo_t* fifo) {
+uint8_t commands_decoder(fifo_t* fifo, buff_t *buffOut) {
 	uint8_t command=0;
 	if (((fifo->head - fifo->tail) & 0xff) > 0){
 		while (1) {
@@ -10,23 +10,23 @@ uint8_t commands_decoder(fifo_t* fifo) {
 				if(utils_isFifoEmpty(fifo)) return EMPTY_CMD;
 			}
 			if (command) {
-				COMMAND.command = (uint16_t)fifo->data[fifo->tail++]<<8;
+				buffOut->command = (uint16_t)fifo->data[fifo->tail++]<<8;
 				if(utils_isFifoEmpty(fifo)) return EMPTY_CMD;
-				COMMAND.command |= (uint16_t)fifo->data[fifo->tail++];
+				buffOut->command |= (uint16_t)fifo->data[fifo->tail++];
 				if(utils_isFifoEmpty(fifo)) return EMPTY_CMD;
 				if (fifo->data[fifo->tail] == '*') {
 					fifo->tail++;
-					return utils_ascii16ToHex8(COMMAND.command);
+					return utils_ascii16ToHex8(buffOut->command);
 				}
 				else {
 					uint8_t i = 0;
 					do{
 						if(utils_isFifoEmpty(fifo)) return EMPTY_CMD;
-						COMMAND.buffer[i++] = fifo->data[fifo->tail++];
-						COMMAND.length = i;
+						buffOut->buffer[i++] = fifo->data[fifo->tail++];
+						buffOut->length = i;
 						if (i >= BUFF_SIZE_COMM_DATA) break;
 					} while (fifo->data[fifo->tail] != '*');
-					return utils_ascii16ToHex8(COMMAND.command);
+					return utils_ascii16ToHex8(buffOut->command);
 				}
 			}
 			else {
@@ -35,6 +35,52 @@ uint8_t commands_decoder(fifo_t* fifo) {
 			}
 		}
 	} else return EMPTY_CMD;
+}
+static bool commandValidation(uint8_t command, buff_t *commandBuff){
+	bool valid = true;
+	switch(command){
+		/*case 0x75:{
+		uint8_t b1 = utils_ascii16ToHex8(COMMAND.buffer[1] << 8 | COMMAND.buffer[2]);
+		uint8_t b2 = utils_ascii16ToHex8(COMMAND.buffer[4] << 8 | COMMAND.buffer[5]);
+		uint8_t b3 = utils_ascii16ToHex8(COMMAND.buffer[7] << 8 | COMMAND.buffer[8]);
+		uint8_t b4 = utils_ascii16ToHex8(COMMAND.buffer[10] << 8 | COMMAND.buffer[11]);
+		uint8_t b5 = utils_ascii16ToHex8(COMMAND.buffer[13] << 8 | COMMAND.buffer[14]);
+		uint8_t b6 = utils_ascii16ToHex8(COMMAND.buffer[16] << 8 | COMMAND.buffer[17]);
+		
+		break;
+		}*/
+		case 0x76:{								//%76,x,yy,z*		-  x-pa number[1-3], yy-band number[0-99], z-isActive[0-1] (1-true,0-false)
+			uint8_t bandNumber = utils_ascii16ToHex8(commandBuff->buffer[3] << 8 | commandBuff->buffer[4]);
+			uint8_t paNumber = commandBuff->buffer[1];
+			uint8_t activeNumber = commandBuff->buffer[6];
+
+			if (commandBuff->length != 7) return false;
+			if (bandNumber < 0 || bandNumber > 99) return false;
+			if (paNumber < 1 || paNumber > 3) return false;
+			if (activeNumber != 0 && activeNumber != 1) return false;
+			break;
+		}
+		case 0xaa:{								//%aa,x,Yyy,z*	- x-input channel[1-4], Y-standart[C,G,U,L], yy-band[0-99], z-on or off[0-1]
+			uint8_t band = utils_ascii16ToHex8((commandBuff->buffer[4] << 8) | commandBuff->buffer[5]);
+			uint8_t standart = commandBuff->buffer[3];
+			uint8_t inChannel = commandBuff->buffer[1] - 0x30;
+			uint8_t isPaOn = commandBuff->buffer[7] - 0x30;
+			uint8_t paNum;
+			
+			if (commandBuff->length != 8) return false;
+			if (commandBuff->buffer[0] != ',') return false;
+			if (commandBuff->buffer[2] != ',') return false;
+			if (commandBuff->buffer[6] != ',') return false;
+			if (band < 0 || band > 99) return false;
+			paNum = getPaNum(band);
+			if(paNum == 0) return false;
+			if (standart != 'U' && standart != 'C' && standart != 'L' && standart != 'G') return false;
+			if (inChannel < 1 || inChannel > 4) return false;
+			if (isPaOn != 0 && isPaOn != 1) return false;
+			break;
+		}
+	}
+	return valid;
 }
 void command_exec(uint8_t command){
 	switch (command){
@@ -112,7 +158,7 @@ void command_exec(uint8_t command){
 		case 0x0f:{																													//set start wifi
 			uint8_t temp;
 			utils_sendAnswerMain(DEBUG_CH, 0x00, COMMAND.buffer, COMMAND.length);
-			temp = utils_ascii16ToHex8(COMMAND.buffer[1] << 8 | COMMAND.buffer[2]);
+			temp = utils_ascii16ToHex8(COMMAND.buffer[1] << 8 | COMMAND.buffer[2]);				//0 or 1
 			if (temp) utils_sendDebugPGM(DEBUG_CH, _WIFI_ON, 0, 0);
 			else utils_sendDebugPGM(DEBUG_CH, _WIFI_OFF, 0, 0);
 			read_writeEEPROMBuff(WIFI_ALWAYS_ON, &temp, 1);
@@ -315,8 +361,28 @@ void command_exec(uint8_t command){
 			break;
 		}
 		//********************************************************************************************************
+		case 0x74:{																				//read mac
+			utils_sendAnswerMain(MAIN_CH, "\n%74*", utils_hexArrayToAsciiArray(buffer_mac, 6), 12);
+			utils_sendAnswerMain(DEBUG_CH, "\nmac= ", utils_hexArrayToAsciiArray(buffer_mac, 6), 12);
+			break;
+		}
+		case 0x75:{																				//%75,aabbaabbaabb*	-	set mac
+			buffer_mac[0] = utils_ascii16ToHex8(COMMAND.buffer[1] << 8 | COMMAND.buffer[2]);
+			buffer_mac[1] = utils_ascii16ToHex8(COMMAND.buffer[3] << 8 | COMMAND.buffer[4]);
+			buffer_mac[2] = utils_ascii16ToHex8(COMMAND.buffer[5] << 8 | COMMAND.buffer[6]);
+			buffer_mac[3] = utils_ascii16ToHex8(COMMAND.buffer[7] << 8 | COMMAND.buffer[8]);
+			buffer_mac[4] = utils_ascii16ToHex8(COMMAND.buffer[9] << 8 | COMMAND.buffer[10]);
+			buffer_mac[5] = utils_ascii16ToHex8(COMMAND.buffer[11] << 8 | COMMAND.buffer[12]);
+			
+			if (COMMAND.length == 13){
+				read_writeEEPROMBuff(MAC_EEP, buffer_mac, 6);
+				utils_sendAnswerMain(MAIN_CH, "\n%75*", utils_hexArrayToAsciiArray(buffer_mac, 6), 12);
+				utils_sendAnswerMain(DEBUG_CH, "\nmac= ", utils_hexArrayToAsciiArray(buffer_mac, 6), 12);
+			}
+			break;
+		}
 		case 0x76:{									//%76,x,yy,z*		-  x-pa number, yy-band number, z-isActive (1-true,0-false)
-			tunePa();
+			tunePa(&COMMAND);
 			break;
 		}
 		case 0x77:{																									//read all PA info
@@ -355,12 +421,13 @@ void command_exec(uint8_t command){
 			uint8_t isPaOn = COMMAND.buffer[7] & 0x0f;
 			uint8_t combination;
 			uint8_t paNum;
-			paNum = getPaNum(band);
-			if (paNum == 0 || inChannel < 1 || inChannel > 4){
+			
+			if (!commandValidation(0xaa, &COMMAND)){
 				utils_sendDebugPGM(MAIN_CH, _ABSENT, 0, 0);
 				utils_sendDebugPGM(DEBUG_CH, _ABSENT, 0, 0);
 			}
 			else{
+				paNum = getPaNum(band);
 				setChInCommutator(inChannel, paNum, standart, isPaOn);
 				combination = searchCombination(&COMMUTATOR);
 				if (commutator_decoder(combination)){
@@ -538,8 +605,7 @@ static inline uint8_t command_scanTwi(twi_device_t* pPA){
 	if (pPA->isValid != 1) pPA->addrTWI = 0;
 	return pPA->addrTWI;
 }
-void tunePa(){
-	uint8_t COMMAND_LENGTH = 7;
+void tunePa(buff_t *commandBuff){
 	uint8_t bandNumber = utils_ascii16ToHex8(COMMAND.buffer[3] << 8 | COMMAND.buffer[4]);
 	uint8_t paNumber = COMMAND.buffer[1] & 0x0f;
 	uint8_t activeNumber = COMMAND.buffer[6] & 0x0f;
@@ -550,82 +616,80 @@ void tunePa(){
 	
 	uint8_t *pADDR, *pBAND, *pFANPIN, *pISACTIVE;
 	
-	if (COMMAND.length == COMMAND_LENGTH){
-		switch(paNumber){
-			case 0:{
-				pPA = &PA1;
-				eeprI2c = I2C_PA0_EEPR;
-				eeprBand = BAND_PA0_EEPR;
-				eeprValid = VALID_PA0_EEPR;
-				pADDR = (uint8_t *)_PA1_ADDR;
-				pBAND = (uint8_t *)_PA1_BAND;
-				pFANPIN = (uint8_t *)_PA1_FANPIN;
-				pISACTIVE = (uint8_t *)_PA1_ISACTIVE;
-				break;
-			}
-			case 1:{
-				pPA = &PA2;
-				eeprI2c = I2C_PA1_EEPR;
-				eeprBand = BAND_PA1_EEPR;
-				eeprValid = VALID_PA1_EEPR;
-				pADDR = (uint8_t *)_PA2_ADDR;
-				pBAND = (uint8_t *)_PA2_BAND;
-				pFANPIN = (uint8_t *)_PA2_FANPIN;
-				pISACTIVE = (uint8_t *)_PA2_ISACTIVE;
-				break;
-			}
-			case 2:{
-				pPA = &PA3;
-				eeprI2c = I2C_PA2_EEPR;
-				eeprBand = BAND_PA2_EEPR;
-				eeprValid = VALID_PA2_EEPR;
-				pADDR = (uint8_t *)_PA3_ADDR;
-				pBAND = (uint8_t *)_PA3_BAND;
-				pFANPIN = (uint8_t *)_PA3_FANPIN;
-				pISACTIVE = (uint8_t *)_PA3_ISACTIVE;
-				break;
-			}
-			/*case 3:{
-			pPA = &PA4;
+	switch(paNumber){
+		case 1:{
+			pPA = &PA1;
+			eeprI2c = I2C_PA1_EEPR;
+			eeprBand = BAND_PA1_EEPR;
+			eeprValid = VALID_PA1_EEPR;
+			pADDR = (uint8_t *)_PA1_ADDR;
+			pBAND = (uint8_t *)_PA1_BAND;
+			pFANPIN = (uint8_t *)_PA1_FANPIN;
+			pISACTIVE = (uint8_t *)_PA1_ISACTIVE;
+			break;
+		}
+		case 2:{
+			pPA = &PA2;
+			eeprI2c = I2C_PA2_EEPR;
+			eeprBand = BAND_PA2_EEPR;
+			eeprValid = VALID_PA2_EEPR;
+			pADDR = (uint8_t *)_PA2_ADDR;
+			pBAND = (uint8_t *)_PA2_BAND;
+			pFANPIN = (uint8_t *)_PA2_FANPIN;
+			pISACTIVE = (uint8_t *)_PA2_ISACTIVE;
+			break;
+		}
+		case 3:{
+			pPA = &PA3;
 			eeprI2c = I2C_PA3_EEPR;
 			eeprBand = BAND_PA3_EEPR;
 			eeprValid = VALID_PA3_EEPR;
-			pADDR = (uint8_t *)_PA4_ADDR;
-			pBAND = (uint8_t *)_PA4_BAND;
-			pFANPIN = (uint8_t *)_PA4_FANPIN;
-			pISACTIVE = (uint8_t *)_PA4_ISACTIVE;
+			pADDR = (uint8_t *)_PA3_ADDR;
+			pBAND = (uint8_t *)_PA3_BAND;
+			pFANPIN = (uint8_t *)_PA3_FANPIN;
+			pISACTIVE = (uint8_t *)_PA3_ISACTIVE;
 			break;
-			}*/
-			default: {
-				utils_sendDebugPGM(DEBUG_CH, _ERROR, 0, 0);
-				return;
-			}
 		}
-		command_scanTwi(pPA);
-		if ((PA1.addrTWI > 0 || PA2.addrTWI > 0) && (PA1.addrTWI == PA2.addrTWI)) {
+		/*case 4:{
+		pPA = &PA4;
+		eeprI2c = I2C_PA3_EEPR;
+		eeprBand = BAND_PA3_EEPR;
+		eeprValid = VALID_PA3_EEPR;
+		pADDR = (uint8_t *)_PA4_ADDR;
+		pBAND = (uint8_t *)_PA4_BAND;
+		pFANPIN = (uint8_t *)_PA4_FANPIN;
+		pISACTIVE = (uint8_t *)_PA4_ISACTIVE;
+		break;
+		}*/
+		default: {
 			utils_sendDebugPGM(DEBUG_CH, _ERROR, 0, 0);
-			pPA->isValid = 0;
-			pPA->addrTWI = 0;
-			pPA->temperBuff[0] = 0;
 			return;
 		}
-		/*else if ((PA3.addrTWI > 0 || PA4.addrTWI > 0) && (PA3.addrTWI == PA4.addrTWI)) {
+	}
+	command_scanTwi(pPA);
+	if ((PA1.addrTWI > 0 || PA2.addrTWI > 0) && (PA1.addrTWI == PA2.addrTWI)) {
 		utils_sendDebugPGM(DEBUG_CH, _ERROR, 0, 0);
 		pPA->isValid = 0;
 		pPA->addrTWI = 0;
 		pPA->temperBuff[0] = 0;
 		return;
-		}*/
-		if (pPA->addrTWI == 0) activeNumber = 0;
-		pPA->isValid = activeNumber;
-		pPA->band = bandNumber;
-		read_writeEEPROMByte(eeprI2c, pPA->addrTWI);
-		read_writeEEPROMByte(eeprBand, pPA->band);
-		read_writeEEPROMByte(eeprValid, pPA->isValid);
-		
-		utils_sendDebugPGM(DEBUG_CH, pADDR, utils_hex8ToAscii16(pPA->addrTWI), 2);
-		utils_sendDebugPGM(DEBUG_CH, pBAND, utils_hex8ToAscii16(pPA->band), 2);
-		utils_sendDebugPGM(DEBUG_CH, pFANPIN, utils_hex8ToAscii16(pPA->fanPin), 2);
-		utils_sendDebugPGM(DEBUG_CH, pISACTIVE, utils_hex8ToAscii16(pPA->isValid), 2);
 	}
+	/*else if ((PA3.addrTWI > 0 || PA4.addrTWI > 0) && (PA3.addrTWI == PA4.addrTWI)) {
+	utils_sendDebugPGM(DEBUG_CH, _ERROR, 0, 0);
+	pPA->isValid = 0;
+	pPA->addrTWI = 0;
+	pPA->temperBuff[0] = 0;
+	return;
+	}*/
+	if (pPA->addrTWI == 0) activeNumber = 0;
+	pPA->isValid = activeNumber;
+	pPA->band = bandNumber;
+	read_writeEEPROMByte(eeprI2c, pPA->addrTWI);
+	read_writeEEPROMByte(eeprBand, pPA->band);
+	read_writeEEPROMByte(eeprValid, pPA->isValid);
+	
+	utils_sendDebugPGM(DEBUG_CH, pADDR, utils_hex8ToAscii16(pPA->addrTWI), 2);
+	utils_sendDebugPGM(DEBUG_CH, pBAND, utils_hex8ToAscii16(pPA->band), 2);
+	utils_sendDebugPGM(DEBUG_CH, pFANPIN, utils_hex8ToAscii16(pPA->fanPin), 2);
+	utils_sendDebugPGM(DEBUG_CH, pISACTIVE, utils_hex8ToAscii16(pPA->isValid), 2);
 }

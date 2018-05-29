@@ -59,8 +59,8 @@
 #define RED_LED_OFF					PORTD.OUTSET=PIN4_bm, PORTC.OUTSET=PIN4_bm
 #define RED_LED_ON					PORTD.OUTCLR=PIN4_bm, PORTC.OUTCLR=PIN4_bm
 
-#define BUFFER_SIZE				256		//only 256, if not add	 fifo.tail &= BUFFER_SIZE-1
-#define BUFF_SIZE_COMM_DATA		145
+#define BUFFER_SIZE				256			//only 256, if not add	 fifo.tail &= BUFFER_SIZE-1
+#define BUFF_SIZE_COMM_DATA		145			//size of command
 #define FILTER_SAMPLES			16
 
 #define BAUD_RATE_OUT			115200
@@ -104,7 +104,6 @@
 #define DC_DC_OFF					0x71
 #define EMULATE_DC_DC_INTERR		0x73
 #define NOCOMBINATION				0xff
-
 
 //***************************************************
 #define FAN_PA1			5

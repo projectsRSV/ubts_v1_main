@@ -6,7 +6,7 @@ void read_commandUART() {
 	static uint16_t i=0;
 	if (i++ == 0x0fff) {
 		//if (!utils_isFifoEmpty(&FIFO_recUART)) {
-		command_exec(commands_decoder(&FIFO_recUART));
+		command_exec(commands_decoder(&FIFO_recUART, &COMMAND));
 		//}
 		i=0;
 	}
@@ -96,7 +96,7 @@ void read_udpCommand(){
 	static uint16_t i=0;
 	if (i++ >= 0x00ff) {
 		read_sendW5200State(UDP_CH);
-		command_exec(commands_decoder(&FIFO_udpChRx));
+		command_exec(commands_decoder(&FIFO_udpChRx, &COMMAND));
 		i = 0;
 	}
 }
@@ -111,7 +111,7 @@ void read_mainCommand() {
 	static uint16_t i=0;
 	if (i++ >= 0x01ff) {
 		read_sendW5200State(MAIN_CH);
-		command_exec(commands_decoder(&FIFO_mainChRx));
+		command_exec(commands_decoder(&FIFO_mainChRx, &COMMAND));
 		i=0;
 	}
 }
@@ -119,7 +119,7 @@ void read_debugCommand() {
 	static uint16_t i=0;
 	if (i++ >= 0x02ff) {
 		read_sendW5200State(DEBUG_CH);
-		command_exec(commands_decoder(&FIFO_debugChRx));
+		command_exec(commands_decoder(&FIFO_debugChRx, &COMMAND));
 		i=0;
 	}
 }
@@ -183,19 +183,19 @@ void read_eeprom() {
 	read_eeprBuff(STRING_e8, COMMAND_e8.buffer, COMMAND_e8.length);
 	read_eeprBuff(MAC_EEP, buffer_mac, 6);
 	
-	PA1.addrTWI = read_eeprByte(I2C_PA0_EEPR);
-	PA2.addrTWI = read_eeprByte(I2C_PA1_EEPR);
-	PA3.addrTWI = read_eeprByte(I2C_PA2_EEPR);
+	PA1.addrTWI = read_eeprByte(I2C_PA1_EEPR);
+	PA2.addrTWI = read_eeprByte(I2C_PA2_EEPR);
+	PA3.addrTWI = read_eeprByte(I2C_PA3_EEPR);
 	//PA4.addrTWI = read_eeprByte(I2C_PA3_EEPR);
 	
-	PA1.band = read_eeprByte(BAND_PA0_EEPR);
-	PA2.band = read_eeprByte(BAND_PA1_EEPR);
-	PA3.band = read_eeprByte(BAND_PA2_EEPR);
+	PA1.band = read_eeprByte(BAND_PA1_EEPR);
+	PA2.band = read_eeprByte(BAND_PA2_EEPR);
+	PA3.band = read_eeprByte(BAND_PA3_EEPR);
 	//PA4.band = read_eeprByte(BAND_PA3_EEPR);
 	
-	PA1.isValid = read_eeprByte(VALID_PA0_EEPR);
-	PA2.isValid = read_eeprByte(VALID_PA1_EEPR);
-	PA3.isValid = read_eeprByte(VALID_PA2_EEPR);
+	PA1.isValid = read_eeprByte(VALID_PA1_EEPR);
+	PA2.isValid = read_eeprByte(VALID_PA2_EEPR);
+	PA3.isValid = read_eeprByte(VALID_PA3_EEPR);
 	//PA4.isValid = read_eeprByte(VALID_PA3_EEPR);
 	
 	COMMUTATOR.sreg4_state_att = read_eeprByte(ATT_1_EEPR) | read_eeprByte(ATT_3_EEPR) << 8;

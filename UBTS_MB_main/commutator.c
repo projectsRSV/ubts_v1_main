@@ -194,7 +194,7 @@ bool commutator_decoder(uint8_t address){
 			break;
 		}
 		case 0x12:{
-			if(PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
+			if(PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' &&
 			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_1_3();
 				_2_off();
@@ -267,8 +267,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x18:{
 			_1_off();
 			_2_2();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -286,8 +285,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x19:{
 			_1_off();
 			_2_1();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -305,8 +303,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x1a:{
 			_1_1();
 			_2_off();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -324,8 +321,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x1b:{
 			_1_2();
 			_2_off();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -343,8 +339,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x1c:{
 			_1_off();
 			_2_off();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -413,8 +408,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x22:{
 			_1_1();
 			_2_1();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0018, 0x0018);
@@ -432,8 +426,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x23:{
 			_1_2();
 			_2_2();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0018, 0x0018);
@@ -451,8 +444,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x24:{
 			_1_1();
 			_2_2();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -471,8 +463,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x25:{
 			_1_2();
 			_2_1();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -632,8 +623,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x32:{
 			_1_1();
 			_2_off();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -651,8 +641,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x33:{
 			_1_off();
 			_2_off();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);
@@ -680,8 +669,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x35:{
 			_1_1();
 			_2_1();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0018, 0x0018);
@@ -699,8 +687,7 @@ bool commutator_decoder(uint8_t address){
 		case 0x36:{
 			_1_off();
 			_2_1();
-			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_1 != 'C' && COMMUTATOR.standart_ch_2 != 'C' &&
-			COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
+			if (PA3.band == 0x01 && (COMMUTATOR.standart_ch_3 != 'C' && COMMUTATOR.standart_ch_4 != 'C')){
 				_3_2100();
 				_4_2100();
 				setAttCommutator(0x0000, 0x0000);

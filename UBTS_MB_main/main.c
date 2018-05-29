@@ -33,6 +33,10 @@ uint16_t arrLed1C[] = {1846, 1920, 1950, 2000, 2176, 2190, 2268, 1668};			//6, 1
 //uint16_t arrLed2C[] = {1350, 1442, 1490, 1534, 1790, 1835, 2670, 1280};		//6, 11, 16, 21, 27, __,  40, 2.1W - BW
 //uint16_t arrLed3C[] = {1830, 1925, 1991, 2030, 2090, 2135, 2970, 1380};		//6, 11, 16, 21, 27, __,  40, 2.1W - BW
 
+//uint16_t arrLed1C_0[] = {1836, 1976, 2053, 2114, 2176, 2500, 2670, 1704};		//6, 11, 16, 21, 27, __,  40, 5W - BW
+//uint16_t arrLed1C_1[] = {1715, 1850, 1926, 1985, 2037, 2500, 2670, 1500};		//6, 11, 16, 21, 27, __,  40, 5W - BW
+
+
 twi_device_t PA1 = {.fanPin = FAN_PA1, .paPin = PA_ENABLE_1, .channel = LED_CH1, .name = (uint8_t*)_PA1};								//
 twi_device_t PA2 = {.fanPin = FAN_PA2, .paPin = PA_ENABLE_2, .channel = LED_CH2, .name = (uint8_t*)_PA2};								//
 twi_device_t PA3 = {.fanPin = FAN_PA3, .paPin = PA_ENABLE_3, .channel = LED_CH3, .name = (uint8_t*)_PA3};								//
@@ -45,10 +49,10 @@ twi_device_t INA_PERIPHERY = {.addrTWI = I2C_PERIPHERY};
 regs_t REGISTERS = {.nmGpsWifiPpsState = 0x00, .paState = 0, .dcDcState = 0xf810, .resetWifiGpsNmState = 0x06, .ledChState = 0, .ledFanState = 0};				//all bts,back fan,on wifi, freset and reset wifi on
 power_leds_t POWER_LEDS1, POWER_LEDS2, POWER_LEDS3;
 
-void main_ledFanFunc(void);
+void main_ledFanFunc();
 
 
-int main(void) {
+int main() {
 	pGate = buffer_gate;
 	pMask = buffer_mask;
 	pIp = buffer_ip;

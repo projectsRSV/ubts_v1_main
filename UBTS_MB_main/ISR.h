@@ -13,7 +13,7 @@
 void ISR_init(void);
 
 
-extern uint8_t commands_decoder(fifo_t* buff);
+//extern uint8_t commands_decoder(fifo_t* buff, BUFF_t *buffOut);
 void twim_interrupt_handler(void);
 extern twi_device_t INA_BTS, INA_PERIPHERY, PA1, PA2, PA3, PA4, BOARD;
 extern fpProgMode fpProgModeTable[];

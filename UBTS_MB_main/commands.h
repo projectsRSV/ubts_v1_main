@@ -17,10 +17,10 @@
 extern uint8_t buffer_serialNum[];
 extern regs_t REGISTERS;
 
-uint8_t commands_decoder(fifo_t*);
+uint8_t commands_decoder(fifo_t*, buff_t *);
 void command_exec(uint8_t);
 void(*pBootloader)(void);
-void tunePa(void);
+void tunePa(buff_t *);
 void paOn(twi_device_t* pPa, bool isOn);
 void nmOn(bool isOn);
 void gpsOn(bool isOn);
