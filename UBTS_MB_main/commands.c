@@ -39,21 +39,24 @@ uint8_t commands_decoder(fifo_t* fifo, buff_t *buffOut) {
 static bool commandValidation(uint8_t command, buff_t *commandBuff){
 	bool valid = true;
 	switch(command){
-		/*case 0x75:{
-		uint8_t b1 = utils_ascii16ToHex8(COMMAND.buffer[1] << 8 | COMMAND.buffer[2]);
-		uint8_t b2 = utils_ascii16ToHex8(COMMAND.buffer[4] << 8 | COMMAND.buffer[5]);
-		uint8_t b3 = utils_ascii16ToHex8(COMMAND.buffer[7] << 8 | COMMAND.buffer[8]);
-		uint8_t b4 = utils_ascii16ToHex8(COMMAND.buffer[10] << 8 | COMMAND.buffer[11]);
-		uint8_t b5 = utils_ascii16ToHex8(COMMAND.buffer[13] << 8 | COMMAND.buffer[14]);
-		uint8_t b6 = utils_ascii16ToHex8(COMMAND.buffer[16] << 8 | COMMAND.buffer[17]);
-		
-		break;
-		}*/
+		case 0x75:{																				//%75aabbaabbaabb*	-	set mac
+			buffer_mac[0] = utils_ascii16ToHex8(commandBuff->buffer[0] << 8 | commandBuff->buffer[1]);
+			buffer_mac[1] = utils_ascii16ToHex8(commandBuff->buffer[2] << 8 | commandBuff->buffer[3]);
+			buffer_mac[2] = utils_ascii16ToHex8(commandBuff->buffer[4] << 8 | commandBuff->buffer[5]);
+			buffer_mac[3] = utils_ascii16ToHex8(commandBuff->buffer[6] << 8 | commandBuff->buffer[7]);
+			buffer_mac[4] = utils_ascii16ToHex8(commandBuff->buffer[8] << 8 | commandBuff->buffer[9]);
+			buffer_mac[5] = utils_ascii16ToHex8(commandBuff->buffer[10] << 8 | commandBuff->buffer[11]);
+			
+			if (commandBuff->length != 12) return false;
+			//if (commandBuff->buffer[0] != ',') return false;
+			break;
+		}
 		case 0x76:{								//%76,x,yy,z*		-  x-pa number[1-3], yy-band number[0-99], z-isActive[0-1] (1-true,0-false)
 			uint8_t bandNumber = utils_ascii16ToHex8(commandBuff->buffer[3] << 8 | commandBuff->buffer[4]);
 			uint8_t paNumber = commandBuff->buffer[1];
 			uint8_t activeNumber = commandBuff->buffer[6];
 
+			if (COMMUTATOR.nmIsOn) return false;
 			if (commandBuff->length != 7) return false;
 			if (bandNumber < 0 || bandNumber > 99) return false;
 			if (paNumber < 1 || paNumber > 3) return false;
@@ -89,6 +92,9 @@ void command_exec(uint8_t command){
 			utils_sendDebugPGM(DEBUG_CH,_VERSION,0,0);
 			break;
 		}
+		/*case 0x02:{																													//set anime speed
+		break;
+		}*/
 		case 0x01:{																													//GPS on
 			gpsOn(true);
 			break;
@@ -366,15 +372,15 @@ void command_exec(uint8_t command){
 			utils_sendAnswerMain(DEBUG_CH, "\nmac= ", utils_hexArrayToAsciiArray(buffer_mac, 6), 12);
 			break;
 		}
-		case 0x75:{																				//%75,aabbaabbaabb*	-	set mac
-			buffer_mac[0] = utils_ascii16ToHex8(COMMAND.buffer[1] << 8 | COMMAND.buffer[2]);
-			buffer_mac[1] = utils_ascii16ToHex8(COMMAND.buffer[3] << 8 | COMMAND.buffer[4]);
-			buffer_mac[2] = utils_ascii16ToHex8(COMMAND.buffer[5] << 8 | COMMAND.buffer[6]);
-			buffer_mac[3] = utils_ascii16ToHex8(COMMAND.buffer[7] << 8 | COMMAND.buffer[8]);
-			buffer_mac[4] = utils_ascii16ToHex8(COMMAND.buffer[9] << 8 | COMMAND.buffer[10]);
-			buffer_mac[5] = utils_ascii16ToHex8(COMMAND.buffer[11] << 8 | COMMAND.buffer[12]);
+		case 0x75:{																				//%75aabbaabbaabb*	-	set mac
+			buffer_mac[0] = utils_ascii16ToHex8(COMMAND.buffer[0] << 8 | COMMAND.buffer[1]);
+			buffer_mac[1] = utils_ascii16ToHex8(COMMAND.buffer[2] << 8 | COMMAND.buffer[3]);
+			buffer_mac[2] = utils_ascii16ToHex8(COMMAND.buffer[4] << 8 | COMMAND.buffer[5]);
+			buffer_mac[3] = utils_ascii16ToHex8(COMMAND.buffer[6] << 8 | COMMAND.buffer[7]);
+			buffer_mac[4] = utils_ascii16ToHex8(COMMAND.buffer[8] << 8 | COMMAND.buffer[9]);
+			buffer_mac[5] = utils_ascii16ToHex8(COMMAND.buffer[10] << 8 | COMMAND.buffer[11]);
 			
-			if (COMMAND.length == 13){
+			if (commandValidation(0x75, &COMMAND)){
 				read_writeEEPROMBuff(MAC_EEP, buffer_mac, 6);
 				utils_sendAnswerMain(MAIN_CH, "\n%75*", utils_hexArrayToAsciiArray(buffer_mac, 6), 12);
 				utils_sendAnswerMain(DEBUG_CH, "\nmac= ", utils_hexArrayToAsciiArray(buffer_mac, 6), 12);
@@ -425,6 +431,10 @@ void command_exec(uint8_t command){
 			if (!commandValidation(0xaa, &COMMAND)){
 				utils_sendDebugPGM(MAIN_CH, _ABSENT, 0, 0);
 				utils_sendDebugPGM(DEBUG_CH, _ABSENT, 0, 0);
+			}
+			else if (COMMUTATOR.nmIsOn && isPaOn == 1) {
+				utils_sendDebugPGM(MAIN_CH, _NOTALLOW, 0, 0);
+				utils_sendDebugPGM(DEBUG_CH, _NOTALLOW, 0, 0);
 			}
 			else{
 				paNum = getPaNum(band);
@@ -539,6 +549,7 @@ void nmOn(bool isOn){
 			utils_sendDebugPGM(DEBUG_CH, _NOTALLOW, 0, 0);
 		}
 		else{
+			COMMUTATOR.nmIsOn = true;
 			spi_setReg(&SPIC, &PORTK, REGISTERS.nmGpsWifiPpsState |= NM_ON, MCU_SREG_NM_GPS);		//on power for telit
 			COMMUTATOR.sreg1_state_rx = 0b00010000;
 			COMMUTATOR.sreg2_state_rx &= ~0b01110011;
@@ -556,6 +567,7 @@ void nmOn(bool isOn){
 		}
 	}
 	else {
+		COMMUTATOR.nmIsOn = false;
 		spi_setReg(&SPIC, &PORTK, REGISTERS.nmGpsWifiPpsState &= ~NM_ON, MCU_SREG_NM_GPS);		//off power for telit
 		
 		COMMUTATOR.sreg1_state_rx = 0b00000000;

@@ -114,6 +114,8 @@ typedef struct{
 	char standart_ch_2;
 	char standart_ch_3;
 	char standart_ch_4;
+	
+	bool nmIsOn;
 
 }commut_regs_t;
 typedef struct{

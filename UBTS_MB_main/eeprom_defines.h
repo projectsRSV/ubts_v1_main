@@ -15,8 +15,6 @@
 #define GATEWAY_ADDR		16		//4
 #define SOCKET				20		//2
 
-#define LENGTH_e8			OFFSET + 22			//1
-#define STRING_e8			OFFSET + 23			//252
 
 #define I2C_PA1_EEPR		OFFSET + 275		//1
 #define I2C_PA2_EEPR		OFFSET + 276		//1
@@ -42,6 +40,8 @@
 
 #define MAC_EEP				OFFSET + 292		//6
 
+#define LENGTH_e8			OFFSET + 298		//1
+#define STRING_e8			OFFSET + 299		//252
 
 //#define LENGTH_3d			OFFSET + 22			//1
 //#define STRING_3d			OFFSET + 23			//50

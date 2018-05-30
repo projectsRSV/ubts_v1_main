@@ -1,6 +1,6 @@
 ﻿#include "PROGM_.h"
 
-const uint8_t _VERSION[] PROGMEM="\n%UBTS_3U_H00S00*";
+const uint8_t _VERSION[] PROGMEM="\n%UBTS_3U_H00S01*";
 //const uint8_t _VERSION[] PROGMEM="\n%CDMA_3U_H00S00*";
 const uint8_t _Tboard[] PROGMEM="\ntb=";
 const uint8_t _Tpa1[] PROGMEM="\nt0=";

@@ -156,7 +156,7 @@
         <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
       </AvrGcc>
     </ToolchainSettings>
-    <OutputFileName>UBTS_MB_main_00</OutputFileName>
+    <OutputFileName>UBTS_MB_main_01</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
   </PropertyGroup>
   <ItemGroup>

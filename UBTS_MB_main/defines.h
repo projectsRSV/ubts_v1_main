@@ -12,7 +12,7 @@
 #define RESET_SECTION			0x0000
 
 //#define DEBUG					0
-#define START_ANIME_PAUSE		100
+#define START_ANIME_PAUSE		500
 #define SHUTDOWN_LEVEL			116
 
 #define PAUSE_OVER				15
@@ -60,7 +60,7 @@
 #define RED_LED_ON					PORTD.OUTCLR=PIN4_bm, PORTC.OUTCLR=PIN4_bm
 
 #define BUFFER_SIZE				256			//only 256, if not add	 fifo.tail &= BUFFER_SIZE-1
-#define BUFF_SIZE_COMM_DATA		145			//size of command
+#define BUFF_SIZE_COMM_DATA		250			//size of command
 #define FILTER_SAMPLES			16
 
 #define BAUD_RATE_OUT			115200
